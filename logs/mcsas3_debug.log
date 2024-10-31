@@ -1,0 +1,83 @@
+2024-10-31 16:12:34,889 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:12:35,401 - [DEBUG] - McSAS3 - Loaded default configuration files: []
+2024-10-31 16:12:35,495 - [DEBUG] - McSAS3 - DataLoadingTab initialized.
+2024-10-31 16:12:35,502 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:12:35,502 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:12:35,502 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:12:35,504 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:12:35,539 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:20:53,449 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:20:53,555 - [DEBUG] - McSAS3 - Found default configuration files: []
+2024-10-31 16:21:12,838 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:21:12,939 - [DEBUG] - McSAS3 - Found default configuration files: []
+2024-10-31 16:21:13,023 - [DEBUG] - McSAS3 - DataLoadingTab initialized and dropdown populated.
+2024-10-31 16:21:13,024 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:21:13,024 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:21:13,024 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:21:13,026 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:21:13,060 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:28:10,942 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:28:11,047 - [DEBUG] - McSAS3 - Found default configuration files: []
+2024-10-31 16:28:11,132 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:28:11,133 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:28:11,134 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:28:11,134 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:28:11,135 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:28:11,169 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:29:58,457 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:29:58,562 - [DEBUG] - McSAS3 - Found default configuration files: []
+2024-10-31 16:29:58,650 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:29:58,652 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:29:58,652 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:29:58,652 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:29:58,653 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:29:58,685 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:32:43,568 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:32:43,677 - [DEBUG] - McSAS3 - Found default configuration files: ['read_config_nxs', 'read_config_nxs_with_omit', 'read_config_csv']
+2024-10-31 16:32:43,766 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:32:43,767 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:32:43,767 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:32:43,767 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:32:43,769 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:32:43,801 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:32:48,088 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_nxs_with_omit
+2024-10-31 16:33:21,691 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:33:21,803 - [DEBUG] - McSAS3 - Found default configuration files: ['read_config_nxs.yaml', 'read_config_nxs_with_omit.yaml', 'read_config_csv.yaml']
+2024-10-31 16:33:21,890 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:33:21,892 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:33:21,892 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:33:21,892 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:33:21,894 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:33:21,928 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:33:23,837 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_nxs_with_omit.yaml
+2024-10-31 16:35:28,991 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:35:29,090 - [DEBUG] - McSAS3 - Found default configuration files: ['read_config_nxs.yaml', 'read_config_nxs_with_omit.yaml', 'read_config_csv.yaml']
+2024-10-31 16:35:29,177 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:35:29,178 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:35:29,178 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:35:29,178 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:35:29,180 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:35:29,211 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:35:31,273 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_nxs_with_omit.yaml
+2024-10-31 16:36:44,483 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:36:44,584 - [DEBUG] - McSAS3 - Found default configuration files: ['read_config_nxs.yaml', 'read_config_nxs_with_omit.yaml', 'read_config_csv.yaml']
+2024-10-31 16:36:44,671 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:36:44,672 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:36:44,672 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:36:44,673 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:36:44,674 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:36:44,700 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:36:46,803 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_csv.yaml
+2024-10-31 16:37:06,839 - [DEBUG] - McSAS3 - Cleared all files from the file list.
+2024-10-31 16:37:09,578 - [DEBUG] - McSAS3 - Selected files for processing: []
+2024-10-31 16:41:30,287 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-10-31 16:41:30,401 - [DEBUG] - McSAS3 - Found default configuration files: ['read_config_nxs.yaml', 'read_config_nxs_with_omit.yaml', 'read_config_csv.yaml']
+2024-10-31 16:41:30,490 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-10-31 16:41:30,491 - [DEBUG] - McSAS3 - ModelSetupTab initialized.
+2024-10-31 16:41:30,491 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-10-31 16:41:30,491 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-10-31 16:41:30,493 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-10-31 16:41:30,530 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-10-31 16:41:35,503 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_nxs_with_omit.yaml
+2024-10-31 16:41:37,842 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_nxs.yaml
+2024-10-31 16:41:48,924 - [DEBUG] - McSAS3 - Loading selected configuration file: read_config_csv.yaml
