@@ -405,3 +405,53 @@ found character '\t' that cannot start any token
 2024-11-01 16:26:12,436 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
 2024-11-01 16:26:12,437 - [DEBUG] - McSAS3 - OutputTab initialized.
 2024-11-01 16:26:12,474 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:29:25,457 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:29:25,650 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:29:25,658 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:29:25,658 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:29:25,659 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:29:25,690 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 18:34:13,651 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 6, column 9:
+      - 3.14	
+            ^
+2024-11-01 18:34:13,653 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 6, column 9:
+      - 3.14	
+            ^
+2024-11-01 18:35:55,451 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 18:35:55,641 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 18:35:55,648 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 18:35:55,649 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 18:35:55,650 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 18:35:55,696 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 18:36:11,965 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 1, column 20:
+    modelName: cylinder	
+                       ^
+2024-11-01 18:36:11,967 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 1, column 20:
+    modelName: cylinder	
+                       ^
+2024-11-01 18:36:15,163 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 1, column 20:
+    modelName: cylinder	
+                       ^
+2024-11-01 18:36:15,165 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 1, column 20:
+    modelName: cylinder	
+                       ^
+2024-11-01 18:36:27,294 - [DEBUG] - McSAS3 - Saved YAML configuration to file: /Users/bpauw/Code/McSAS3GUI/run_configurations/run_config_sphere_at_hardsphere.yaml
+2024-11-01 18:36:47,607 - [DEBUG] - McSAS3 - Saved YAML configuration to file: /Users/bpauw/Code/McSAS3GUI/run_configurations/run_config_sphere_at_hardsphere.yaml
+2024-11-01 18:39:30,188 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 18:39:30,381 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 18:39:30,388 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 18:39:30,388 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 18:39:30,390 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 18:39:30,421 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.

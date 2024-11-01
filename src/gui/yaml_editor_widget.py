@@ -2,7 +2,7 @@
 
 import logging
 from PyQt6.QtGui import QTextCharFormat, QColor, QTextCursor, QSyntaxHighlighter, QFont
-from PyQt6.QtWidgets import QTextEdit, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QToolTip
+from PyQt6.QtWidgets import QTextEdit, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QToolTip, QFileDialog
 from PyQt6.QtCore import QEvent, QPoint, QRegularExpression
 import yaml
 import re
