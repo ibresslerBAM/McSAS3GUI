@@ -289,3 +289,119 @@
 2024-11-01 15:29:49,413 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
 2024-11-01 15:29:49,414 - [DEBUG] - McSAS3 - OutputTab initialized.
 2024-11-01 15:29:49,451 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:45:14,524 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 15:45:14,755 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 15:45:14,767 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 15:45:14,767 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 15:45:14,769 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 15:45:14,809 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:48:20,618 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 15:48:20,821 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 15:48:20,827 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 15:48:20,827 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 15:48:20,829 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 15:48:20,859 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:48:31,095 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv
+2024-11-01 15:48:31,096 - [DEBUG] - McSAS3 - Loaded data files: ['/Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv']
+2024-11-01 15:48:34,711 - [DEBUG] - McSAS3 - Loaded data files: ['/Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv']
+2024-11-01 15:48:45,376 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_nxs.yaml
+2024-11-01 15:48:45,376 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_csv.yaml
+2024-11-01 15:48:45,376 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_nxs_with_omit.yaml
+2024-11-01 15:48:45,376 - [DEBUG] - McSAS3 - Loaded data files: ['/Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_nxs.yaml', '/Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_csv.yaml', '/Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_nxs_with_omit.yaml']
+2024-11-01 15:49:08,486 - [DEBUG] - McSAS3 - Removed file from list: /Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_nxs.yaml
+2024-11-01 15:49:08,486 - [DEBUG] - McSAS3 - Removed file from list: /Users/bpauw/Code/McSAS3GUI/read_configurations/read_config_csv.yaml
+2024-11-01 15:50:03,350 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 15:50:03,544 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 15:50:03,549 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 15:50:03,549 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 15:50:03,551 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 15:50:03,586 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:50:13,452 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 1, column 12:
+    modelName: 	sphere
+               ^
+2024-11-01 15:50:31,521 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 2, column 14:
+    nContrib: 30.	0
+                 ^
+2024-11-01 15:51:12,314 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 15:51:12,511 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 15:51:12,516 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 15:51:12,516 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 15:51:12,518 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 15:51:12,555 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:51:54,622 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv
+2024-11-01 15:51:54,623 - [DEBUG] - McSAS3 - Loaded data files: ['/Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv']
+2024-11-01 15:52:13,354 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 15:52:13,545 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 15:52:13,551 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 15:52:13,551 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 15:52:13,552 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 15:52:13,587 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 15:52:23,456 - [DEBUG] - McSAS3 - Added file to list: /Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv
+2024-11-01 15:52:23,456 - [DEBUG] - McSAS3 - Loaded data files: ['/Users/bpauw/Code/McSAS3GUI/testdata/quickstartdemo1.csv']
+2024-11-01 16:06:30,246 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:06:30,456 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:07:29,112 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:07:29,304 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:09:36,489 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:09:36,674 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:09:36,685 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:09:36,686 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:09:36,688 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:09:36,729 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:13:00,648 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:14:28,531 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:14:28,722 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:14:28,729 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:14:28,729 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:14:28,730 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:14:28,766 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:16:09,795 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:16:09,981 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:16:09,987 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:16:09,987 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:16:09,989 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:16:10,022 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:16:36,632 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:16:36,822 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:16:36,828 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:16:36,829 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:16:36,830 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:16:36,865 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:21:15,647 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:21:15,842 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:21:15,849 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:21:15,849 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:21:15,850 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:21:15,884 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:21:20,117 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 3, column 20:
+    modelDType: default	
+                       ^
+2024-11-01 16:21:20,120 - [ERROR] - McSAS3 - YAML parsing error: while scanning for the next token
+found character '\t' that cannot start any token
+  in "<unicode string>", line 3, column 20:
+    modelDType: default	
+                       ^
+2024-11-01 16:23:08,996 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:23:09,214 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:23:09,221 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:23:09,221 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:23:09,223 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:23:09,257 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:24:48,845 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:24:49,050 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:24:49,057 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:24:49,058 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:24:49,059 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:24:49,093 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
+2024-11-01 16:26:12,242 - [DEBUG] - McSAS3 - Starting McSAS3 GUI application...
+2024-11-01 16:26:12,429 - [DEBUG] - McSAS3 - DataLoadingTab initialized with file list and configuration options.
+2024-11-01 16:26:12,436 - [DEBUG] - McSAS3 - OptimizationTab initialized.
+2024-11-01 16:26:12,436 - [DEBUG] - McSAS3 - HistogrammingTab initialized.
+2024-11-01 16:26:12,437 - [DEBUG] - McSAS3 - OutputTab initialized.
+2024-11-01 16:26:12,474 - [DEBUG] - McSAS3 - McSAS3 GUI is now visible.
