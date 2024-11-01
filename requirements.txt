@@ -8,3 +8,4 @@ Pint
 sasmodels
 scipy
 PyYAML
+h5py

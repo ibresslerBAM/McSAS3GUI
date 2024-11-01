@@ -1,0 +1,3 @@
+"convCrit: 1\nfitParameterLimits:\n  radius:\n  - 3.14\n  - 314\nmaxIter: 100000\n\
+  modelDType: default\nmodelName: sphere@hardsphere\nnContrib: 300\nnCores: 5\nnRep:\
+  \ 10\nstaticParameters:\n  sld: 33.4\n  sld_solvent: 0\n"
