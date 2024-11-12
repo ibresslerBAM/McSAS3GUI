@@ -10,6 +10,8 @@ from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file
 from pathlib import Path
 import yaml
+from mcsas3.McData1D import McData1D
+from PyQt6.QtCore import Qt
 
 logger = logging.getLogger("McSAS3")
 
@@ -108,15 +110,19 @@ class DataLoadingTab(QWidget):
 
     def show_selected_files(self):
         """Load and display data from the selected files using McSAS3."""
-        selected_files = [self.file_list_widget.item(i).text() for i in range(self.file_list_widget.count()) if self.file_list_widget.item(i).isSelected()]
-        
+        selected_files = [
+            self.file_list_widget.item(i).data(Qt.ItemDataRole.UserRole)
+            for i in range(self.file_list_widget.count())
+            if self.file_list_widget.item(i).isSelected()
+        ]
+
         if not selected_files:
             QMessageBox.information(self, "Show Files", "No files selected.")
             return
 
         # Parse the YAML configuration from the editor
         try:
-            yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()  # Corrected attribute access
+            yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()
             yaml_config = yaml.safe_load(yaml_content)
         except yaml.YAMLError as e:
             QMessageBox.critical(self, "YAML Error", f"Error parsing YAML configuration:\n{e}")
@@ -132,7 +138,48 @@ class DataLoadingTab(QWidget):
                     resultIndex=yaml_config.get("resultIndex", 1)
                 )
                 logger.debug(f"Loaded data file: {file_path}")
-                QMessageBox.information(self, "Data Loaded", f"File {file_path} loaded successfully.\nData Summary: {mds}")
+
+                # Update the display text with a checkmark but keep original filename in UserRole
+                for i in range(self.file_list_widget.count()):
+                    item = self.file_list_widget.item(i)
+                    if item.data(Qt.ItemDataRole.UserRole) == file_path:
+                        item.setText(f"✅ {file_path}")
+                        break
+
+                # Plot data in the output panel
+                self.parent().output_tab.plot_data(mds)
+
             except Exception as e:
                 logger.error(f"Error loading file {file_path}: {e}")
                 QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")
+
+    # def show_selected_files(self):
+    #     """Load and display data from the selected files using McSAS3."""
+    #     selected_files = [self.file_list_widget.item(i).text() for i in range(self.file_list_widget.count()) if self.file_list_widget.item(i).isSelected()]
+        
+    #     if not selected_files:
+    #         QMessageBox.information(self, "Show Files", "No files selected.")
+    #         return
+
+    #     # Parse the YAML configuration from the editor
+    #     try:
+    #         yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()  # Corrected attribute access
+    #         yaml_config = yaml.safe_load(yaml_content)
+    #     except yaml.YAMLError as e:
+    #         QMessageBox.critical(self, "YAML Error", f"Error parsing YAML configuration:\n{e}")
+    #         return
+
+    #     # Load and display data for each selected file
+    #     for file_path in selected_files:
+    #         try:
+    #             mds = McData1D(
+    #                 filename=Path(file_path),
+    #                 nbins=yaml_config.get("nbins", 100),
+    #                 csvargs=yaml_config.get("csvargs", {}),
+    #                 resultIndex=yaml_config.get("resultIndex", 1)
+    #             )
+    #             logger.debug(f"Loaded data file: {file_path}")
+    #             QMessageBox.information(self, "Data Loaded", f"File {file_path} loaded successfully.\nData Summary: {mds}")
+    #         except Exception as e:
+    #             logger.error(f"Error loading file {file_path}: {e}")
+    #             QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")

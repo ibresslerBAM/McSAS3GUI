@@ -10,7 +10,7 @@ from .output_tab import OutputTab
 class McSAS3MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("McSAS3 GUI Interface")
+        self.setWindowTitle("McSAS3 Configuration Interface")
         self.setGeometry(100, 100, 800, 600)
         
         # Main tab widget
