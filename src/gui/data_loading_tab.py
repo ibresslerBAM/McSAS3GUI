@@ -2,16 +2,20 @@
 
 import logging
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QFileDialog,
-    QListWidget, QHBoxLayout, QListWidgetItem, QMessageBox
+    QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QFileDialog, QLineEdit, QHBoxLayout, QMessageBox
 )
+import numpy as np
 from gui.yaml_editor_widget import YAMLEditorWidget
 from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file
 from pathlib import Path
 import yaml
 from mcsas3.McData1D import McData1D
-from PyQt6.QtCore import Qt
+
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from PyQt6.QtWidgets import QDialog
+
 
 logger = logging.getLogger("McSAS3")
 
@@ -35,30 +39,25 @@ class DataLoadingTab(QWidget):
         # Connect dropdown to load selected configuration in YAML editor
         self.config_dropdown.currentTextChanged.connect(self.load_selected_default_config)
 
-        # File List for Drag-and-Drop
-        self.file_list_widget = QListWidget()
-        self.file_list_widget.setSelectionMode(QListWidget.SelectionMode.MultiSelection)
-        self.file_list_widget.setAcceptDrops(True)
-        self.file_list_widget.dragEnterEvent = self.file_list_drag_enter_event
-        self.file_list_widget.dropEvent = self.file_list_drop_event
-        layout.addWidget(QLabel("Loaded Files:"))
-        layout.addWidget(self.file_list_widget)
+        # File Selection Line and Button in a Horizontal Layout
+        file_selection_layout = QHBoxLayout()
+        self.file_path_line = QLineEdit()
+        self.file_path_line.setPlaceholderText("Selected test data file")
+        file_selection_layout.addWidget(self.file_path_line)
 
-        # Buttons for managing data files
-        file_button_layout = QHBoxLayout()
-        load_files_button = QPushButton("Load Datafile(s)")
-        load_files_button.clicked.connect(self.load_selected_files)
-        clear_files_button = QPushButton("Clear Datafile(s)")
-        clear_files_button.clicked.connect(self.clear_files)
-        show_selected_button = QPushButton("Show Selected")
-        show_selected_button.clicked.connect(self.show_selected_files)
-        file_button_layout.addWidget(load_files_button)
-        file_button_layout.addWidget(clear_files_button)
-        file_button_layout.addWidget(show_selected_button)
-        layout.addLayout(file_button_layout)
+        select_file_button = QPushButton("Select Test Datafile")
+        select_file_button.clicked.connect(self.select_datafile)
+        file_selection_layout.addWidget(select_file_button)
+
+        layout.addLayout(file_selection_layout)
+
+        # Load and Plot Datafile Button
+        plot_file_button = QPushButton("Load and Plot Datafile")
+        plot_file_button.clicked.connect(self.load_and_plot_datafile)
+        layout.addWidget(plot_file_button)
 
         self.setLayout(layout)
-        logger.debug("DataLoadingTab initialized with file list and configuration options.")
+        logger.debug("DataLoadingTab initialized with single file selection and plotting functionality.")
 
         # Auto-load the first configuration if available
         if default_configs:
@@ -72,52 +71,18 @@ class DataLoadingTab(QWidget):
             yaml_content = load_yaml_file(f"read_configurations/{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
 
-    def file_list_drag_enter_event(self, event):
-        """Allow drag-and-drop of files into the file list widget."""
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
+    def select_datafile(self):
+        """Open a file dialog to select a data file and display its path in the file path line."""
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select Test Data File", "", "All Files (*.*)")
+        if file_name:
+            self.file_path_line.setText(file_name)
+            logger.debug(f"Selected data file: {file_name}")
 
-    def file_list_drop_event(self, event):
-        """Handle files dropped into the file list widget."""
-        for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
-            self.add_file_to_list(file_path)
-
-    def add_file_to_list(self, file_path):
-        """Add a file to the file list if it’s not already present."""
-        if file_path not in [self.file_list_widget.item(i).text() for i in range(self.file_list_widget.count())]:
-            QListWidgetItem(file_path, self.file_list_widget)
-            logger.debug(f"Added file to list: {file_path}")
-
-    def load_selected_files(self):
-        """Open a file dialog to load data files and add them to the file list widget."""
-        file_names, _ = QFileDialog.getOpenFileNames(self, "Select Data Files", "", "All Files (*.*)")
-        if file_names:
-            for file_name in file_names:
-                self.add_file_to_list(file_name)
-            logger.debug(f"Loaded data files: {file_names}")
-
-    def clear_files(self):
-        """Remove only the selected files from the file list."""
-        selected_items = self.file_list_widget.selectedItems()
-        if not selected_items:
-            QMessageBox.information(self, "Clear Files", "No files selected.")
-            return
-
-        for item in selected_items:
-            self.file_list_widget.takeItem(self.file_list_widget.row(item))
-            logger.debug(f"Removed file from list: {item.text()}")
-
-    def show_selected_files(self):
-        """Load and display data from the selected files using McSAS3."""
-        selected_files = [
-            self.file_list_widget.item(i).data(Qt.ItemDataRole.UserRole)
-            for i in range(self.file_list_widget.count())
-            if self.file_list_widget.item(i).isSelected()
-        ]
-
-        if not selected_files:
-            QMessageBox.information(self, "Show Files", "No files selected.")
+    def load_and_plot_datafile(self):
+        """Load and plot the data file specified in the file path line."""
+        file_path = self.file_path_line.text()
+        if not file_path:
+            QMessageBox.warning(self, "Load Datafile", "No data file selected.")
             return
 
         # Parse the YAML configuration from the editor
@@ -128,58 +93,89 @@ class DataLoadingTab(QWidget):
             QMessageBox.critical(self, "YAML Error", f"Error parsing YAML configuration:\n{e}")
             return
 
-        # Load and display data for each selected file
-        for file_path in selected_files:
-            try:
-                mds = McData1D(
-                    filename=Path(file_path),
-                    nbins=yaml_config.get("nbins", 100),
-                    csvargs=yaml_config.get("csvargs", {}),
-                    resultIndex=yaml_config.get("resultIndex", 1)
-                )
-                logger.debug(f"Loaded data file: {file_path}")
+        # Load data using McData1D and plot in a popup window
+        try:
+            mds = McData1D(
+                filename=Path(file_path),
+                nbins=yaml_config.get("nbins", 100),
+                dataRange=yaml_config.get("dataRange", [-np.inf, np.inf]),
+                csvargs=yaml_config.get("csvargs", {}),
+                resultIndex=yaml_config.get("resultIndex", 1)
+            )
+            logger.debug(f"Loaded data file: {file_path}")
 
-                # Update the display text with a checkmark but keep original filename in UserRole
-                for i in range(self.file_list_widget.count()):
-                    item = self.file_list_widget.item(i)
-                    if item.data(Qt.ItemDataRole.UserRole) == file_path:
-                        item.setText(f"✅ {file_path}")
-                        break
+            # Display the plot in a popup window
+            self.show_plot_popup(mds)
 
-                # Plot data in the output panel
-                self.parent().output_tab.plot_data(mds)
+        except Exception as e:
+            logger.error(f"Error loading file {file_path}: {e}")
+            QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")
 
-            except Exception as e:
-                logger.error(f"Error loading file {file_path}: {e}")
-                QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")
+    def show_plot_popup(self, mds):
+        """Display a popup window with the loaded data plot."""
+        # Create a dialog window for the plot
+        plot_dialog = QDialog(self)
+        plot_dialog.setWindowTitle("Data Plot")
+        plot_dialog.setMinimumSize(700, 500)
+        layout = QVBoxLayout(plot_dialog)
 
-    # def show_selected_files(self):
-    #     """Load and display data from the selected files using McSAS3."""
-    #     selected_files = [self.file_list_widget.item(i).text() for i in range(self.file_list_widget.count()) if self.file_list_widget.item(i).isSelected()]
+        # Create the matplotlib figure and axes
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
         
-    #     if not selected_files:
-    #         QMessageBox.information(self, "Show Files", "No files selected.")
+        # Plot the different datasets with error bars
+        mds.rawData.plot('Q', 'I', yerr='ISigma', ax=ax, label='As provided data')
+        mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=ax, label='Clipped data')
+        mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=ax, label='Binned data')
+
+        # Set log scales and labels
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        ax.set_xlabel('Q (1/nm)')
+        ax.set_ylabel('I (1/(m sr))')
+
+        # Add vertical dashed lines for the clipped data boundaries
+        if not mds.clippedData.empty:
+            xmin = mds.clippedData['Q'].min()
+            xmax = mds.clippedData['Q'].max()
+            ax.axvline(x=xmin, color='red', linestyle='--', label='Clipped boundary min')
+            ax.axvline(x=xmax, color='red', linestyle='--', label='Clipped boundary max')
+
+        ax.legend()
+
+        # Embed the matplotlib canvas into the dialog
+        canvas = FigureCanvas(fig)
+        layout.addWidget(canvas)
+
+        # Display the dialog window
+        plot_dialog.exec()
+    # def load_and_plot_datafile(self):
+    #     """Load and plot the data file specified in the file path line."""
+    #     file_path = self.file_path_line.text()
+    #     if not file_path:
+    #         QMessageBox.warning(self, "Load Datafile", "No data file selected.")
     #         return
 
     #     # Parse the YAML configuration from the editor
     #     try:
-    #         yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()  # Corrected attribute access
+    #         yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()
     #         yaml_config = yaml.safe_load(yaml_content)
     #     except yaml.YAMLError as e:
     #         QMessageBox.critical(self, "YAML Error", f"Error parsing YAML configuration:\n{e}")
     #         return
 
-    #     # Load and display data for each selected file
-    #     for file_path in selected_files:
-    #         try:
-    #             mds = McData1D(
-    #                 filename=Path(file_path),
-    #                 nbins=yaml_config.get("nbins", 100),
-    #                 csvargs=yaml_config.get("csvargs", {}),
-    #                 resultIndex=yaml_config.get("resultIndex", 1)
-    #             )
-    #             logger.debug(f"Loaded data file: {file_path}")
-    #             QMessageBox.information(self, "Data Loaded", f"File {file_path} loaded successfully.\nData Summary: {mds}")
-    #         except Exception as e:
-    #             logger.error(f"Error loading file {file_path}: {e}")
-    #             QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")
+    #     # Load data using McData1D and plot
+    #     try:
+    #         mds = McData1D(
+    #             filename=Path(file_path),
+    #             nbins=yaml_config.get("nbins", 100),
+    #             csvargs=yaml_config.get("csvargs", {}),
+    #             resultIndex=yaml_config.get("resultIndex", 1)
+    #         )
+    #         logger.debug(f"Loaded data file: {file_path}")
+
+    #         # Plot data in the output panel
+    #         self.parent().output_tab.plot_data(mds)
+
+    #     except Exception as e:
+    #         logger.error(f"Error loading file {file_path}: {e}")
+    #         QMessageBox.critical(self, "Loading Error", f"Failed to load file {file_path}:\n{e}")
