@@ -12,7 +12,9 @@ from utils.yaml_utils import load_yaml_file, save_yaml_file
 from pathlib import Path
 import yaml
 from mcsas3.McData1D import McData1D
-
+from PyQt6.QtWidgets import QTextEdit
+from PyQt6.QtGui import QTextOption  # Import QTextOption for word wrapping
+ 
 logger = logging.getLogger("McSAS3")
 
 class DataLoadingTab(QWidget):
@@ -52,10 +54,13 @@ class DataLoadingTab(QWidget):
 
         layout.addLayout(file_selection_layout)
 
-        # # Save Configuration Button
-        # save_button = QPushButton("Save Configuration")
-        # save_button.clicked.connect(self.save_configuration)
-        # layout.addWidget(save_button)
+        # Error Message Display at the Bottom
+        self.error_message_display = QTextEdit()
+        self.error_message_display.setReadOnly(True)  # Make the display non-editable
+        self.error_message_display.setWordWrapMode(QTextOption.WrapMode.WordWrap)  # Enable word wrap
+        self.error_message_display.setPlaceholderText("Error messages will be displayed here.")
+        self.error_message_display.setStyleSheet("color: red;")  # Display error messages in red
+        layout.addWidget(self.error_message_display)
 
         self.setLayout(layout)
         logger.debug("DataLoadingTab initialized with auto-plotting and configuration management.")
@@ -64,6 +69,13 @@ class DataLoadingTab(QWidget):
         if self.config_dropdown.count() > 0:
             self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
+
+    def display_error(self, message):
+        """Display the error message in the logger and on the tab."""
+        # Optionally truncate the message if needed
+        truncated_message = message if len(message) <= 200 else message[:200] + "..."
+        self.error_message_display.setText(truncated_message)
+        logger.error(message)
 
     def refresh_config_dropdown(self):
         """Populate or refresh the configuration dropdown list."""
@@ -116,6 +128,9 @@ class DataLoadingTab(QWidget):
 
     def update_and_plot(self):
         """Load and plot the data file using the current YAML configuration."""
+        # Clear any previous error message
+        self.error_message_display.setText("")
+
         file_path = self.file_path_line.text()
         if not file_path:
             return
@@ -125,7 +140,7 @@ class DataLoadingTab(QWidget):
             yaml_content = self.yaml_editor_widget.yaml_editor.toPlainText()
             yaml_config = yaml.safe_load(yaml_content)
         except yaml.YAMLError as e:
-            logger.error(f"YAML Error: {e}")
+            self.display_error(f"YAML Error: {e}")
             return
 
         # Load data and update the plot
@@ -141,7 +156,12 @@ class DataLoadingTab(QWidget):
             self.show_plot_popup(mds)  # Display the plot in a popup window
 
         except Exception as e:
-            logger.error(f"Error loading file {file_path}: {e}")
+            self.display_error(f"Error loading file {file_path}: {e}")
+
+    def display_error(self, message):
+        """Display the error message in the logger and on the tab."""
+        self.error_message_display.setText(message)
+        logger.error(message)
 
     def show_plot_popup(self, mds):
         """Display a popup window with the loaded data plot."""
