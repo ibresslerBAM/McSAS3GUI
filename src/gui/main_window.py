@@ -25,6 +25,6 @@ class McSAS3MainWindow(QMainWindow):
         self.tabs.addTab(DLTab, "Data Loading")
         RSTab = RunSettingsTab(self)
         self.tabs.addTab(RSTab, "Run Settings")  # Add renamed Run Settings tab
-        self.tabs.addTab(OptimizationRunTab(self, DLTab, RSTab), "Optimization Settings")
+        self.tabs.addTab(OptimizationRunTab(self, DLTab, RSTab), "McSAS3 Optimization ...")
         self.tabs.addTab(HistogrammingTab(self), "Histogramming")
         self.tabs.addTab(OutputTab(self), "Output")
