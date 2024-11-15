@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 import re
+from typing import Sequence
 import h5py
 from tempfile import NamedTemporaryFile
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, QPushButton, QDialog
@@ -188,7 +189,16 @@ class RunSettingsTab(QWidget):
             logger.error(f"Error during test optimization: {e}")
             self.info_field.setPlainText(f"Error during test optimization: {e}")
 
-    def _plot_fit(self, fit_q, fit_intensity, accepted_gofs, accepted_steps, max_iter, max_accept, x0):
+    def _plot_fit(
+        self,
+        fit_q: Sequence[float],
+        fit_intensity: Sequence[float],
+        accepted_gofs: Sequence[float],
+        accepted_steps: Sequence[int],
+        max_iter: int,
+        max_accept: int,
+        x0: Sequence[float]
+    ) -> None:
         """
         Plot the fit results in the existing data plot or reopen it if not open,
         and create a new plot for optimization metrics.
@@ -212,7 +222,7 @@ class RunSettingsTab(QWidget):
             scaled_fit_intensity = x0[0] * fit_intensity + x0[1]
             ax.plot(fit_q, scaled_fit_intensity, 'r--', label="Test McSAS3 Optimization", zorder=10)
             ax.legend()
-            # data_tab.fig.canvas.draw()
+            data_tab.fig.canvas.draw()
 
             # Plot optimization metrics in a new figure
             self._plot_optimization_metrics(accepted_gofs, accepted_steps, max_iter, max_accept)
