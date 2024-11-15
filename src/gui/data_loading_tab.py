@@ -14,7 +14,7 @@ from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file, save_yaml_file
 from pathlib import Path
 import yaml
-from mcsas3.McData1D import McData1D
+from mcsas3.mc_data_1d import McData1D
 from PyQt6.QtWidgets import QTextEdit
 from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word wrapping
  

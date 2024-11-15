@@ -13,8 +13,8 @@ from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file
 from sasmodels.core import load_model_info
 # from mcsas3.McSASOptimizer import McSASOptimizer
-from mcsas3.McData1D import McData1D
-from mcsas3.McHat import McHat
+# from mcsas3.mc_data_1d import McData1D
+from mcsas3.mc_hat import McHat
 import numpy as np
 
 logger = logging.getLogger("McSAS3")

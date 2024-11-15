@@ -1,9 +1,9 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QListWidget, QHBoxLayout, QPushButton, QFileDialog, QLineEdit, QProgressBar, QMessageBox, QListWidgetItem
+    QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QLineEdit, QProgressBar, QMessageBox, QHBoxLayout, QHeaderView
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
+import subprocess
 from pathlib import Path
-import os
 import logging
 
 logger = logging.getLogger("McSAS3")
@@ -16,130 +16,178 @@ class OptimizationRunTab(QWidget):
 
         layout = QVBoxLayout()
 
-        # File List Widget (loaded files)
-        self.file_list_widget = QListWidget()
+        # File Table Widget
+        self.file_table = QTableWidget(0, 2)
+        self.file_table.setHorizontalHeaderLabels(["File Name", "Status"])
+
+        # Allow the first column to stretch and occupy available space.
+        self.file_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+
+        # Set the estimated pixel width for the second column (approx. 12 characters)
+        # You might need to adjust 'font_metrics.averageCharWidth()' multiplier
+        # depending on the actual font and size used in the application.
+        font_metrics = self.file_table.fontMetrics()
+        second_column_width = font_metrics.averageCharWidth() * 12
+        self.file_table.setColumnWidth(1, second_column_width)
+
         layout.addWidget(QLabel("Loaded Files:"))
-        layout.addWidget(self.file_list_widget)
+        layout.addWidget(self.file_table)
 
         # Buttons for managing data files
         file_button_layout = QHBoxLayout()
         load_files_button = QPushButton("Load Datafile(s)")
         load_files_button.clicked.connect(self.load_data_files)
-        clear_files_button = QPushButton("Clear Datafile(s)")
+        clear_files_button = QPushButton("Clear Selected File(s)")
         clear_files_button.clicked.connect(self.clear_selected_files)
         file_button_layout.addWidget(load_files_button)
         file_button_layout.addWidget(clear_files_button)
         layout.addLayout(file_button_layout)
-
-        # Horizontal line with "Data Configuration" label
-        data_config_layout = QVBoxLayout()
-        data_config_layout.addWidget(QLabel("Data Configuration"))
 
         # Data Configuration Section
         self.data_config_selector = QLineEdit()
         self.data_config_selector.setPlaceholderText("Select Data Configuration")
         select_data_config_button = QPushButton("Browse")
         select_data_config_button.clicked.connect(self.select_data_configuration)
-        config_layout = QHBoxLayout()
-        config_layout.addWidget(self.data_config_selector)
-        config_layout.addWidget(select_data_config_button)
-        data_config_layout.addLayout(config_layout)
-
+        data_config_layout = QHBoxLayout()
+        data_config_layout.addWidget(self.data_config_selector)
+        data_config_layout.addWidget(select_data_config_button)
+        layout.addWidget(QLabel("Data Configuration:"))
         layout.addLayout(data_config_layout)
 
-        # # Horizontal line with "Data Configuration" label
-        run_config_layout = QVBoxLayout()
-        run_config_layout.addWidget(QLabel("Run Configuration"))
-
-        # Run Settings Section
+        # Run Configuration Section
         self.run_config_selector = QLineEdit()
         self.run_config_selector.setPlaceholderText("Select Run Settings")
         select_run_config_button = QPushButton("Browse")
         select_run_config_button.clicked.connect(self.select_run_configuration)
-        r_config_layout = QHBoxLayout()
-        r_config_layout.addWidget(self.run_config_selector)
-        r_config_layout.addWidget(select_run_config_button)
-        run_config_layout.addLayout(r_config_layout)
-        
+        run_config_layout = QHBoxLayout()
+        run_config_layout.addWidget(self.run_config_selector)
+        run_config_layout.addWidget(select_run_config_button)
+        layout.addWidget(QLabel("Run Configuration:"))
         layout.addLayout(run_config_layout)
 
-        # Run Button
-        self.run_button = QPushButton("Run")
-        self.run_button.clicked.connect(self.generate_cli_command)
-        layout.addWidget(self.run_button)
-
-        # CLI Command Display
-        self.cli_command_display = QLineEdit()
-        self.cli_command_display.setReadOnly(True)
-        layout.addWidget(self.cli_command_display)
-
-        # Placeholder for progress indicators
+        # Progress and Run Controls
         self.progress_bar = QProgressBar()
         layout.addWidget(self.progress_bar)
+
+        self.run_button = QPushButton("Run Optimization")
+        self.run_button.clicked.connect(self.run_optimizations)
+        layout.addWidget(self.run_button)
 
         self.setLayout(layout)
 
     def load_data_files(self):
-        """Open a file dialog to load data files and add them to the file list widget."""
+        """Open a file dialog to load data files and add them to the table."""
         file_names, _ = QFileDialog.getOpenFileNames(self, "Select Data Files", "", "All Files (*.*)")
         for file_name in file_names:
-            if not self.is_file_in_list(file_name):
-                item = QListWidgetItem(file_name)
-                item.setData(Qt.ItemDataRole.UserRole, file_name)  # Store the original filename
-                self.file_list_widget.addItem(item)
-                logger.debug(f"Added file to list: {file_name}")
+            if not self.is_file_in_table(file_name):
+                row_position = self.file_table.rowCount()
+                self.file_table.insertRow(row_position)
+                self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
+                status_item = QTableWidgetItem("Pending")
+                status_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.file_table.setItem(row_position, 1, status_item)
+                logger.debug(f"Added file to table: {file_name}")
 
     def clear_selected_files(self):
-        """Remove only the selected files from the file list."""
-        selected_items = self.file_list_widget.selectedItems()
-        if not selected_items:
-            QMessageBox.information(self, "Clear Files", "No files selected.")
-            return
+        """Remove only the selected rows from the file table."""
+        selected_rows = {index.row() for index in self.file_table.selectedIndexes()}
+        for row in sorted(selected_rows, reverse=True):
+            self.file_table.removeRow(row)
 
-        for item in selected_items:
-            self.file_list_widget.takeItem(self.file_list_widget.row(item))
-            logger.debug(f"Removed file from list: {item.text()}")
-
-    def is_file_in_list(self, file_path):
-        """Check if a file is already in the list to avoid duplicates."""
-        return any(self.file_list_widget.item(i).data(Qt.ItemDataRole.UserRole) == file_path
-                   for i in range(self.file_list_widget.count()))
+    def is_file_in_table(self, file_path):
+        """Check if a file is already in the table to avoid duplicates."""
+        for row in range(self.file_table.rowCount()):
+            if self.file_table.item(row, 0).text() == file_path:
+                return True
+        return False
 
     def select_data_configuration(self):
         """Select a data configuration YAML file."""
-        file_name, _ = QFileDialog.getOpenFileName(self, "Select Data Configuration File", "", "YAML Files (*.yaml)")
+        # Set the initial directory to 'read_configurations'
+        initial_dir = str(Path('read_configurations').resolve())
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select Data Configuration File", initial_dir, "YAML Files (*.yaml)")
         if file_name:
             self.data_config_selector.setText(file_name)
 
     def select_run_configuration(self):
         """Select a run configuration YAML file."""
-        file_name, _ = QFileDialog.getOpenFileName(self, "Select Run Settings File", "", "YAML Files (*.yaml)")
+        # Set the initial directory to 'run_configurations'
+        initial_dir = str(Path('run_configurations').resolve())
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select Run Settings File", initial_dir, "YAML Files (*.yaml)")
         if file_name:
             self.run_config_selector.setText(file_name)
 
-    def generate_cli_command(self):
-        """Generate and display the CLI command for running McSAS3."""
-        selected_files = [
-            self.file_list_widget.item(i).data(Qt.ItemDataRole.UserRole)
-            for i in range(self.file_list_widget.count())
-            if self.file_list_widget.item(i).isSelected()
-        ]
-
-        if not selected_files:
-            QMessageBox.warning(self, "Run Command", "No data files selected.")
+    def run_optimizations(self):
+        """Run optimizations sequentially on the selected files."""
+        if self.file_table.rowCount() == 0:
+            QMessageBox.warning(self, "Run Optimization", "No files loaded.")
             return
 
-        # CLI command format
-        cli_command = "mcsas3_cli_runner.py"
+        # Prepare configurations
+        data_config = self.data_config_selector.text() or "data_config.yaml"
+        run_config = self.run_config_selector.text() or "run_config.yaml"
 
-        # Generate command for each selected file
-        for file_path in selected_files:
-            data_file = Path(file_path)
-            result_file = data_file.stem + "_mcsas3.nxs"
-            data_config = self.data_config_selector.text() or "data_config.yaml"
-            run_config = self.run_config_selector.text() or "run_config.yaml"
-            cli_command += f" -f {data_file} -F {data_config} -r {result_file} -R {run_config} -i 1 -d"
+        # Launch the worker thread for running optimizations
+        self.worker = OptimizationWorker(self.file_table, data_config, run_config)
+        self.worker.progress_signal.connect(self.update_progress)
+        self.worker.status_signal.connect(self.update_file_status)
+        self.worker.finished_signal.connect(self.optimizations_finished)
 
-        # Display CLI command
-        self.cli_command_display.setText(cli_command)
-        print(cli_command)  # Debug output
+        self.run_button.setEnabled(False)
+        self.progress_bar.setValue(0)
+        self.worker.start()
+
+    def update_progress(self, progress):
+        """Update the progress bar."""
+        self.progress_bar.setValue(progress)
+
+    def update_file_status(self, row, status):
+        """Update the status of a file in the table."""
+        self.file_table.item(row, 1).setText(status)
+
+    def optimizations_finished(self):
+        """Enable the run button after optimizations are complete."""
+        self.run_button.setEnabled(True)
+        QMessageBox.information(self, "Run Optimization", "All optimizations are complete.")
+
+class OptimizationWorker(QThread):
+    progress_signal = pyqtSignal(int)
+    status_signal = pyqtSignal(int, str)
+    finished_signal = pyqtSignal()
+
+    def __init__(self, file_table, data_config, run_config):
+        super().__init__()
+        self.file_table = file_table
+        self.data_config = data_config
+        self.run_config = run_config
+
+    def run(self):
+        """Run optimizations sequentially."""
+        total_files = self.file_table.rowCount()
+        for row in range(total_files):
+            file_name = self.file_table.item(row, 0).text()
+            # make sure it lands in the original place. 
+            result_file = Path(file_name).parent / (Path(file_name).stem + "_mcsas3.nxs")
+            if result_file.is_file(): # not sure we can handle updates yet. 
+                result_file.unlink()
+            command = [
+                "python", "mcsas3_cli_runner.py",
+                "-f", file_name,
+                "-F", self.data_config,
+                "-r", str(result_file),
+                "-R", self.run_config,
+                "-i", "1", "-d"
+            ]
+
+            try:
+                self.status_signal.emit(row, "Running")
+                subprocess.run(command, check=True)
+                self.status_signal.emit(row, "Complete")
+            except subprocess.CalledProcessError:
+                self.status_signal.emit(row, "Failed")
+
+            # Update progress
+            progress = int((row + 1) / total_files * 100)
+            self.progress_signal.emit(progress)
+
+        self.finished_signal.emit()
