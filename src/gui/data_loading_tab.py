@@ -110,7 +110,7 @@ class DataLoadingTab(QWidget):
             self.config_dropdown.setCurrentText("<custom...>")
         
         # Start/restart the debounce timer to delay plot update
-        self.update_timer.start(250)  # Wait 250 ms before updating plot
+        self.update_timer.start(400)  # Wait 400 ms before updating plot
 
     def select_datafile(self):
         """Open a file dialog to select a data file and display its path in the file path line."""
@@ -159,7 +159,7 @@ class DataLoadingTab(QWidget):
     def update_and_plot(self):
         """Load and plot the data file using the current YAML configuration."""
         # Clear any previous error message
-        if len(self.pdi)>0:
+        if len(self.pdi) > 0:
             self.error_message_display.setText(
                 f"Available datasets in file ({len(self.pdi)} found):\n" + "\n".join(self.pdi)
             )
@@ -168,6 +168,7 @@ class DataLoadingTab(QWidget):
 
         file_path = self.file_path_line.text()
         if not file_path:
+            self.clear_plot()
             return
 
         # Parse the YAML configuration from the editor
@@ -176,6 +177,7 @@ class DataLoadingTab(QWidget):
             yaml_config = yaml.safe_load(yaml_content)
         except yaml.YAMLError as e:
             self.display_error(f"YAML Error: {e}")
+            self.clear_plot()
             return
 
         # Load data and update the plot
@@ -191,9 +193,15 @@ class DataLoadingTab(QWidget):
             )
             logger.debug(f"Loaded data file: {file_path}")
             self.show_plot_popup(mds)  # Display the plot in a popup window
-
         except Exception as e:
             self.display_error(f"Error loading file {file_path}: {e}")
+            self.clear_plot()
+
+    def clear_plot(self):
+        """Clear the plot when no valid data is available."""
+        if self.plot_dialog and self.plot_dialog.isVisible():
+            self.ax.clear()
+            self.ax.figure.canvas.draw()
 
     def display_error(self, message):
         """Display the error message in the logger and on the tab."""
