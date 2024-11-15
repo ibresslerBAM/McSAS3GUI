@@ -3,8 +3,10 @@ from pathlib import Path
 import re
 import h5py
 from tempfile import NamedTemporaryFile
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, QPushButton, QDialog
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtCore import QTimer
+from matplotlib import pyplot as plt
 from gui.yaml_editor_widget import YAMLEditorWidget
 from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file
@@ -132,34 +134,146 @@ class RunSettingsTab(QWidget):
 
     def run_test_optimization(self):
         """Run a single optimization repetition on the loaded test data."""
-        # try:
+        try:
         # Retrieve data from the DataLoadingTab
-        mds = self.data_loading_tab.mds
-        if not mds:
-            self.info_field.setPlainText("No data loaded in the Data Loading tab.")
-            return
+            mds = self.data_loading_tab.mds
+            if not mds:
+                self.info_field.setPlainText("No data loaded in the Data Loading tab.")
+                return
 
-        # Parse the YAML configuration for the optimizer
-        yaml_content = self.yaml_editor_widget.get_yaml_content()
-        if not yaml_content:
-            self.info_field.setPlainText("Invalid or missing run configuration.")
-            return
+            # Parse the YAML configuration for the optimizer
+            yaml_content = self.yaml_editor_widget.get_yaml_content()
+            if not yaml_content:
+                self.info_field.setPlainText("Invalid or missing run configuration.")
+                return
 
-        # Create a temporary file to save data for the optimizer
-        with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
-            temp_file.close()
-            self.tempFileName = Path(temp_file.name)
-        
-        mds.store(self.tempFileName)
-        yaml_content.update({'nRep': 1})
-        mh = McHat(
-            **(yaml_content)
-        )
-        mh.run(mds.measData.copy(), self.tempFileName)
+            # Create a temporary file to save data for the optimizer
+            with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
+                temp_file.close()
+                self.tempFileName = Path(temp_file.name)
+            
+            print(f"Temporary HDF5 file created at: {self.tempFileName}")
 
-        self.info_field.setPlainText("Optimization completed successfully.")
-        # TODO: Update the data plot with fit intensity
+            mds.store(self.tempFileName)
+            yaml_content.update({'nRep': 1})
+            mh = McHat(
+                **(yaml_content)
+            )
+            mh.run(mds.measData.copy(), self.tempFileName)
 
-        # except Exception as e:
-        #     logger.error(f"Error during test optimization: {e}")
-        #     self.info_field.setPlainText(f"Error during test optimization: {e}")
+            self.info_field.setPlainText("Optimization completed successfully.")
+
+            with h5py.File(self.tempFileName, 'r') as h5f:
+                fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten() # model Q
+                fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()] # model intensity 
+                acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()] # list of what the goodness of fit was when a step was accepted
+                acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()] # list of at what iteration step, a step was accepted
+                maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()] # setting for maximum number of iterations before stopping optimization
+                maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()] # setting for maximum number of accepted steps before stopping optimization
+                x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()] # scaling and background (already applied to fitI)
+
+            self._plot_fit(
+                fit_q=fitQ,
+                fit_intensity=fitI,
+                accepted_gofs=acceptedGofs,
+                accepted_steps=acceptedSteps,
+                max_iter=maxIter,
+                max_accept=maxAccept,
+                x0=x0
+            )
+            # kill file. 
+            self.tempFileName.unlink()
+
+        except Exception as e:
+            logger.error(f"Error during test optimization: {e}")
+            self.info_field.setPlainText(f"Error during test optimization: {e}")
+
+    def _plot_fit(self, fit_q, fit_intensity, accepted_gofs, accepted_steps, max_iter, max_accept, x0):
+        """
+        Plot the fit results in the existing data plot or reopen it if not open,
+        and create a new plot for optimization metrics.
+
+        Args:
+            fit_q (array-like): Q values of the fit.
+            fit_intensity (array-like): Intensity values of the fit.
+            accepted_gofs (array-like): Accepted goodness-of-fit values.
+            accepted_steps (array-like): Steps where fits were accepted.
+            max_iter (int): Maximum iteration setting.
+            max_accept (int): Maximum accept setting.
+            x0 (array-like): Scaling and background [scale, background].
+        """
+        try:
+            # Retrieve the data plot from the DataLoadingTab
+            data_tab = self.data_loading_tab
+
+            ax = data_tab.show_plot_popup(self.data_loading_tab.mds)
+
+            # Plot the fit on the existing data plot with zorder for proper layering
+            scaled_fit_intensity = x0[0] * fit_intensity + x0[1]
+            ax.plot(fit_q, scaled_fit_intensity, 'r--', label="Test McSAS3 Optimization", zorder=10)
+            ax.legend()
+            # data_tab.fig.canvas.draw()
+
+            # Plot optimization metrics in a new figure
+            self._plot_optimization_metrics(accepted_gofs, accepted_steps, max_iter, max_accept)
+
+        except Exception as e:
+            logger.error(f"Error plotting fit results: {e}")
+            self.info_field.append(f"Error plotting fit results: {e}")
+
+    def _plot_optimization_metrics(self, accepted_gofs, accepted_steps, max_iter, max_accept):
+        """
+        Plot the optimization metrics: accepted goodness-of-fit values vs. accepted steps in a QDialog.
+
+        Args:
+            accepted_gofs (array-like): Accepted goodness-of-fit values.
+            accepted_steps (array-like): Steps where fits were accepted.
+            max_iter (int): Maximum number of iterations.
+            max_accept (int): Maximum number of accepted steps.
+        """
+        try:
+            # Check if the optimization metrics dialog is open, create it if necessary
+            if not hasattr(self, "metrics_dialog") or self.metrics_dialog is None or not self.metrics_dialog.isVisible():
+                self.metrics_dialog = QDialog(self)
+                self.metrics_dialog.setWindowTitle("Optimization Metrics")
+                self.metrics_dialog.setMinimumSize(700, 500)
+                layout = QVBoxLayout(self.metrics_dialog)
+
+                # Create the matplotlib figure and axes
+                self.metrics_fig, self.metrics_ax = plt.subplots(figsize=(6, 4), dpi=100)
+                canvas = FigureCanvas(self.metrics_fig)
+                layout.addWidget(canvas)
+
+                # Embed the canvas in the dialog layout
+                self.metrics_dialog.setLayout(layout)
+
+            # Clear the previous plot and redraw
+            self.metrics_ax.clear()
+            self.metrics_ax.plot(accepted_steps, accepted_gofs, 'bo-', label="Accepted GOFs")
+            self.metrics_ax.set_xscale('linear')
+            self.metrics_ax.set_yscale('log')
+            self.metrics_ax.set_xlabel("Accepted Steps")
+            self.metrics_ax.set_ylabel("Goodness of Fit (GOF)")
+            self.metrics_ax.set_title("Optimization Metrics")
+
+            # Display maxIter and maxAccept as annotations
+            self.metrics_ax.text(
+                0.95, 0.05,
+                f"Max Iter: {max_iter}\nMax Accept: {max_accept}",
+                transform=self.metrics_ax.transAxes,
+                fontsize=10,
+                verticalalignment='bottom',
+                horizontalalignment='right',
+                bbox=dict(boxstyle="round,pad=0.3", edgecolor='black', facecolor='white')
+            )
+
+            self.metrics_ax.legend()
+            self.metrics_fig.tight_layout()
+            self.metrics_fig.canvas.draw()
+
+            # Show the dialog
+            self.metrics_dialog.show()
+
+        except Exception as e:
+            logger.error(f"Error plotting optimization metrics: {e}")
+            self.info_field.append(f"Error plotting optimization metrics: {e}")

@@ -214,8 +214,10 @@ class DataLoadingTab(QWidget):
         self.error_message_display.moveCursor(QTextCursor.MoveOperation.Start)
         logger.error(message)
 
-    def show_plot_popup(self):
+    def show_plot_popup(self, mds = None):
         """Display a popup window with the loaded data plot."""
+        if not mds:
+            mds = self.mds
         # If a plot window is already open, update it
         if self.plot_dialog is None or not self.plot_dialog.isVisible():
             self.plot_dialog = QDialog(self)
@@ -233,9 +235,9 @@ class DataLoadingTab(QWidget):
 
         # Clear the previous plot and redraw
         self.ax.clear()
-        self.mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
-        self.mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Clipped data')
-        self.mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Binned data')
+        mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
+        mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Clipped data')
+        mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Binned data')
         self.ax.set_yscale('log')
         self.ax.set_xscale('log')
         self.ax.set_xlabel('Q (1/nm)')
@@ -251,3 +253,4 @@ class DataLoadingTab(QWidget):
         self.ax.legend()
         self.fig.canvas.draw()
         self.plot_dialog.show()
+        return self.ax # for those that need it. 
