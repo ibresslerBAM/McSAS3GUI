@@ -1,8 +1,11 @@
+# src/gui/data_loading_tab.py
+
 import logging
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QFileDialog, QLineEdit, QHBoxLayout, QMessageBox, QDialog
 )
 from PyQt6.QtCore import QTimer, Qt
+import h5py
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,7 +16,7 @@ from pathlib import Path
 import yaml
 from mcsas3.McData1D import McData1D
 from PyQt6.QtWidgets import QTextEdit
-from PyQt6.QtGui import QTextOption  # Import QTextOption for word wrapping
+from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word wrapping
  
 logger = logging.getLogger("McSAS3")
 
@@ -24,6 +27,7 @@ class DataLoadingTab(QWidget):
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_and_plot)  # Trigger plot after delay
+        self.pdi=[]
 
         layout = QVBoxLayout()
 
@@ -58,8 +62,8 @@ class DataLoadingTab(QWidget):
         self.error_message_display = QTextEdit()
         self.error_message_display.setReadOnly(True)  # Make the display non-editable
         self.error_message_display.setWordWrapMode(QTextOption.WrapMode.WordWrap)  # Enable word wrap
-        self.error_message_display.setPlaceholderText("Error messages will be displayed here.")
-        self.error_message_display.setStyleSheet("color: red;")  # Display error messages in red
+        self.error_message_display.setPlaceholderText("Messages will be displayed here.")
+        self.error_message_display.setStyleSheet("color: darkgreen;")  # Display messages in green
         layout.addWidget(self.error_message_display)
 
         self.setLayout(layout)
@@ -106,14 +110,40 @@ class DataLoadingTab(QWidget):
             self.config_dropdown.setCurrentText("<custom...>")
         
         # Start/restart the debounce timer to delay plot update
-        self.update_timer.start(500)  # Wait 500 ms before updating plot
+        self.update_timer.start(250)  # Wait 250 ms before updating plot
 
     def select_datafile(self):
         """Open a file dialog to select a data file and display its path in the file path line."""
         file_name, _ = QFileDialog.getOpenFileName(self, "Select Test Data File", "", "All Files (*.*)")
         if file_name:
+            self.pdi = [] # clear any previous information
             self.file_path_line.setText(file_name)
+            logger.debug(f"Selected data file: {file_name}")
+            # Check for specific file types and list paths if applicable
+            if file_name.lower().endswith(('.hdf5', '.h5', '.nxs')):
+                self.list_hdf5_paths_and_dimensions(file_name)
             self.update_and_plot()
+
+    def list_hdf5_paths_and_dimensions(self, file_name: str) -> None:
+        """List paths and dimensions of datasets in an HDF5/Nexus file."""
+        self.error_message_display.clear()
+        try:
+            self.pdi = []
+            with h5py.File(file_name, 'r') as hdf:
+                def _log_and_display_attrs(name: str, obj: h5py.HLObject) -> None:
+                    if isinstance(obj, h5py.Dataset):
+                        path_dim_info = f"Path: {name}, Shape: {obj.shape}"
+                        self.pdi += [path_dim_info]
+                        self.error_message_display.append(path_dim_info)
+                        logger.debug(path_dim_info)
+                hdf.visititems(_log_and_display_attrs)
+            # self.error_message_display.setText(f"Available datasets in file: \n {self.pdi}")
+            logger.debug(f"{self.pdi=}")
+        except Exception as e:
+            error_message = f"Error reading HDF5 file: {e}. Verify the file structure."
+            logger.error(error_message)
+            self.error_message_display.append(f"Error: {error_message}")
+
 
     def save_configuration(self):
         """Save the YAML configuration and refresh the dropdown to include new files."""
@@ -129,7 +159,12 @@ class DataLoadingTab(QWidget):
     def update_and_plot(self):
         """Load and plot the data file using the current YAML configuration."""
         # Clear any previous error message
-        self.error_message_display.setText("")
+        if len(self.pdi)>0:
+            self.error_message_display.setText(
+                f"Available datasets in file ({len(self.pdi)} found):\n" + "\n".join(self.pdi)
+            )
+        else:
+            self.error_message_display.setText("")
 
         file_path = self.file_path_line.text()
         if not file_path:
@@ -148,8 +183,10 @@ class DataLoadingTab(QWidget):
             mds = McData1D(
                 filename=Path(file_path),
                 nbins=yaml_config.get("nbins", 100),
-                csvargs=yaml_config.get("csvargs", {}),
+                csvargs=yaml_config.get("csvargs", None),
+                pathDict=yaml_config.get("pathDict", None),
                 dataRange=yaml_config.get("dataRange", [-np.inf, np.inf]),
+                omitQRanges=yaml_config.get("omitQRanges", []),
                 resultIndex=yaml_config.get("resultIndex", 1)
             )
             logger.debug(f"Loaded data file: {file_path}")
@@ -161,6 +198,11 @@ class DataLoadingTab(QWidget):
     def display_error(self, message):
         """Display the error message in the logger and on the tab."""
         self.error_message_display.setText(message)
+        if len(self.pdi)>0:
+            self.error_message_display.append(
+                f"Available datasets in file ({len(self.pdi)} found):\n" + "\n".join(self.pdi)
+            )
+        self.error_message_display.moveCursor(QTextCursor.MoveOperation.Start)
         logger.error(message)
 
     def show_plot_popup(self, mds):
