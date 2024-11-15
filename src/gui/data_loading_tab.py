@@ -28,6 +28,7 @@ class DataLoadingTab(QWidget):
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_and_plot)  # Trigger plot after delay
         self.pdi=[]
+        self.mds=None
 
         layout = QVBoxLayout()
 
@@ -182,7 +183,7 @@ class DataLoadingTab(QWidget):
 
         # Load data and update the plot
         try:
-            mds = McData1D(
+            self.mds = McData1D(
                 filename=Path(file_path),
                 nbins=yaml_config.get("nbins", 100),
                 csvargs=yaml_config.get("csvargs", None),
@@ -192,7 +193,7 @@ class DataLoadingTab(QWidget):
                 resultIndex=yaml_config.get("resultIndex", 1)
             )
             logger.debug(f"Loaded data file: {file_path}")
-            self.show_plot_popup(mds)  # Display the plot in a popup window
+            self.show_plot_popup()  # Display the plot in a popup window
         except Exception as e:
             self.display_error(f"Error loading file {file_path}: {e}")
             self.clear_plot()
@@ -213,7 +214,7 @@ class DataLoadingTab(QWidget):
         self.error_message_display.moveCursor(QTextCursor.MoveOperation.Start)
         logger.error(message)
 
-    def show_plot_popup(self, mds):
+    def show_plot_popup(self):
         """Display a popup window with the loaded data plot."""
         # If a plot window is already open, update it
         if self.plot_dialog is None or not self.plot_dialog.isVisible():
@@ -232,18 +233,18 @@ class DataLoadingTab(QWidget):
 
         # Clear the previous plot and redraw
         self.ax.clear()
-        mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
-        mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Clipped data')
-        mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Binned data')
+        self.mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
+        self.mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Clipped data')
+        self.mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Binned data')
         self.ax.set_yscale('log')
         self.ax.set_xscale('log')
         self.ax.set_xlabel('Q (1/nm)')
         self.ax.set_ylabel('I (1/(m sr))')
 
         # Add vertical dashed lines for the clipped data boundaries
-        if not mds.clippedData.empty:
-            xmin = mds.clippedData['Q'].min()
-            xmax = mds.clippedData['Q'].max()
+        if not self.mds.clippedData.empty:
+            xmin = self.mds.clippedData['Q'].min()
+            xmax = self.mds.clippedData['Q'].max()
             self.ax.axvline(x=xmin, color='red', linestyle='--', label='Clipped boundary min')
             self.ax.axvline(x=xmax, color='red', linestyle='--', label='Clipped boundary max')
 
