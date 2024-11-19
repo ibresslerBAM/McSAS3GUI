@@ -86,9 +86,7 @@ class YAMLEditorWidget(QWidget):
         self.yaml_editor.setAcceptDrops(False)  # Disable drag-and-drop
         self.error_highlighter = YAMLErrorHighlighter(self.yaml_editor.document())
         self.yaml_editor.textChanged.connect(self.validate_yaml)  # Connect validation
-        # self.yaml_editor.viewport().installEventFilter(self.error_highlighter)  # Install event filter for tooltips
-        # Install event filter directly on yaml_editor for tooltip handling
-        self.yaml_editor.installEventFilter(self.error_highlighter)
+        self.yaml_editor.installEventFilter(self.error_highlighter)  # Install event filter for tooltip handling
         layout.addWidget(self.yaml_editor)
 
         # Load and Save Buttons
@@ -112,7 +110,7 @@ class YAMLEditorWidget(QWidget):
         
         try:
             # Attempt to parse YAML
-            yaml.safe_load(yaml_content)
+            list(yaml.safe_load_all(yaml_content))  # Handle multipart YAML
             self.error_highlighter.clear_error()  # Clear previous error highlights if valid
         except yaml.YAMLError as e:
             error_message = str(e)
@@ -135,8 +133,10 @@ class YAMLEditorWidget(QWidget):
             logger.debug(f"Loading YAML configuration from file: {file_name}")
             with open(file_name, 'r') as file:
                 try:
-                    yaml_content = yaml.safe_load(file)
-                    yaml_text = yaml.dump(yaml_content, default_flow_style=False, sort_keys=False)
+                    yaml_content = list(yaml.safe_load_all(file))  # Handle multipart YAML
+                    yaml_text = "---\n".join(
+                        yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content
+                    )
                     self.yaml_editor.setPlainText(yaml_text)
                 except yaml.YAMLError as e:
                     logger.error(f"Error loading YAML file {file_name}: {e}")
@@ -148,22 +148,29 @@ class YAMLEditorWidget(QWidget):
         if file_name:
             yaml_content = self.yaml_editor.toPlainText()
             try:
-                parsed_content = yaml.safe_load(yaml_content)
+                parsed_content = list(yaml.safe_load_all(yaml_content))  # Validate multipart YAML
                 with open(file_name, 'w') as file:
-                    yaml.dump(parsed_content, file, default_flow_style=False, sort_keys=False)
+                    for doc in parsed_content:
+                        yaml.dump(doc, file, default_flow_style=False, sort_keys=False)
+                        file.write("---\n")  # Separate documents
                     logger.debug(f"Saved YAML configuration to file: {file_name}")
             except yaml.YAMLError as e:
                 logger.error(f"Error saving YAML to file {file_name}: {e}")
 
     def get_yaml_content(self):
-        """Parse and return the YAML content from the editor as a dictionary."""
+        """Parse and return the YAML content from the editor as a list of dictionaries."""
         try:
-            return yaml.safe_load(self.yaml_editor.toPlainText())
+            return list(yaml.safe_load_all(self.yaml_editor.toPlainText()))  # Handle multipart YAML
         except yaml.YAMLError as e:
             logger.error(f"YAML parsing error: {e}")
-            return {}
+            return []
 
     def set_yaml_content(self, yaml_content):
         """Set YAML content in the editor, formatted as a string."""
-        yaml_text = yaml.dump(yaml_content, default_flow_style=False, sort_keys=False)
+        if isinstance(yaml_content, list):
+            yaml_text = "---\n".join(
+                yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content
+            )
+        else:
+            yaml_text = yaml.dump(yaml_content, default_flow_style=False, sort_keys=False)
         self.yaml_editor.setPlainText(yaml_text)

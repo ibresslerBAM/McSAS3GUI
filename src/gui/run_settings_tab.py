@@ -93,50 +93,63 @@ class RunSettingsTab(QWidget):
     def update_info_field(self):
         """Update the info field based on the YAML content in the editor."""
         yaml_content = self.yaml_editor_widget.get_yaml_content()
+
         if not yaml_content:
             self.info_field.setPlainText("Invalid YAML or empty configuration.")
             return
 
+        if not isinstance(yaml_content, list):
+            yaml_content = [yaml_content]  # Ensure we always process as a list
+
         info_text = "Configuration Details:\n"
-        model_name = yaml_content.get("modelName", "Unknown Model")
-        info_text += f"Model Name: {model_name}\n"
 
-        max_iter = yaml_content.get("maxIter", "Not specified")
-        conv_crit = yaml_content.get("convCrit", "Not specified")
-        n_cores = yaml_content.get("nCores", "Not specified")
-        info_text += f"Max Iterations: {max_iter}\nConvergence Criterion: {conv_crit}\nCores: {n_cores}\n"
+        for idx, document in enumerate(yaml_content):
+            if not isinstance(document, dict):
+                info_text += f"\nDocument {idx + 1}: Not a valid configuration.\n"
+                continue
 
-        if model_name.startswith("mcsas_"):
-            info_text += "\nUsing internal McSAS model. No additional sasmodels parameters available.\n"
-            self.info_field.setPlainText(info_text)
-            return
+            info_text += f"\nDocument {idx + 1}:\n"
 
-        try:
-            model_info = load_model_info(model_name)
-            model_parameters = model_info.parameters.defaults.copy()
-            exclude_patterns = [r'up_.*', r'.*_M0', r'.*_mtheta', r'.*_mphi']
-            filtered_parameters = {
-                param: default_value
-                for param, default_value in model_parameters.items()
-                if not any(re.match(pattern, param) for pattern in exclude_patterns)
-            }
+            model_name = document.get("modelName", "Unknown Model")
+            info_text += f"  Model Name: {model_name}\n"
 
-            info_text += "\nSasmodels Parameters:\n"
-            for param, default_value in filtered_parameters.items():
-                info_text += f"  - {param}: {default_value}\n"
+            max_iter = document.get("maxIter", "Not specified")
+            conv_crit = document.get("convCrit", "Not specified")
+            n_cores = document.get("nCores", "Not specified")
+            info_text += f"  Max Iterations: {max_iter}\n"
+            info_text += f"  Convergence Criterion: {conv_crit}\n"
+            info_text += f"  Cores: {n_cores}\n"
 
-            info_text += "\nTo configure parameters, add each to 'fitParameterLimits' or 'staticParameters' in the YAML editor.\n"
-            info_text += "For 'fitParameterLimits', specify lower and upper limits as a list."
-        except Exception as e:
-            info_text += f"\nError loading model parameters from sasmodels: {e}"
-            logger.error(f"Error loading model parameters: {e}")
+            if model_name.startswith("mcsas_"):
+                info_text += "  Using internal McSAS model. No additional parameters available.\n"
+                continue
+
+            try:
+                model_info = load_model_info(model_name)
+                model_parameters = model_info.parameters.defaults.copy()
+                exclude_patterns = [r'up_.*', r'.*_M0', r'.*_mtheta', r'.*_mphi']
+                filtered_parameters = {
+                    param: default_value
+                    for param, default_value in model_parameters.items()
+                    if not any(re.match(pattern, param) for pattern in exclude_patterns)
+                }
+
+                info_text += "  Sasmodels Parameters:\n"
+                for param, default_value in filtered_parameters.items():
+                    info_text += f"    - {param}: {default_value}\n"
+
+                info_text += "  To configure parameters, add each to 'fitParameterLimits' or 'staticParameters' in the YAML editor.\n"
+                info_text += "  For 'fitParameterLimits', specify lower and upper limits as a list."
+            except Exception as e:
+                info_text += f"  Error loading model parameters: {e}\n"
+                logger.error(f"Error loading model parameters: {e}")
 
         self.info_field.setPlainText(info_text)
 
     def run_test_optimization(self):
         """Run a single optimization repetition on the loaded test data."""
         try:
-        # Retrieve data from the DataLoadingTab
+            # Retrieve data from the DataLoadingTab
             mds = self.data_loading_tab.mds
             if not mds:
                 self.info_field.setPlainText("No data loaded in the Data Loading tab.")
@@ -148,30 +161,40 @@ class RunSettingsTab(QWidget):
                 self.info_field.setPlainText("Invalid or missing run configuration.")
                 return
 
+            # Ensure YAML content is a dictionary for the optimizer
+            if isinstance(yaml_content, list):
+                # Combine all documents into a single dictionary, overriding keys if repeated
+                combined_yaml_content = {}
+                for doc in yaml_content:
+                    if not isinstance(doc, dict):
+                        self.info_field.setPlainText("One or more YAML documents are not valid configurations.")
+                        return
+                    combined_yaml_content.update(doc)
+                yaml_content = combined_yaml_content
+
             # Create a temporary file to save data for the optimizer
             with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
                 temp_file.close()
                 self.tempFileName = Path(temp_file.name)
-            
-            print(f"Temporary HDF5 file created at: {self.tempFileName}")
+
+            logger.debug(f"Temporary HDF5 file created at: {self.tempFileName}")
 
             mds.store(self.tempFileName)
-            yaml_content.update({'nRep': 1})
-            mh = McHat(
-                **(yaml_content)
-            )
+            yaml_content.update({'nRep': 1})  # Update configuration for single repetition
+
+            mh = McHat(**yaml_content)
             mh.run(mds.measData.copy(), self.tempFileName)
 
             self.info_field.setPlainText("Optimization completed successfully.")
 
             with h5py.File(self.tempFileName, 'r') as h5f:
-                fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten() # model Q
-                fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()] # model intensity 
-                acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()] # list of what the goodness of fit was when a step was accepted
-                acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()] # list of at what iteration step, a step was accepted
-                maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()] # setting for maximum number of iterations before stopping optimization
-                maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()] # setting for maximum number of accepted steps before stopping optimization
-                x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()] # scaling and background (already applied to fitI)
+                fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten()  # model Q
+                fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()]  # model intensity
+                acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()]  # list of GOFs
+                acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()]  # steps accepted
+                maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()]  # max iterations
+                maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()]  # max accepts
+                x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()]  # scaling and background
 
             self._plot_fit(
                 fit_q=fitQ,
@@ -182,12 +205,69 @@ class RunSettingsTab(QWidget):
                 max_accept=maxAccept,
                 x0=x0
             )
-            # kill file. 
+
+            # Clean up the temporary file
             self.tempFileName.unlink()
 
         except Exception as e:
             logger.error(f"Error during test optimization: {e}")
             self.info_field.setPlainText(f"Error during test optimization: {e}")
+
+    # def run_test_optimization(self):
+    #     """Run a single optimization repetition on the loaded test data."""
+    #     try:
+    #     # Retrieve data from the DataLoadingTab
+    #         mds = self.data_loading_tab.mds
+    #         if not mds:
+    #             self.info_field.setPlainText("No data loaded in the Data Loading tab.")
+    #             return
+
+    #         # Parse the YAML configuration for the optimizer
+    #         yaml_content = self.yaml_editor_widget.get_yaml_content()
+    #         if not yaml_content:
+    #             self.info_field.setPlainText("Invalid or missing run configuration.")
+    #             return
+
+    #         # Create a temporary file to save data for the optimizer
+    #         with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
+    #             temp_file.close()
+    #             self.tempFileName = Path(temp_file.name)
+            
+    #         print(f"Temporary HDF5 file created at: {self.tempFileName}")
+
+    #         mds.store(self.tempFileName)
+    #         yaml_content.update({'nRep': 1})
+    #         mh = McHat(
+    #             **(yaml_content)
+    #         )
+    #         mh.run(mds.measData.copy(), self.tempFileName)
+
+    #         self.info_field.setPlainText("Optimization completed successfully.")
+
+    #         with h5py.File(self.tempFileName, 'r') as h5f:
+    #             fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten() # model Q
+    #             fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()] # model intensity 
+    #             acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()] # list of what the goodness of fit was when a step was accepted
+    #             acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()] # list of at what iteration step, a step was accepted
+    #             maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()] # setting for maximum number of iterations before stopping optimization
+    #             maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()] # setting for maximum number of accepted steps before stopping optimization
+    #             x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()] # scaling and background (already applied to fitI)
+
+    #         self._plot_fit(
+    #             fit_q=fitQ,
+    #             fit_intensity=fitI,
+    #             accepted_gofs=acceptedGofs,
+    #             accepted_steps=acceptedSteps,
+    #             max_iter=maxIter,
+    #             max_accept=maxAccept,
+    #             x0=x0
+    #         )
+    #         # kill file. 
+    #         self.tempFileName.unlink()
+
+    #     except Exception as e:
+    #         logger.error(f"Error during test optimization: {e}")
+    #         self.info_field.setPlainText(f"Error during test optimization: {e}")
 
     def _plot_fit(
         self,

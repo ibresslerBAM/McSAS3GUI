@@ -27,8 +27,19 @@ class HistSettingsTab(QWidget):
         layout.addWidget(self.info_field)
 
         self.setLayout(layout)
-
+ 
     def test_histogramming(self):
         yaml_content = self.yaml_editor_widget.get_yaml_content()
-        # Test logic here, update info_field with results
-        self.info_field.setText("Test passed!" if yaml_content else "Invalid YAML configuration.")
+        if not yaml_content:
+            self.info_field.setText("Invalid YAML configuration.")
+            return
+
+        # Validate each histogram configuration
+        result_messages = []
+        for index, config in enumerate(yaml_content):
+            if "parameter" in config and "nBin" in config:
+                result_messages.append(f"Histogram {index + 1}: Valid configuration.")
+            else:
+                result_messages.append(f"Histogram {index + 1}: Missing required fields!")
+
+        self.info_field.setText("\n".join(result_messages))
