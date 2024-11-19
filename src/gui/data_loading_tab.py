@@ -2,14 +2,15 @@
 
 import logging
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QFileDialog, QLineEdit, QHBoxLayout, QMessageBox, QDialog
+    QWidget, QVBoxLayout, QLabel, QComboBox, QFileDialog, QLineEdit, QMessageBox, QDialog
 )
 from PyQt6.QtCore import QTimer, Qt
 import h5py
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import numpy as np
-from gui.yaml_editor_widget import YAMLEditorWidget
+from .yaml_editor_widget import YAMLEditorWidget
+from .file_line_selection_widget import FileLineSelectionWidget
 from utils.file_utils import get_default_config_files
 from utils.yaml_utils import load_yaml_file, save_yaml_file
 from pathlib import Path
@@ -17,10 +18,58 @@ import yaml
 from mcsas3.mc_data_1d import McData1D
 from PyQt6.QtWidgets import QTextEdit
 from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word wrapping
- 
+from .drag_and_drop_mixin import DragAndDropMixin
+
 logger = logging.getLogger("McSAS3")
 
-class DataLoadingTab(QWidget):
+class FilePathLineEdit(QLineEdit):
+    def __init__(self, parent=None, file_load_callback=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)  # Enable drag-and-drop
+        self.file_load_callback = file_load_callback
+
+    def dragEnterEvent(self, event):
+        """Handle drag event to check if the dropped file is valid."""
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+            logger.debug("Drag enter event accepted.")
+        else:
+            logger.debug("Drag enter event ignored.")
+            event.ignore()
+
+    def dropEvent(self, event):
+        """Handle drop event to process dropped file paths."""
+        urls = event.mimeData().urls()
+        logger.debug(f"Drop event received: {urls}")
+
+        for url in urls:
+            file_path = url.toLocalFile()  # Convert to a local file path
+            logger.debug(f"Parsed file path: {file_path}")
+            if Path(file_path).exists():
+                logger.debug(f"Valid file dropped: {file_path}")
+                self.setText(file_path)  # Update the QLineEdit text
+                if self.file_load_callback:
+                    self.file_load_callback(file_path)
+            else:
+                logger.warning(f"Invalid file dropped: {file_path}")
+                QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
+
+    def keyPressEvent(self, event):
+        """Handle manual entry of file paths and reload on Enter."""
+        if event.key() == Qt.Key.Key_Return:
+            file_path = self.text()
+            if Path(file_path).exists():
+                logger.debug(f"File path entered manually: {file_path}")
+                if self.file_load_callback:
+                    self.file_load_callback(file_path)
+            else:
+                QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
+        else:
+            super().keyPressEvent(event)
+
+
+
+class DataLoadingTab(QWidget, DragAndDropMixin):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.plot_dialog = None  # Track the plot dialog
@@ -47,17 +96,14 @@ class DataLoadingTab(QWidget):
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
 
-        # File Selection Line and Button in a Horizontal Layout
-        file_selection_layout = QHBoxLayout()
-        self.file_path_line = QLineEdit()
-        self.file_path_line.setPlaceholderText("Selected test data file")
-        file_selection_layout.addWidget(self.file_path_line)
+        # Reusable file selection widget
+        self.file_line_selection_widget = FileLineSelectionWidget(
+            placeholder_text="Select test data file",
+            file_types="All Files (*.*)"
+        )
+        self.file_line_selection_widget.fileSelected.connect(self.load_file)  # Handle file selection
 
-        select_file_button = QPushButton("Select Test Datafile")
-        select_file_button.clicked.connect(self.select_datafile)
-        file_selection_layout.addWidget(select_file_button)
-
-        layout.addLayout(file_selection_layout)
+        layout.addWidget(self.file_line_selection_widget)
 
         # Error Message Display at the Bottom
         self.error_message_display = QTextEdit()
@@ -113,17 +159,19 @@ class DataLoadingTab(QWidget):
         # Start/restart the debounce timer to delay plot update
         self.update_timer.start(400)  # Wait 400 ms before updating plot
 
-    def select_datafile(self):
-        """Open a file dialog to select a data file and display its path in the file path line."""
-        file_name, _ = QFileDialog.getOpenFileName(self, "Select Test Data File", "", "All Files (*.*)")
-        if file_name:
-            self.pdi = [] # clear any previous information
-            self.file_path_line.setText(file_name)
-            logger.debug(f"Selected data file: {file_name}")
+    def load_file(self, file_path:str):
+        """Process the file after selection or drop."""
+        if Path(file_path).exists():
+            self.pdi = []   # clear any previous information
+            logger.debug(f"File loaded: {file_path}")
+            self.selected_file = file_path
             # Check for specific file types and list paths if applicable
-            if file_name.lower().endswith(('.hdf5', '.h5', '.nxs')):
-                self.list_hdf5_paths_and_dimensions(file_name)
+            if file_path.lower().endswith(('.hdf5', '.h5', '.nxs')):
+                self.list_hdf5_paths_and_dimensions(file_path)
             self.update_and_plot()
+        else:
+            logger.warning(f"File does not exist: {file_path}")
+            QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
     def list_hdf5_paths_and_dimensions(self, file_name: str) -> None:
         """List paths and dimensions of datasets in an HDF5/Nexus file."""
@@ -167,7 +215,7 @@ class DataLoadingTab(QWidget):
         else:
             self.error_message_display.setText("")
 
-        file_path = self.file_path_line.text()
+        file_path = self.file_line_selection_widget.get_file_path() # self.file_path_line.text()
         if not file_path:
             self.clear_plot()
             return

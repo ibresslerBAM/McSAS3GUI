@@ -168,9 +168,14 @@ class YAMLEditorWidget(QWidget):
     def set_yaml_content(self, yaml_content):
         """Set YAML content in the editor, formatted as a string."""
         if isinstance(yaml_content, list):
+            # Convert list of YAML documents into a string with separators
             yaml_text = "---\n".join(
                 yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content
             )
-        else:
+        elif isinstance(yaml_content, dict):
+            # Convert single YAML document into a string
             yaml_text = yaml.dump(yaml_content, default_flow_style=False, sort_keys=False)
+        else:
+            # Fallback to raw string if input is already serialized YAML
+            yaml_text = yaml_content
         self.yaml_editor.setPlainText(yaml_text)

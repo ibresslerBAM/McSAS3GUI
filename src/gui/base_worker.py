@@ -45,12 +45,6 @@ class BaseWorker(QThread):
                 **{key: self.quote_path(value) for key, value in self.extra_keywords.items()}
             }
 
-            # # Add file-specific keywords
-            # keywords = {
-            #     "input_file": file_name,
-            #     "result_file": str(result_file),
-            #     **self.extra_keywords
-            # }
 
             # Replace placeholders in the command template
             command = shlex.split(self.command_template.format(**keywords))

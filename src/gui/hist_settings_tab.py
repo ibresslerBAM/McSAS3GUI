@@ -5,6 +5,7 @@ from tempfile import gettempdir
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
 )
+import yaml
 from gui.yaml_editor_widget import YAMLEditorWidget
 from utils.file_utils import get_default_config_files
 
@@ -12,6 +13,8 @@ logger = logging.getLogger("McSAS3")
 
 
 class HistogramSettingsTab(QWidget):
+    _programmatic_change = False
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.last_used_directory = Path(gettempdir())  # Default to system temp directory
@@ -81,11 +84,30 @@ class HistogramSettingsTab(QWidget):
         """Load the selected histogramming configuration YAML file into the editor."""
         selected_file = self.config_dropdown.currentText()
         if selected_file and selected_file != "<Other...>":
-            yaml_content = get_default_config_files(f"hist_configurations/{selected_file}")
-            self.yaml_editor_widget.set_yaml_content(yaml_content)
+            try:
+                # Construct the full path to the selected file
+                file_path = Path("hist_configurations") / selected_file
+                if file_path.is_file():
+                    with open(file_path, 'r') as file:
+                        # Parse YAML content as structured data
+                        yaml_content = list(yaml.safe_load_all(file))
+                    # Pass parsed content to the YAML editor
+                    # Temporarily disable the on_yaml_editor_change trigger
+                    self._programmatic_change = True
+                    self.yaml_editor_widget.set_yaml_content(yaml_content)
+                    self._programmatic_change = False
+                else:
+                    logger.error(f"File not found: {file_path}")
+                    QMessageBox.warning(self, "Error", f"File not found: {file_path}")
+            except Exception as e:
+                logger.error(f"Error loading histogramming configuration: {e}")
+                QMessageBox.critical(self, "Error", f"Error loading histogramming configuration: {e}")
 
     def on_yaml_editor_change(self):
-        """Mark the dropdown as <Other...> if the YAML content is modified."""
+        """Mark the dropdown as <Other...> if the YAML content is modified by the user."""
+        if hasattr(self, "_programmatic_change") and self._programmatic_change:
+            # Skip handling changes triggered programmatically
+            return
         if self.config_dropdown.currentText() != "<Other...>":
             self.config_dropdown.setCurrentText("<Other...>")
 
