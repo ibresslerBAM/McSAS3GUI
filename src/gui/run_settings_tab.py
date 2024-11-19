@@ -213,62 +213,6 @@ class RunSettingsTab(QWidget):
             logger.error(f"Error during test optimization: {e}")
             self.info_field.setPlainText(f"Error during test optimization: {e}")
 
-    # def run_test_optimization(self):
-    #     """Run a single optimization repetition on the loaded test data."""
-    #     try:
-    #     # Retrieve data from the DataLoadingTab
-    #         mds = self.data_loading_tab.mds
-    #         if not mds:
-    #             self.info_field.setPlainText("No data loaded in the Data Loading tab.")
-    #             return
-
-    #         # Parse the YAML configuration for the optimizer
-    #         yaml_content = self.yaml_editor_widget.get_yaml_content()
-    #         if not yaml_content:
-    #             self.info_field.setPlainText("Invalid or missing run configuration.")
-    #             return
-
-    #         # Create a temporary file to save data for the optimizer
-    #         with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
-    #             temp_file.close()
-    #             self.tempFileName = Path(temp_file.name)
-            
-    #         print(f"Temporary HDF5 file created at: {self.tempFileName}")
-
-    #         mds.store(self.tempFileName)
-    #         yaml_content.update({'nRep': 1})
-    #         mh = McHat(
-    #             **(yaml_content)
-    #         )
-    #         mh.run(mds.measData.copy(), self.tempFileName)
-
-    #         self.info_field.setPlainText("Optimization completed successfully.")
-
-    #         with h5py.File(self.tempFileName, 'r') as h5f:
-    #             fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten() # model Q
-    #             fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()] # model intensity 
-    #             acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()] # list of what the goodness of fit was when a step was accepted
-    #             acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()] # list of at what iteration step, a step was accepted
-    #             maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()] # setting for maximum number of iterations before stopping optimization
-    #             maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()] # setting for maximum number of accepted steps before stopping optimization
-    #             x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()] # scaling and background (already applied to fitI)
-
-    #         self._plot_fit(
-    #             fit_q=fitQ,
-    #             fit_intensity=fitI,
-    #             accepted_gofs=acceptedGofs,
-    #             accepted_steps=acceptedSteps,
-    #             max_iter=maxIter,
-    #             max_accept=maxAccept,
-    #             x0=x0
-    #         )
-    #         # kill file. 
-    #         self.tempFileName.unlink()
-
-    #     except Exception as e:
-    #         logger.error(f"Error during test optimization: {e}")
-    #         self.info_field.setPlainText(f"Error during test optimization: {e}")
-
     def _plot_fit(
         self,
         fit_q: Sequence[float],
