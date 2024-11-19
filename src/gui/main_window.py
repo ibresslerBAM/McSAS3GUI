@@ -1,11 +1,13 @@
 # main_window.py
 
 from PyQt6.QtWidgets import QMainWindow, QTabWidget
+
+from .getting_started_tab import GettingStartedTab
 from .data_loading_tab import DataLoadingTab
 from .run_settings_tab import RunSettingsTab  # Import the new RunSettingsTab
 from .optimization_tab import OptimizationRunTab
-from .histogramming_tab import HistogrammingTab
-from .output_tab import OutputTab
+from .hist_settings_tab import HistSettingsTab
+from .hist_run_tab import HistRunTab
 
 class McSAS3MainWindow(QMainWindow):
     def __init__(self):
@@ -21,10 +23,11 @@ class McSAS3MainWindow(QMainWindow):
         self.setup_tabs()
 
     def setup_tabs(self):
+        self.tabs.addTab(GettingStartedTab(self), "Getting Started")
         DLTab = DataLoadingTab(self)
         self.tabs.addTab(DLTab, "Data Settings")
         RSTab = RunSettingsTab(self, DLTab)
-        self.tabs.addTab(RSTab, "Run Settings")  # Add renamed Run Settings tab
+        self.tabs.addTab(RSTab, "Run Settings")
         self.tabs.addTab(OptimizationRunTab(self, DLTab, RSTab), "McSAS3 Optimization ...")
-        self.tabs.addTab(HistogrammingTab(self), "Histogramming")
-        self.tabs.addTab(OutputTab(self), "Output")
+        self.tabs.addTab(HistSettingsTab(self), "Histogram Settings")
+        self.tabs.addTab(HistRunTab(self), "(Re-)Histogramming ...")
