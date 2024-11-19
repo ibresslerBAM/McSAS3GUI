@@ -1,3 +1,4 @@
+import shlex
 from PyQt6.QtCore import QThread, pyqtSignal
 import subprocess
 from pathlib import Path
@@ -52,7 +53,7 @@ class BaseWorker(QThread):
             # }
 
             # Replace placeholders in the command template
-            command = self.command_template.format(**keywords).split()
+            command = shlex.split(self.command_template.format(**keywords))
 
             logger.info(f"Running command: {command}")
 

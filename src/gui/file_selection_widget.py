@@ -7,6 +7,7 @@ import logging
 
 logger = logging.getLogger("McSAS3")
 
+
 class FileSelectionWidget(QWidget):
     def __init__(self, title: str, acceptable_file_types: str = "*.*", last_used_directory: Path = Path("~").expanduser(), parent=None):
         super().__init__(parent)
@@ -23,6 +24,8 @@ class FileSelectionWidget(QWidget):
         self.file_table.setHorizontalHeaderLabels(["File Name", "Status"])
         self.file_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.file_table.setColumnWidth(1, 150)  # Set fixed width for status column
+        self.file_table.setAcceptDrops(True)
+        self.file_table.setDragDropMode(QTableWidget.DragDropMode.DropOnly)
         layout.addWidget(self.file_table)
 
         # Buttons for managing data files
@@ -37,6 +40,24 @@ class FileSelectionWidget(QWidget):
 
         self.setLayout(layout)
 
+    def dragEnterEvent(self, event):
+        """Accept drag events containing files."""
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        """Handle dropped files."""
+        if event.mimeData().hasUrls():
+            for url in event.mimeData().urls():
+                file_path = url.toLocalFile()
+                if Path(file_path).suffix in self.acceptable_file_types.split():
+                    self.add_file_to_table(file_path)
+            event.accept()
+        else:
+            event.ignore()
+
     def load_data_files(self):
         """Open a file dialog to load data files and add them to the table."""
         file_names, _ = QFileDialog.getOpenFileNames(
@@ -50,7 +71,8 @@ class FileSelectionWidget(QWidget):
             for file_name in file_names:
                 self.add_file_to_table(file_name)
 
-    def add_file_to_table(self, file_name:str):
+    def add_file_to_table(self, file_name):
+        """Add a file to the table if it's not already listed."""
         if not self.is_file_in_table(file_name):
             row_position = self.file_table.rowCount()
             self.file_table.insertRow(row_position)
@@ -79,7 +101,7 @@ class FileSelectionWidget(QWidget):
             self.file_table.item(row, 0).text()
             for row in range(self.file_table.rowCount())
         ]
-
+    
     def set_status_by_row(self, row:int = None, status: str = 'Pending'):
         """Set the status for a specific file."""
         if row is not None:
