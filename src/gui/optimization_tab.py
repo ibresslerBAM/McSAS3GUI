@@ -9,6 +9,7 @@ import logging
 logger = logging.getLogger("McSAS3")
 
 class OptimizationRunTab(QWidget):
+    last_used_directory = Path("~").expanduser()
     def __init__(self, data_loading_tab, run_settings_tab, parent=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
@@ -77,7 +78,17 @@ class OptimizationRunTab(QWidget):
 
     def load_data_files(self):
         """Open a file dialog to load data files and add them to the table."""
-        file_names, _ = QFileDialog.getOpenFileNames(self, "Select Data Files", "", "All Files (*.*)")
+        file_names, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Measurement Data Files",
+            str(self.last_used_directory),
+            "All Files (*.*)"
+        )
+        if file_names:
+        #     if isinstance(file_names, str):
+        #         file_names = [file_names]
+            self.last_used_directory = Path(file_names[0]).parent
+        # file_names, _ = QFileDialog.getOpenFileNames(self, "Select Data Files", "", "All Files (*.*)")
         for file_name in file_names:
             if not self.is_file_in_table(file_name):
                 row_position = self.file_table.rowCount()

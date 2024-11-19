@@ -3,7 +3,7 @@ from pathlib import Path
 import re
 from typing import Sequence
 import h5py
-from tempfile import NamedTemporaryFile
+# from tempfile import NamedTemporaryFile
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, QPushButton, QDialog
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtCore import QTimer
@@ -173,9 +173,14 @@ class RunSettingsTab(QWidget):
                 yaml_content = combined_yaml_content
 
             # Create a temporary file to save data for the optimizer
-            with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
-                temp_file.close()
-                self.tempFileName = Path(temp_file.name)
+            temp_dir = Path("temporary_files")
+            temp_dir.mkdir(exist_ok=True)
+            temp_file = temp_dir / "test_data.hdf5"
+            self.tempFileName = Path(temp_file.name)
+
+            # with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
+            #     temp_file.close()
+            #     self.tempFileName = Path(temp_file.name)
 
             logger.debug(f"Temporary HDF5 file created at: {self.tempFileName}")
 

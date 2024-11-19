@@ -15,8 +15,8 @@ class HistRunTab(QWidget):
         layout = QVBoxLayout()
 
         # File Selection
-        self.file_selector = FileSelectionWidget("YAML Files (*.yaml)")
-        layout.addWidget(QLabel("Select Files for Histogramming:"))
+        self.file_selector = FileSelectionWidget("McSAS3 Optimized Result Files (*.nxs, *.h5, *.hdf5)")
+        layout.addWidget(QLabel("Select McSAS3 Optimized Result Files for Histogramming:"))
         layout.addWidget(self.file_selector)
 
         # Configuration Selector

@@ -6,7 +6,7 @@ from .getting_started_tab import GettingStartedTab
 from .data_loading_tab import DataLoadingTab
 from .run_settings_tab import RunSettingsTab  # Import the new RunSettingsTab
 from .optimization_tab import OptimizationRunTab
-from .hist_settings_tab import HistSettingsTab
+from .hist_settings_tab import HistogramSettingsTab
 from .hist_run_tab import HistRunTab
 
 class McSAS3MainWindow(QMainWindow):
@@ -29,5 +29,5 @@ class McSAS3MainWindow(QMainWindow):
         RSTab = RunSettingsTab(self, DLTab)
         self.tabs.addTab(RSTab, "Run Settings")
         self.tabs.addTab(OptimizationRunTab(self, DLTab, RSTab), "McSAS3 Optimization ...")
-        self.tabs.addTab(HistSettingsTab(self), "Histogram Settings")
+        self.tabs.addTab(HistogramSettingsTab(self), "Histogram Settings")
         self.tabs.addTab(HistRunTab(self), "(Re-)Histogramming ...")
