@@ -1,14 +1,13 @@
-# src/gui/hist_settings_tab.py
-
 import os
 import logging
 from pathlib import Path
 from tempfile import gettempdir
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox
+    QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
 )
 from PyQt6.QtCore import QTimer
 from gui.yaml_editor_widget import YAMLEditorWidget
+from utils.file_utils import get_default_config_files
 
 logger = logging.getLogger("McSAS3")
 
@@ -17,12 +16,23 @@ class HistogramSettingsTab(QWidget):
         super().__init__(parent)
         self.last_used_directory = Path(gettempdir())  # Default to system temp directory
         self.test_data_file = None  # Store the selected test data file
+
         layout = QVBoxLayout()
+
+        # Dropdown for default histogramming configurations
+        self.config_dropdown = QComboBox()
+        self.refresh_config_dropdown()
+        layout.addWidget(QLabel("Select Default Histogramming Configuration:"))
+        layout.addWidget(self.config_dropdown)
+        self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for histogram settings
         self.yaml_editor_widget = YAMLEditorWidget(directory="histogramming_configurations", parent=self)
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
+
+        # Monitor changes in the YAML editor to detect custom changes
+        self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
 
         # File Selection for Test Datafile
         file_selection_layout = QHBoxLayout()
@@ -48,6 +58,39 @@ class HistogramSettingsTab(QWidget):
         layout.addWidget(self.info_field)
 
         self.setLayout(layout)
+
+        # Automatically load the first configuration if available
+        if self.config_dropdown.count() > 0:
+            self.config_dropdown.setCurrentIndex(0)
+            self.load_selected_default_config()
+
+    def refresh_config_dropdown(self):
+        """Populate or refresh the histogramming configuration dropdown."""
+        self.config_dropdown.clear()
+        default_configs = get_default_config_files(directory="hist_configurations")
+        self.config_dropdown.addItems(default_configs)
+        self.config_dropdown.addItem("<Other...>")
+
+    def handle_dropdown_change(self):
+        """Handle dropdown changes and load the selected configuration."""
+        selected_text = self.config_dropdown.currentText()
+        if selected_text != "<Other...>":
+            self.load_selected_default_config()
+            self.config_dropdown.blockSignals(True)
+            self.config_dropdown.setCurrentText(selected_text)
+            self.config_dropdown.blockSignals(False)
+
+    def load_selected_default_config(self):
+        """Load the selected histogramming configuration YAML file into the editor."""
+        selected_file = self.config_dropdown.currentText()
+        if selected_file and selected_file != "<Other...>":
+            yaml_content = get_default_config_files(f"hist_configurations/{selected_file}")
+            self.yaml_editor_widget.set_yaml_content(yaml_content)
+
+    def on_yaml_editor_change(self):
+        """Mark the dropdown as <Other...> if the YAML content is modified."""
+        if self.config_dropdown.currentText() != "<Other...>":
+            self.config_dropdown.setCurrentText("<Other...>")
 
     def select_test_datafile(self):
         """Open a file dialog to select a test data file."""
