@@ -48,14 +48,17 @@ class FileSelectionWidget(QWidget):
         if file_names:
             self.last_used_directory = Path(file_names[0]).parent
             for file_name in file_names:
-                if not self.is_file_in_table(file_name):
-                    row_position = self.file_table.rowCount()
-                    self.file_table.insertRow(row_position)
-                    self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
-                    status_item = QTableWidgetItem("Pending")
-                    status_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-                    self.file_table.setItem(row_position, 1, status_item)
-                    logger.debug(f"Added file to table: {file_name}")
+                self.add_file_to_table(file_name)
+
+    def add_file_to_table(self, file_name:str):
+        if not self.is_file_in_table(file_name):
+            row_position = self.file_table.rowCount()
+            self.file_table.insertRow(row_position)
+            self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
+            status_item = QTableWidgetItem("Pending")
+            status_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.file_table.setItem(row_position, 1, status_item)
+            logger.debug(f"Added file to table: {file_name}")
 
     def clear_selected_files(self):
         """Remove only the selected rows from the file table."""
@@ -87,8 +90,26 @@ class FileSelectionWidget(QWidget):
         """Set the status for a specific file."""
         if isinstance(file_path, Path):
             file_path = str(file_path)
-            
+
         for row in range(self.file_table.rowCount()):
             if self.file_table.item(row, 0).text() == file_path:
                 self.file_table.item(row, 1).setText(status)
                 break
+
+    def eventFilter(self, source, event):
+        """Handle drag-and-drop events."""
+        if source == self.file_table.viewport():
+            if event.type() == event.Type.DragEnter:
+                mime_data = event.mimeData()
+                if mime_data.hasUrls():
+                    event.acceptProposedAction()
+            elif event.type() == event.Type.Drop:
+                mime_data = event.mimeData()
+                if mime_data.hasUrls():
+                    for url in mime_data.urls():
+                        file_path = url.toLocalFile()
+                        if Path(file_path).suffix in self.acceptable_file_types.split():
+                            self.add_file_to_table(file_path)
+                    event.acceptProposedAction()
+            return True
+        return super().eventFilter(source, event)

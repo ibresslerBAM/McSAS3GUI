@@ -5,11 +5,11 @@ from tempfile import gettempdir
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
 )
-from PyQt6.QtCore import QTimer
 from gui.yaml_editor_widget import YAMLEditorWidget
 from utils.file_utils import get_default_config_files
 
 logger = logging.getLogger("McSAS3")
+
 
 class HistogramSettingsTab(QWidget):
     def __init__(self, parent=None):
@@ -19,7 +19,7 @@ class HistogramSettingsTab(QWidget):
 
         layout = QVBoxLayout()
 
-        # Dropdown for default histogramming configurations
+        # Dropdown for histogram configurations
         self.config_dropdown = QComboBox()
         self.refresh_config_dropdown()
         layout.addWidget(QLabel("Select Default Histogramming Configuration:"))
@@ -27,7 +27,7 @@ class HistogramSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for histogram settings
-        self.yaml_editor_widget = YAMLEditorWidget(directory="histogramming_configurations", parent=self)
+        self.yaml_editor_widget = YAMLEditorWidget(directory="hist_configurations", parent=self)
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -76,9 +76,6 @@ class HistogramSettingsTab(QWidget):
         selected_text = self.config_dropdown.currentText()
         if selected_text != "<Other...>":
             self.load_selected_default_config()
-            self.config_dropdown.blockSignals(True)
-            self.config_dropdown.setCurrentText(selected_text)
-            self.config_dropdown.blockSignals(False)
 
     def load_selected_default_config(self):
         """Load the selected histogramming configuration YAML file into the editor."""
@@ -120,12 +117,15 @@ class HistogramSettingsTab(QWidget):
 
             logger.debug("Launching histogramming test.")
             self.info_field.append("Launching histogramming test...")
-            # Example of launching histogramming logic
-            command = f"histogram_cli_runner.py --config histogram_config.yaml --datafile {self.test_data_file}"
-            logger.debug(f"Command: {command}")
+            command = [
+                "python",
+                "histogram_cli_runner.py",
+                "--config", "hist_configurations/histogram_config.yaml",
+                "--datafile", self.test_data_file
+            ]
 
-            # TODO: Replace this with actual logic to run histogramming
-            self.info_field.append(f"Command executed: {command}\n")
+            # TODO: Replace with actual subprocess logic
+            self.info_field.append(f"Command executed: {' '.join(command)}\n")
             self.info_field.append("Test histogramming completed successfully.\n")
 
         except Exception as e:

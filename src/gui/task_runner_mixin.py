@@ -1,0 +1,40 @@
+from PyQt6.QtWidgets import QMessageBox
+
+from .base_worker import BaseWorker
+
+
+class TaskRunnerMixin:
+    def run_tasks(self, files, command_template, extra_keywords=None):
+        """
+        Run tasks with the provided command template and files.
+
+        Args:
+            files (list): List of file paths to process.
+            command_template (str): Command template with placeholders for replacement.
+            extra_keywords (dict): Additional keywords for replacing in the command template.
+        """
+        if not files:
+            QMessageBox.warning(self, "Run Tasks", "No files selected.")
+            return
+
+        self.worker = BaseWorker(files, command_template, extra_keywords)
+        self.worker.progress_signal.connect(self.update_progress)
+        self.worker.status_signal.connect(self.update_file_status)
+        self.worker.finished_signal.connect(self.tasks_finished)
+
+        self.run_button.setEnabled(False)
+        self.progress_bar.setValue(0)
+        self.worker.start()
+
+    def update_progress(self, progress):
+        """Update the progress bar."""
+        self.progress_bar.setValue(progress)
+
+    def update_file_status(self, row, status):
+        """Update the status of a file in the table."""
+        self.file_selection_widget.set_status_by_row(row, status)
+
+    def tasks_finished(self):
+        """Re-enable the run button after tasks are complete."""
+        self.run_button.setEnabled(True)
+        QMessageBox.information(self, "Run Tasks", "All tasks are complete.")
