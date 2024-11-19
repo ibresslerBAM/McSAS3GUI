@@ -1,3 +1,5 @@
+# src/gui/hist_settings_tab.py
+
 import os
 import logging
 from pathlib import Path
