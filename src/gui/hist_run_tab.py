@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushButton, QProgressBar, QHBoxLayout, QFileDialog
+
+from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
 from .task_runner_mixin import TaskRunnerMixin
 
@@ -68,15 +70,14 @@ class HistRunTab(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.file_selection_widget)
 
-        # Histogramming configuration section
-        self.histogram_config_selector = QLineEdit()
-        self.histogram_config_selector.setPlaceholderText("Select Histogramming Configuration")
-        select_config_button = QPushButton("Browse...")
-        select_config_button.clicked.connect(self.select_histogram_config)
-        config_layout = QHBoxLayout()
-        config_layout.addWidget(self.histogram_config_selector)
-        config_layout.addWidget(select_config_button)
-        layout.addLayout(config_layout)
+        # Data Configuration Section
+        self.histogram_config_selector = FileLineSelectionWidget(
+            placeholder_text="Select histogramming configuration file",
+            file_types="YAML hist config Files (*.yaml)"
+        )
+        self.histogram_config_selector.fileSelected.connect(self.load_hist_config_file)  # Handle file selection
+
+        layout.addWidget(self.histogram_config_selector)
 
         # Run button
         self.run_button = QPushButton("Run Histogramming")
@@ -89,16 +90,16 @@ class HistRunTab(QWidget):
 
         self.setLayout(layout)
 
-    def select_histogram_config(self):
-        """Select a histogramming configuration YAML file."""
-        file_name, _ = QFileDialog.getOpenFileName(
-            self,
-            "Select Histogramming Configuration",
-            str(self.file_selection_widget.last_used_directory),
-            "YAML Files (*.yaml)"
-        )
-        if file_name:
-            self.histogram_config_selector.setText(file_name)
+    def load_hist_config_file(self, file_path:str):
+        """Process the file after selection or drop."""
+        if Path(file_path).exists():
+            self.pdi = []   # clear any previous information
+            logger.debug(f"File loaded: {file_path}")
+            self.selected_file = file_path
+            self.histogram_config_selector.set_file_path(self.selected_file)
+        else:
+            logger.warning(f"File does not exist: {file_path}")
+            QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
     def run_histogramming(self):
         """Run histogramming on the selected files."""

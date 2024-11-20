@@ -39,12 +39,12 @@ class HistogramSettingsTab(QWidget):
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
 
         # File Selection for Test Datafile
-        self.file_line_selection_widget = FileLineSelectionWidget(
-            placeholder_text="Select histogramming configuration",
-            file_types="YAML Files (*.yaml)"
+        self.test_file_selector = FileLineSelectionWidget(
+            placeholder_text="Select test McSAS Optimization Result file",
+            file_types="McSAS3 Optimization Result Files (*.hdf5, *.nxs, *.h5)"
         )
-        self.file_line_selection_widget.fileSelected.connect(self.select_test_datafile)
-        layout.addWidget(self.file_line_selection_widget)
+        self.test_file_selector.fileSelected.connect(self.load_test_file)
+        layout.addWidget(self.test_file_selector)
 
         # Test Button
         test_button = QPushButton("Test Histogramming")
@@ -63,6 +63,17 @@ class HistogramSettingsTab(QWidget):
         if self.config_dropdown.count() > 0:
             self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
+
+    def load_test_file(self, file_path:str):
+        """Process the file after selection or drop."""
+        if Path(file_path).exists():
+            self.pdi = []   # clear any previous information
+            logger.debug(f"File loaded: {file_path}")
+            self.selected_file = file_path
+            self.test_file_selector.set_file_path(self.selected_file)
+        else:
+            logger.warning(f"File does not exist: {file_path}")
+            QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
     def refresh_config_dropdown(self):
         """Populate or refresh the histogramming configuration dropdown."""
@@ -108,19 +119,20 @@ class HistogramSettingsTab(QWidget):
         if self.config_dropdown.currentText() != "<Other...>":
             self.config_dropdown.setCurrentText("<Other...>")
 
-    def select_test_datafile(self):
-        """Open a file dialog to select a test data file."""
-        file_name, _ = QFileDialog.getOpenFileName(
-            self,
-            "Select Test Data File",
-            str(self.last_used_directory),
-            "Data Files (*.nxs *.h5 *.hdf5)"
-        )
-        if file_name:
-            self.last_used_directory = Path(file_name).parent  # Update the last used directory
-            self.file_path_line.setText(file_name)
-            self.test_data_file = file_name
-            logger.debug(f"Selected test data file: {file_name}")
+
+    # def select_test_datafile(self):
+    #     """Open a file dialog to select a test data file."""
+    #     file_name, _ = QFileDialog.getOpenFileName(
+    #         self,
+    #         "Select Test Data File",
+    #         str(self.last_used_directory),
+    #         "Data Files (*.nxs *.h5 *.hdf5)"
+    #     )
+    #     if file_name:
+    #         self.last_used_directory = Path(file_name).parent  # Update the last used directory
+    #         self.file_path_line.setText(file_name)
+    #         self.test_data_file = file_name
+    #         logger.debug(f"Selected test data file: {file_name}")
 
     def test_histogramming(self):
         """Execute a histogramming test with the current settings and selected data file."""
