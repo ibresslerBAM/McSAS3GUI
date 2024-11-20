@@ -1,3 +1,5 @@
+# src/gui/file_line_selection_widget.py
+
 from PyQt6.QtWidgets import QLineEdit, QHBoxLayout, QPushButton, QWidget, QFileDialog
 from PyQt6.QtCore import pyqtSignal, Qt #, QDragEnterEvent, QDropEvent, Qt
 from pathlib import Path

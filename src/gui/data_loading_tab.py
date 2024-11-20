@@ -18,58 +18,58 @@ import yaml
 from mcsas3.mc_data_1d import McData1D
 from PyQt6.QtWidgets import QTextEdit
 from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word wrapping
-from .drag_and_drop_mixin import DragAndDropMixin
+# from .drag_and_drop_mixin import DragAndDropMixin
 
 logger = logging.getLogger("McSAS3")
 
-class FilePathLineEdit(QLineEdit):
-    def __init__(self, parent=None, file_load_callback=None):
-        super().__init__(parent)
-        self.setAcceptDrops(True)  # Enable drag-and-drop
-        self.file_load_callback = file_load_callback
+# class FilePathLineEdit(QLineEdit):
+#     def __init__(self, parent=None, file_load_callback=None):
+#         super().__init__(parent)
+#         self.setAcceptDrops(True)  # Enable drag-and-drop
+#         self.file_load_callback = file_load_callback
 
-    def dragEnterEvent(self, event):
-        """Handle drag event to check if the dropped file is valid."""
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-            logger.debug("Drag enter event accepted.")
-        else:
-            logger.debug("Drag enter event ignored.")
-            event.ignore()
+#     def dragEnterEvent(self, event):
+#         """Handle drag event to check if the dropped file is valid."""
+#         if event.mimeData().hasUrls():
+#             event.acceptProposedAction()
+#             logger.debug("Drag enter event accepted.")
+#         else:
+#             logger.debug("Drag enter event ignored.")
+#             event.ignore()
 
-    def dropEvent(self, event):
-        """Handle drop event to process dropped file paths."""
-        urls = event.mimeData().urls()
-        logger.debug(f"Drop event received: {urls}")
+#     def dropEvent(self, event):
+#         """Handle drop event to process dropped file paths."""
+#         urls = event.mimeData().urls()
+#         logger.debug(f"Drop event received: {urls}")
 
-        for url in urls:
-            file_path = url.toLocalFile()  # Convert to a local file path
-            logger.debug(f"Parsed file path: {file_path}")
-            if Path(file_path).exists():
-                logger.debug(f"Valid file dropped: {file_path}")
-                self.setText(file_path)  # Update the QLineEdit text
-                if self.file_load_callback:
-                    self.file_load_callback(file_path)
-            else:
-                logger.warning(f"Invalid file dropped: {file_path}")
-                QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
+#         for url in urls:
+#             file_path = url.toLocalFile()  # Convert to a local file path
+#             logger.debug(f"Parsed file path: {file_path}")
+#             if Path(file_path).exists():
+#                 logger.debug(f"Valid file dropped: {file_path}")
+#                 self.setText(file_path)  # Update the QLineEdit text
+#                 if self.file_load_callback:
+#                     self.file_load_callback(file_path)
+#             else:
+#                 logger.warning(f"Invalid file dropped: {file_path}")
+#                 QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
 
-    def keyPressEvent(self, event):
-        """Handle manual entry of file paths and reload on Enter."""
-        if event.key() == Qt.Key.Key_Return:
-            file_path = self.text()
-            if Path(file_path).exists():
-                logger.debug(f"File path entered manually: {file_path}")
-                if self.file_load_callback:
-                    self.file_load_callback(file_path)
-            else:
-                QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
-        else:
-            super().keyPressEvent(event)
+#     def keyPressEvent(self, event):
+#         """Handle manual entry of file paths and reload on Enter."""
+#         if event.key() == Qt.Key.Key_Return:
+#             file_path = self.text()
+#             if Path(file_path).exists():
+#                 logger.debug(f"File path entered manually: {file_path}")
+#                 if self.file_load_callback:
+#                     self.file_load_callback(file_path)
+#             else:
+#                 QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
+#         else:
+#             super().keyPressEvent(event)
 
 
 
-class DataLoadingTab(QWidget, DragAndDropMixin):
+class DataLoadingTab(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.plot_dialog = None  # Track the plot dialog

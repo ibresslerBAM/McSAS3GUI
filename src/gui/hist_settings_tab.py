@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
 )
 import yaml
 from gui.yaml_editor_widget import YAMLEditorWidget
+from .file_line_selection_widget import FileLineSelectionWidget
 from utils.file_utils import get_default_config_files
 
 logger = logging.getLogger("McSAS3")
@@ -38,16 +39,12 @@ class HistogramSettingsTab(QWidget):
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
 
         # File Selection for Test Datafile
-        file_selection_layout = QHBoxLayout()
-        self.file_path_line = QLineEdit()
-        self.file_path_line.setPlaceholderText("Select test data file (.nxs, .h5, .hdf5)")
-        self.file_path_line.setReadOnly(True)
-        file_selection_layout.addWidget(self.file_path_line)
-
-        select_file_button = QPushButton("Select Test Datafile")
-        select_file_button.clicked.connect(self.select_test_datafile)
-        file_selection_layout.addWidget(select_file_button)
-        layout.addLayout(file_selection_layout)
+        self.file_line_selection_widget = FileLineSelectionWidget(
+            placeholder_text="Select histogramming configuration",
+            file_types="YAML Files (*.yaml)"
+        )
+        self.file_line_selection_widget.fileSelected.connect(self.select_test_datafile)
+        layout.addWidget(self.file_line_selection_widget)
 
         # Test Button
         test_button = QPushButton("Test Histogramming")
