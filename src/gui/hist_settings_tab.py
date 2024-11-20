@@ -41,7 +41,7 @@ class HistogramSettingsTab(QWidget):
         # File Selection for Test Datafile
         self.test_file_selector = FileLineSelectionWidget(
             placeholder_text="Select test McSAS Optimization Result file",
-            file_types="McSAS3 Optimization Result Files (*.hdf5, *.nxs, *.h5)"
+            file_types="McSAS3 Optimization Result Files (*.nxs *.hdf5 *.h5)"
         )
         self.test_file_selector.fileSelected.connect(self.load_test_file)
         layout.addWidget(self.test_file_selector)
