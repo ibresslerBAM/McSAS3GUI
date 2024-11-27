@@ -89,7 +89,7 @@ class DataLoadingTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for data loading configuration
-        self.yaml_editor_widget = YAMLEditorWidget("read_configurations", parent=self)
+        self.yaml_editor_widget = YAMLEditorWidget("read_configurations", parent=self, multipart=False)
         layout.addWidget(QLabel("Data Loading Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 

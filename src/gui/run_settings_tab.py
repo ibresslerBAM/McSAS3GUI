@@ -37,7 +37,7 @@ class RunSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for run settings configuration
-        self.yaml_editor_widget = YAMLEditorWidget("run_configurations", parent=self)
+        self.yaml_editor_widget = YAMLEditorWidget("run_configurations", parent=self, multipart=False)
         layout.addWidget(QLabel("Run Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 

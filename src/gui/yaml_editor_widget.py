@@ -76,9 +76,10 @@ class YAMLErrorHighlighter(QSyntaxHighlighter):
 
 
 class YAMLEditorWidget(QWidget):
-    def __init__(self, directory, parent=None):
+    def __init__(self, directory, parent=None, multipart:bool=False):
         super().__init__(parent)
         self.directory = directory
+        self.multipart = multipart # indicates a multipart yaml
         layout = QVBoxLayout()
 
         # YAML Editor with Error Highlighting
@@ -135,7 +136,7 @@ class YAMLEditorWidget(QWidget):
                 try:
                     yaml_content = list(yaml.safe_load_all(file))  # Handle multipart YAML
                     yaml_text = "---\n".join(
-                        yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content
+                        yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content if doc
                     )
                     self.yaml_editor.setPlainText(yaml_text)
                 except yaml.YAMLError as e:
@@ -148,11 +149,17 @@ class YAMLEditorWidget(QWidget):
         if file_name:
             yaml_content = self.yaml_editor.toPlainText()
             try:
-                parsed_content = list(yaml.safe_load_all(yaml_content))  # Validate multipart YAML
+                
                 with open(file_name, 'w') as file:
-                    for doc in parsed_content:
-                        yaml.dump(doc, file, default_flow_style=False, sort_keys=False)
-                        file.write("---\n")  # Separate documents
+                    if self.multipart:
+                        # make sure we're not saving "None" entries after a superfluos '---'
+                        parsed_content = [i for i in list(yaml.safe_load_all(yaml_content)) if i]  # Validate multipart YAML
+                        print(parsed_content)
+                        yaml.dump_all(parsed_content, file, default_flow_style=False, sort_keys=False)
+                    else:
+                        parsed_content = yaml.safe_load(yaml_content)  # Validate multipart YAML
+                        yaml.dump(parsed_content, file, default_flow_style=False, sort_keys=False)
+
                     logger.debug(f"Saved YAML configuration to file: {file_name}")
             except yaml.YAMLError as e:
                 logger.error(f"Error saving YAML to file {file_name}: {e}")

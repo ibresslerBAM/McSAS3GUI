@@ -10,6 +10,8 @@ from gui.yaml_editor_widget import YAMLEditorWidget
 from .file_line_selection_widget import FileLineSelectionWidget
 from utils.file_utils import get_default_config_files
 
+import subprocess
+
 logger = logging.getLogger("McSAS3")
 
 
@@ -31,7 +33,7 @@ class HistogramSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for histogram settings
-        self.yaml_editor_widget = YAMLEditorWidget(directory="hist_configurations", parent=self)
+        self.yaml_editor_widget = YAMLEditorWidget(directory="hist_configurations", parent=self, multipart=True)
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -119,25 +121,12 @@ class HistogramSettingsTab(QWidget):
         if self.config_dropdown.currentText() != "<Other...>":
             self.config_dropdown.setCurrentText("<Other...>")
 
-
-    # def select_test_datafile(self):
-    #     """Open a file dialog to select a test data file."""
-    #     file_name, _ = QFileDialog.getOpenFileName(
-    #         self,
-    #         "Select Test Data File",
-    #         str(self.last_used_directory),
-    #         "Data Files (*.nxs *.h5 *.hdf5)"
-    #     )
-    #     if file_name:
-    #         self.last_used_directory = Path(file_name).parent  # Update the last used directory
-    #         self.file_path_line.setText(file_name)
-    #         self.test_data_file = file_name
-    #         logger.debug(f"Selected test data file: {file_name}")
-
     def test_histogramming(self):
         """Execute a histogramming test with the current settings and selected data file."""
+        test_file = self.test_file_selector.get_file_path()
+
         try:
-            if not self.test_data_file or not Path(self.test_data_file).exists():
+            if not test_file or not Path(test_file).exists():
                 QMessageBox.warning(self, "Error", "Please select a valid test data file.")
                 return
 
@@ -146,18 +135,52 @@ class HistogramSettingsTab(QWidget):
                 QMessageBox.warning(self, "Error", "Please configure histogramming settings.")
                 return
 
+            # Store the yaml content in a temporary file
+            yaml_file = Path(gettempdir()) / "hist_config_temp_ui.yaml"
+            with open(yaml_file, 'w') as file:
+                yaml.dump_all(yaml_content, file, default_flow_style=False)  # Use dump_all for multi-document YAML
+
             logger.debug("Launching histogramming test.")
             self.info_field.append("Launching histogramming test...")
+
+            # Construct the command
             command = [
                 "python",
-                "histogram_cli_runner.py",
-                "--config", "hist_configurations/histogram_config.yaml",
-                "--datafile", self.test_data_file
+                "mcsas3_cli_histogrammer.py",
+                "-r", test_file,
+                "-H", str(yaml_file),
+                "-i", "1",
+                # "-v", "-d"
             ]
 
-            # TODO: Replace with actual subprocess logic
-            self.info_field.append(f"Command executed: {' '.join(command)}\n")
-            self.info_field.append("Test histogramming completed successfully.\n")
+            # Specify the working directory (replace 'desired_directory' with the actual path)
+            working_directory = Path(".").resolve()  # Set the directory where the script exists
+
+            # log the exectued command
+            logger.debug(f"Executing command:\n{command}")
+
+            # log the working directory
+            logger.debug(f"Working directory is {working_directory}.")
+
+            # Execute the command
+            result = subprocess.run(
+                command,
+                cwd=working_directory,  # Run the command from the specified directory
+                capture_output=True,    # Capture stdout and stderr
+                text=True               # Decode output as text
+            )
+
+            # Handle the output
+            if result.returncode == 0:
+                self.info_field.append(f"Command executed successfully:\n{result.stdout}")
+                logger.info(f"Command output:\n{result.stdout}")
+            else:
+                self.info_field.append(f"Command failed with error:\n{result.stderr}")
+                logger.error(f"Command error:\n{result.stderr}")
+
+            # Clean up the temporary file
+            yaml_file.unlink()
+            logger.debug("Temporary config file deleted.")
 
         except Exception as e:
             logger.error(f"Error during histogramming test: {e}")
