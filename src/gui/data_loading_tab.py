@@ -284,8 +284,8 @@ class DataLoadingTab(QWidget):
         # Clear the previous plot and redraw
         self.ax.clear()
         mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
-        mds.clippedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Clipped data')
-        mds.binnedData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='Binned data')
+        mds.clippedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Clipped data')
+        mds.binnedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Binned data')
         self.ax.set_yscale('log')
         self.ax.set_xscale('log')
         self.ax.set_xlabel('Q (1/nm)')
@@ -295,8 +295,8 @@ class DataLoadingTab(QWidget):
         if not self.mds.clippedData.empty:
             xmin = self.mds.clippedData['Q'].min()
             xmax = self.mds.clippedData['Q'].max()
-            self.ax.axvline(x=xmin, color='red', linestyle='--', label='Clipped boundary min')
-            self.ax.axvline(x=xmax, color='red', linestyle='--', label='Clipped boundary max')
+            self.ax.axvline(x=xmin, color='red', linestyle=':', label='Clipped boundary min')
+            self.ax.axvline(x=xmax, color='red', linestyle=':', label='Clipped boundary max')
 
         self.ax.legend()
         self.fig.canvas.draw()
