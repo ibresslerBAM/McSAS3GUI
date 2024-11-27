@@ -181,6 +181,8 @@ class HistogramSettingsTab(QWidget):
             # Clean up the temporary file
             yaml_file.unlink()
             logger.debug("Temporary config file deleted.")
+            logger.debug("Opening PDF")
+            subprocess.Popen([f"open {Path(test_file).with_suffix('.pdf')}"],shell=True)
 
         except Exception as e:
             logger.error(f"Error during histogramming test: {e}")

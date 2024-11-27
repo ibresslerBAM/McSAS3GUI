@@ -1,3 +1,5 @@
+# src/gui/hist_run_tab.py
+
 import logging
 from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushButton, QProgressBar, QHBoxLayout, QFileDialog
