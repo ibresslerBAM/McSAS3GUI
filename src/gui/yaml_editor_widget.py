@@ -9,6 +9,29 @@ import re
 
 logger = logging.getLogger("McSAS3")
 
+class CustomDumper(yaml.Dumper):
+    def increase_indent(self, flow=False, indentless=False):
+        return super(CustomDumper, self).increase_indent(flow, False)
+
+    def represent_list(self, data):
+        # Check if the list is nested (i.e., part of a parent structure)
+        if any(isinstance(item, (list, dict)) for item in data):
+            # Represent nested lists in block style
+            return self.represent_sequence('tag:yaml.org,2002:seq', data, flow_style=False)
+        else:
+            # Represent innermost lists in inline (flow) style
+            return self.represent_sequence('tag:yaml.org,2002:seq', data, flow_style=True)
+
+    def represent_dict(self, data):
+        # Use block style (default) for dictionaries
+        return self.represent_mapping('tag:yaml.org,2002:map', data, flow_style=False)
+
+# Register custom list representation for flow style
+CustomDumper.add_representer(list, CustomDumper.represent_list)
+
+# Register custom list representation for flow style
+CustomDumper.add_representer(dict, CustomDumper.represent_dict)
+
 class YAMLErrorHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
@@ -136,7 +159,7 @@ class YAMLEditorWidget(QWidget):
                 try:
                     yaml_content = list(yaml.safe_load_all(file))  # Handle multipart YAML
                     yaml_text = "---\n".join(
-                        yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content if doc
+                        yaml.dump(doc, Dumper=CustomDumper, default_flow_style=None, sort_keys=False) for doc in yaml_content if doc
                     )
                     self.yaml_editor.setPlainText(yaml_text)
                 except yaml.YAMLError as e:
@@ -155,10 +178,10 @@ class YAMLEditorWidget(QWidget):
                         # make sure we're not saving "None" entries after a superfluos '---'
                         parsed_content = [i for i in list(yaml.safe_load_all(yaml_content)) if i]  # Validate multipart YAML
                         print(parsed_content)
-                        yaml.dump_all(parsed_content, file, default_flow_style=False, sort_keys=False)
+                        yaml.dump_all(parsed_content, file, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
                     else:
                         parsed_content = yaml.safe_load(yaml_content)  # Validate multipart YAML
-                        yaml.dump(parsed_content, file, default_flow_style=False, sort_keys=False)
+                        yaml.dump(parsed_content, file, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
 
                     logger.debug(f"Saved YAML configuration to file: {file_name}")
             except yaml.YAMLError as e:
@@ -177,11 +200,11 @@ class YAMLEditorWidget(QWidget):
         if isinstance(yaml_content, list):
             # Convert list of YAML documents into a string with separators
             yaml_text = "---\n".join(
-                yaml.dump(doc, default_flow_style=False, sort_keys=False) for doc in yaml_content
+                yaml.dump(doc, Dumper=CustomDumper, default_flow_style=None, sort_keys=False) for doc in yaml_content
             )
         elif isinstance(yaml_content, dict):
             # Convert single YAML document into a string
-            yaml_text = yaml.dump(yaml_content, default_flow_style=False, sort_keys=False)
+            yaml_text = yaml.dump(yaml_content, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
         else:
             # Fallback to raw string if input is already serialized YAML
             yaml_text = yaml_content
