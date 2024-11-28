@@ -1,0 +1,11 @@
+nbins: 100
+dataRange: [0.0, .inf]
+csvargs:
+  sep: null
+  header: null
+  engine: python
+  names: [Q, I, ISigma]
+  skipinitialspace: true
+  dtype: float32
+  usecols: [0, 1, 2]
+  skip_blank_lines: true

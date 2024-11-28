@@ -25,7 +25,7 @@ class FileSelectionWidget(QWidget):
         self.file_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.file_table.setColumnWidth(1, 150)  # Set fixed width for status column
         self.file_table.setAcceptDrops(True)
-        self.file_table.setDragDropMode(QTableWidget.DragDropMode.DropOnly)
+        # self.file_table.setDragDropMode(QTableWidget.DragDropMode.DropOnly)
         layout.addWidget(self.file_table)
 
         # Buttons for managing data files
@@ -43,7 +43,8 @@ class FileSelectionWidget(QWidget):
     def dragEnterEvent(self, event):
         """Accept drag events containing files."""
         if event.mimeData().hasUrls():
-            event.accept()
+            event.acceptProposedAction()
+            logger.debug("Drag enter event accepted.")
         else:
             event.ignore()
 
@@ -52,7 +53,7 @@ class FileSelectionWidget(QWidget):
         if event.mimeData().hasUrls():
             for url in event.mimeData().urls():
                 file_path = url.toLocalFile()
-                if Path(file_path).suffix in self.acceptable_file_types.split():
+                if (Path(file_path).suffix in self.acceptable_file_types.split()) or ("*.*" in self.acceptable_file_types.split()):
                     self.add_file_to_table(file_path)
             event.accept()
         else:

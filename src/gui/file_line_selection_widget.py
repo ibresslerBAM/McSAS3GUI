@@ -31,8 +31,10 @@ class FilePathLineEdit(QLineEdit):
             if Path(file_path).exists():
                 self.setText(file_path)
                 self.fileChanged.emit(file_path)  # Emit signal with new file path
+                event.accept()
             else:
                 logger.warning(f"Dropped file does not exist: {file_path}")
+                event.ignore()
 
     def keyPressEvent(self, event):
         """Handle manual entry of file paths and emit signal on Enter."""

@@ -8,7 +8,7 @@ import logging
 
 from .file_selection_widget import FileSelectionWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from .task_runner_mixin import TaskRunnerMixin
+from utils.task_runner_mixin import TaskRunnerMixin
 
 logger = logging.getLogger("McSAS3")
 

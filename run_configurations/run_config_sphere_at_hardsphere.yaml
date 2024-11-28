@@ -2,13 +2,12 @@ modelName: sphere@hardsphere
 nContrib: 300
 modelDType: default
 fitParameterLimits:
-  radius:
-  - 3.14
-  - 314
+  radius: [3.14, 314]
 staticParameters:
   sld: 33.4
   sld_solvent: 0
 maxIter: 100000
+maxAccept: 1000
 convCrit: 1
 nRep: 10
 nCores: 5

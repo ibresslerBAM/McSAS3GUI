@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushB
 
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
-from .task_runner_mixin import TaskRunnerMixin
+from utils.task_runner_mixin import TaskRunnerMixin
 
 
 logger = logging.getLogger("McSAS3")
