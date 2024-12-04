@@ -48,6 +48,7 @@ class DataLoadingTab(QWidget):
 
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
+        self.yaml_editor_widget.fileSaved.connect(self.refresh_config_dropdown)  # Refresh dropdown after save
 
         # Reusable file selection widget
         self.file_line_selection_widget = FileLineSelectionWidget(
@@ -81,17 +82,25 @@ class DataLoadingTab(QWidget):
         self.error_message_display.setText(truncated_message)
         logger.error(message)
 
-    def refresh_config_dropdown(self):
+    def refresh_config_dropdown(self, savedName:str|None=None): # optional args to match signal signature
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
         default_configs = get_default_config_files(directory="read_configurations")
         self.config_dropdown.addItems(default_configs)
-        self.config_dropdown.addItem("<custom...>")
+        self.config_dropdown.addItem("<Custom...>")
+        if savedName is not None: 
+            listName = str(Path(savedName).name)
+            if listName in default_configs: 
+                self.config_dropdown.setCurrentText(listName)
+            else:
+                self.config_dropdown.setCurrentText("<Custom...>")
+        else:
+            self.config_dropdown.setCurrentText("<Custom...>")
 
     def handle_dropdown_change(self):
         """Handle dropdown changes and load the selected configuration."""
         selected_text = self.config_dropdown.currentText()
-        if selected_text != "<custom...>":
+        if selected_text != "<Custom...>":
             self.load_selected_default_config()
             self.config_dropdown.blockSignals(True)
             self.config_dropdown.setCurrentText(selected_text)
@@ -100,14 +109,14 @@ class DataLoadingTab(QWidget):
     def load_selected_default_config(self):
         """Load the selected YAML configuration file into the YAML editor."""
         selected_file = self.config_dropdown.currentText()
-        if selected_file and selected_file != "<custom...>":
+        if selected_file and selected_file != "<Custom...>":
             yaml_content = load_yaml_file(f"read_configurations/{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
 
     def on_yaml_editor_change(self):
-        """Mark the dropdown as <custom...> if the YAML content is modified and debounce updates."""
-        if self.config_dropdown.currentText() != "<custom...>":
-            self.config_dropdown.setCurrentText("<custom...>")
+        """Mark the dropdown as <Custom...> if the YAML content is modified and debounce updates."""
+        if self.config_dropdown.currentText() != "<Custom...>":
+            self.config_dropdown.setCurrentText("<Custom...>")
         
         # Start/restart the debounce timer to delay plot update
         self.update_timer.start(400)  # Wait 400 ms before updating plot
@@ -146,17 +155,16 @@ class DataLoadingTab(QWidget):
             logger.error(error_message)
             self.error_message_display.append(f"Error: {error_message}")
 
-
-    def save_configuration(self):
-        """Save the YAML configuration and refresh the dropdown to include new files."""
-        file_name, _ = QFileDialog.getSaveFileName(self, "Save Configuration", "read_configurations/", "YAML Files (*.yaml)")
-        if file_name:
-            if not file_name.endswith(".yaml"):
-                file_name += ".yaml"
-            yaml_content = self.yaml_editor_widget.get_yaml_content()
-            save_yaml_file(file_name, yaml_content)
-            logger.debug(f"Configuration saved to {file_name}")
-            self.refresh_config_dropdown()
+    # def save_configuration(self):
+    #     """Save the YAML configuration and refresh the dropdown to include new files."""
+    #     file_name, _ = QFileDialog.getSaveFileName(self, "Save Configuration", "read_configurations/", "YAML Files (*.yaml)")
+    #     if file_name:
+    #         if not file_name.endswith(".yaml"):
+    #             file_name += ".yaml"
+    #         yaml_content = self.yaml_editor_widget.get_yaml_content()
+    #         save_yaml_file(file_name, yaml_content)
+    #         logger.debug(f"Configuration saved to {file_name}")
+    #         self.refresh_config_dropdown()
 
     def update_and_plot(self):
         """Load and plot the data file using the current YAML configuration."""

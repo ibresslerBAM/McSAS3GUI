@@ -43,6 +43,7 @@ class RunSettingsTab(QWidget):
 
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
+        self.yaml_editor_widget.fileSaved.connect(self.refresh_config_dropdown)  # Refresh dropdown after save
 
         # Test Run Button
         test_run_button = QPushButton("Test single repetition on loaded Test Data")
@@ -60,17 +61,25 @@ class RunSettingsTab(QWidget):
             self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
 
-    def refresh_config_dropdown(self):
+    def refresh_config_dropdown(self, savedName:str|None = None): # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
         default_configs = get_default_config_files(directory="run_configurations")
         self.config_dropdown.addItems(default_configs)
-        self.config_dropdown.addItem("<custom...>")
+        self.config_dropdown.addItem("<Custom...>")
+        if savedName is not None: 
+            listName = str(Path(savedName).name)
+            if listName in default_configs: 
+                self.config_dropdown.setCurrentText(listName)
+            else:
+                self.config_dropdown.setCurrentText("<Custom...>")
+        else:
+            self.config_dropdown.setCurrentText("<Custom...>")
 
     def handle_dropdown_change(self):
         """Handle dropdown changes and load the selected configuration."""
         selected_text = self.config_dropdown.currentText()
-        if selected_text != "<custom...>":
+        if selected_text != "<Custom...>":
             self.load_selected_default_config()
             self.config_dropdown.blockSignals(True)
             self.config_dropdown.setCurrentText(selected_text)
@@ -79,15 +88,15 @@ class RunSettingsTab(QWidget):
     def load_selected_default_config(self):
         """Load the selected YAML configuration file into the YAML editor."""
         selected_file = self.config_dropdown.currentText()
-        if selected_file and selected_file != "<custom...>":
+        if selected_file and selected_file != "<Custom...>":
             yaml_content = load_yaml_file(f"run_configurations/{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
             self.update_info_field()
 
     def on_yaml_editor_change(self):
-        """Mark the dropdown as <custom...> if the YAML content is modified and debounce updates."""
-        if self.config_dropdown.currentText() != "<custom...>":
-            self.config_dropdown.setCurrentText("<custom...>")
+        """Mark the dropdown as <Custom...> if the YAML content is modified and debounce updates."""
+        if self.config_dropdown.currentText() != "<Custom...>":
+            self.config_dropdown.setCurrentText("<Custom...>")
         self.update_timer.start(400)  # Debounce updates with a 400 ms delay
 
     def update_info_field(self):

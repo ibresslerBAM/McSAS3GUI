@@ -34,6 +34,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
             file_types="YAML data config Files (*.yaml)"
         )
         self.data_config_selector.fileSelected.connect(self.load_data_config_file)  # Handle file selection
+        # self.data_loading_tab.yaml_editor_widget.yaml_editor.fileSaved.connect(self.data_config_selector.set_file_path)  # Handle file save
 
         layout.addWidget(self.data_config_selector)
 
@@ -43,6 +44,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
             file_types="YAML run config Files (*.yaml)"
         )
         self.run_config_selector.fileSelected.connect(self.load_run_config_file)  # Handle file selection
+        # self.run_settings_tab.yaml_editor_widget.yaml_editor.fileSaved.connect(self.run_config_selector.set_file_path)  # Handle file save
 
         layout.addWidget(self.run_config_selector)
 

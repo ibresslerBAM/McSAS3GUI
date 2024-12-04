@@ -3,7 +3,7 @@
 import logging
 from PyQt6.QtGui import QTextCharFormat, QColor, QTextCursor, QSyntaxHighlighter, QFont
 from PyQt6.QtWidgets import QTextEdit, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QToolTip, QFileDialog
-from PyQt6.QtCore import QEvent, QPoint, QRegularExpression
+from PyQt6.QtCore import QEvent, QPoint, QRegularExpression, pyqtSignal
 import yaml
 import re
 
@@ -99,6 +99,8 @@ class YAMLErrorHighlighter(QSyntaxHighlighter):
 
 
 class YAMLEditorWidget(QWidget):
+    fileSaved = pyqtSignal(str)
+
     def __init__(self, directory, parent=None, multipart:bool=False):
         super().__init__(parent)
         self.directory = directory
@@ -183,7 +185,9 @@ class YAMLEditorWidget(QWidget):
                         parsed_content = yaml.safe_load(yaml_content)  # Validate multipart YAML
                         yaml.dump(parsed_content, file, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
 
-                    logger.debug(f"Saved YAML configuration to file: {file_name}")
+                logger.debug(f"Saved YAML configuration to file: {file_name}")
+                self.fileSaved.emit(file_name)
+
             except yaml.YAMLError as e:
                 logger.error(f"Error saving YAML to file {file_name}: {e}")
 

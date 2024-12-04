@@ -39,6 +39,7 @@ class HistogramSettingsTab(QWidget):
 
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
+        self.yaml_editor_widget.fileSaved.connect(self.refresh_config_dropdown)  # Refresh dropdown after save
 
         # File Selection for Test Datafile
         self.test_file_selector = FileLineSelectionWidget(
@@ -77,23 +78,32 @@ class HistogramSettingsTab(QWidget):
             logger.warning(f"File does not exist: {file_path}")
             QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
-    def refresh_config_dropdown(self):
+    def refresh_config_dropdown(self, savedName:str|None = None): # args added to handle signal
+        logger.debug(f'savedName: {savedName}')
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
         default_configs = get_default_config_files(directory="hist_configurations")
         self.config_dropdown.addItems(default_configs)
-        self.config_dropdown.addItem("<Other...>")
+        self.config_dropdown.addItem("<Custom...>")
+        if savedName is not None: 
+            listName = str(Path(savedName).name)
+            if listName in default_configs: 
+                self.config_dropdown.setCurrentText(listName)
+            else:
+                self.config_dropdown.setCurrentText("<Custom...>")
+        else:
+            self.config_dropdown.setCurrentText("<Custom...>")
 
     def handle_dropdown_change(self):
         """Handle dropdown changes and load the selected configuration."""
         selected_text = self.config_dropdown.currentText()
-        if selected_text != "<Other...>":
+        if selected_text != "<Custom...>":
             self.load_selected_default_config()
 
     def load_selected_default_config(self):
         """Load the selected histogramming configuration YAML file into the editor."""
         selected_file = self.config_dropdown.currentText()
-        if selected_file and selected_file != "<Other...>":
+        if selected_file and selected_file != "<Custom...>":
             try:
                 # Construct the full path to the selected file
                 file_path = Path("hist_configurations") / selected_file
@@ -114,12 +124,12 @@ class HistogramSettingsTab(QWidget):
                 QMessageBox.critical(self, "Error", f"Error loading histogramming configuration: {e}")
 
     def on_yaml_editor_change(self):
-        """Mark the dropdown as <Other...> if the YAML content is modified by the user."""
+        """Mark the dropdown as <Custom...> if the YAML content is modified by the user."""
         if hasattr(self, "_programmatic_change") and self._programmatic_change:
             # Skip handling changes triggered programmatically
             return
-        if self.config_dropdown.currentText() != "<Other...>":
-            self.config_dropdown.setCurrentText("<Other...>")
+        if self.config_dropdown.currentText() != "<Custom...>":
+            self.config_dropdown.setCurrentText("<Custom...>")
 
     def test_histogramming(self):
         """Execute a histogramming test with the current settings and selected data file."""
