@@ -22,53 +22,6 @@ from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word 
 
 logger = logging.getLogger("McSAS3")
 
-# class FilePathLineEdit(QLineEdit):
-#     def __init__(self, parent=None, file_load_callback=None):
-#         super().__init__(parent)
-#         self.setAcceptDrops(True)  # Enable drag-and-drop
-#         self.file_load_callback = file_load_callback
-
-#     def dragEnterEvent(self, event):
-#         """Handle drag event to check if the dropped file is valid."""
-#         if event.mimeData().hasUrls():
-#             event.acceptProposedAction()
-#             logger.debug("Drag enter event accepted.")
-#         else:
-#             logger.debug("Drag enter event ignored.")
-#             event.ignore()
-
-#     def dropEvent(self, event):
-#         """Handle drop event to process dropped file paths."""
-#         urls = event.mimeData().urls()
-#         logger.debug(f"Drop event received: {urls}")
-
-#         for url in urls:
-#             file_path = url.toLocalFile()  # Convert to a local file path
-#             logger.debug(f"Parsed file path: {file_path}")
-#             if Path(file_path).exists():
-#                 logger.debug(f"Valid file dropped: {file_path}")
-#                 self.setText(file_path)  # Update the QLineEdit text
-#                 if self.file_load_callback:
-#                     self.file_load_callback(file_path)
-#             else:
-#                 logger.warning(f"Invalid file dropped: {file_path}")
-#                 QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
-
-#     def keyPressEvent(self, event):
-#         """Handle manual entry of file paths and reload on Enter."""
-#         if event.key() == Qt.Key.Key_Return:
-#             file_path = self.text()
-#             if Path(file_path).exists():
-#                 logger.debug(f"File path entered manually: {file_path}")
-#                 if self.file_load_callback:
-#                     self.file_load_callback(file_path)
-#             else:
-#                 QMessageBox.warning(self, "Invalid File", f"Cannot access file: {file_path}")
-#         else:
-#             super().keyPressEvent(event)
-
-
-
 class DataLoadingTab(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -233,12 +186,13 @@ class DataLoadingTab(QWidget):
         try:
             self.mds = McData1D(
                 filename=Path(file_path),
-                nbins=yaml_config.get("nbins", 100),
+                nbins=int(yaml_config.get("nbins", 100)),
                 csvargs=yaml_config.get("csvargs", None),
                 pathDict=yaml_config.get("pathDict", None),
+                IEmin=float(yaml_config.get("IEmin", 0.01)),
                 dataRange=yaml_config.get("dataRange", [-np.inf, np.inf]),
                 omitQRanges=yaml_config.get("omitQRanges", []),
-                resultIndex=yaml_config.get("resultIndex", 1)
+                resultIndex=int(yaml_config.get("resultIndex", 1))
             )
             logger.debug(f"Loaded data file: {file_path}")
             self.show_plot_popup()  # Display the plot in a popup window
@@ -285,7 +239,18 @@ class DataLoadingTab(QWidget):
         self.ax.clear()
         mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
         mds.clippedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Clipped data')
-        mds.binnedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Binned data')
+        mds.binnedData.plot(
+            x='Q',
+            y='I',
+            yerr='ISigma',
+            linestyle='',
+            marker='.',
+            ax=self.ax,
+            label='Binned data',
+            capsize=1,  # Optionally, add capsize for the error bars
+            elinewidth=1,  # Set error bar line width if needed
+        )
+        # mds.binnedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Binned data')
         self.ax.set_yscale('log')
         self.ax.set_xscale('log')
         self.ax.set_xlabel('Q (1/nm)')

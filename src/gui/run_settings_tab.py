@@ -291,13 +291,13 @@ class RunSettingsTab(QWidget):
             self.metrics_ax.plot(accepted_steps, accepted_gofs, 'bo-', label="Accepted GOFs")
             self.metrics_ax.set_xscale('linear')
             self.metrics_ax.set_yscale('log')
-            self.metrics_ax.set_xlabel("Accepted Steps")
+            self.metrics_ax.set_xlabel("Total Attempts")
             self.metrics_ax.set_ylabel("Goodness of Fit (GOF)")
             self.metrics_ax.set_title("Optimization Metrics")
 
             # Display maxIter and maxAccept as annotations
             self.metrics_ax.text(
-                0.95, 0.05,
+                0.95, 0.75,
                 f"Max Iter: {max_iter}\nMax Accept: {max_accept}",
                 transform=self.metrics_ax.transAxes,
                 fontsize=10,
