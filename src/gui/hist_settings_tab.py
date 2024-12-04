@@ -79,7 +79,6 @@ class HistogramSettingsTab(QWidget):
             QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
     def refresh_config_dropdown(self, savedName:str|None = None): # args added to handle signal
-        logger.debug(f'savedName: {savedName}')
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
         default_configs = get_default_config_files(directory="hist_configurations")

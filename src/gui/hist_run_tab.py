@@ -14,7 +14,7 @@ logger = logging.getLogger("McSAS3")
 
 class HistRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
-    def __init__(self, parent=None):
+    def __init__(self, hist_settings_tab, parent=None):
         super().__init__(parent)
 
         self.file_selection_widget = FileSelectionWidget(
