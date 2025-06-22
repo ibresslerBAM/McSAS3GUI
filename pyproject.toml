@@ -51,10 +51,7 @@ main = "src/main.py"  # assuming your GUI launcher is 'src/main.py'
 name = "McSAS3GUI"
 onefile = false      # false = directory bundle; set to true if you want a single executable
 windowed = true      # no console window
-datas = [
-  ["mcsas3gui/resources", "mcsas3gui/resources"],
-  ["mcsas3gui/icons", "mcsas3gui/icons"]
-]
+datas = []
 hiddenimports = ["PyQt6.sip"]
 
 [tool.pyinstaller.hooks]
