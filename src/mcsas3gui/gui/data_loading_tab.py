@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from .yaml_editor_widget import YAMLEditorWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from utils.file_utils import get_default_config_files
-from utils.yaml_utils import load_yaml_file, save_yaml_file
+from ..utils.file_utils import get_default_config_files
+from ..utils.yaml_utils import load_yaml_file, save_yaml_file
 from pathlib import Path
 import yaml
 from mcsas3.mc_data_1d import McData1D

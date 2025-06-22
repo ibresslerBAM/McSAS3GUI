@@ -8,7 +8,7 @@ import logging
 
 from .file_selection_widget import FileSelectionWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from utils.task_runner_mixin import TaskRunnerMixin
+from ..utils.task_runner_mixin import TaskRunnerMixin
 
 logger = logging.getLogger("McSAS3")
 
@@ -86,7 +86,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         run_config = self.run_config_selector.get_file_path() or "run_config.yaml"
 
         command_template = (
-            "python mcsas3_cli_runner.py -f {input_file} -F {data_config} "
+            "mcsas3-runner -f {input_file} -F {data_config} "
             "-r {result_file} -R {run_config} -i 1 -d"
         )
 

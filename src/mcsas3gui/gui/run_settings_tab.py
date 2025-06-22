@@ -8,9 +8,9 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtCore import QTimer
 from matplotlib import pyplot as plt
-from gui.yaml_editor_widget import YAMLEditorWidget
-from utils.file_utils import get_default_config_files
-from utils.yaml_utils import load_yaml_file
+from .yaml_editor_widget import YAMLEditorWidget
+from ..utils.file_utils import get_default_config_files
+from ..utils.yaml_utils import load_yaml_file
 from sasmodels.core import load_model_info
 # from mcsas3.McSASOptimizer import McSASOptimizer
 # from mcsas3.mc_data_1d import McData1D

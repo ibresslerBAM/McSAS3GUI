@@ -2,9 +2,10 @@
 
 import sys
 from PyQt6.QtWidgets import QApplication
-from gui.main_window import McSAS3MainWindow  # Main window with all tabs
-from utils.logging_config import setup_logging  # Import the logging configuration
+from .gui.main_window import McSAS3MainWindow  # Main window with all tabs
+from .utils.logging_config import setup_logging  # Import the logging configuration
 import logging
+
 
 def main():
     # Initialize logging
@@ -18,6 +19,7 @@ def main():
 
     logger.debug("McSAS3 GUI is now visible.")
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

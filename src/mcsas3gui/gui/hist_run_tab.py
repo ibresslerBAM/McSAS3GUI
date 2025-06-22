@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushB
 
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
-from utils.task_runner_mixin import TaskRunnerMixin
+from ..utils.task_runner_mixin import TaskRunnerMixin
 
 
 logger = logging.getLogger("McSAS3")
@@ -64,7 +64,7 @@ class HistRunTab(QWidget, TaskRunnerMixin):
         hist_config = self.histogram_config_selector.get_file_path() or "data_config.yaml"
 
         command_template = (
-            "python mcsas3_cli_histogrammer.py -r {input_file} -H {hist_config} "
+            "mcsas3-histogrammer -r {input_file} -H {hist_config} "
             "-i 1"
         )
 

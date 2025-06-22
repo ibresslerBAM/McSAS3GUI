@@ -6,9 +6,9 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
 )
 import yaml
-from gui.yaml_editor_widget import YAMLEditorWidget
+from .yaml_editor_widget import YAMLEditorWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from utils.file_utils import get_default_config_files
+from ..utils.file_utils import get_default_config_files
 
 import subprocess
 
@@ -154,8 +154,7 @@ class HistogramSettingsTab(QWidget):
 
             # Construct the command
             command = [
-                "python",
-                "mcsas3_cli_histogrammer.py",
+                "mcsas3-histogrammer",
                 "-r", test_file,
                 "-H", str(yaml_file),
                 "-i", "1",
