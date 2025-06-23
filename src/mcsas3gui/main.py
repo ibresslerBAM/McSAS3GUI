@@ -2,8 +2,8 @@
 
 import sys
 from PyQt6.QtWidgets import QApplication
-from .gui.main_window import McSAS3MainWindow  # Main window with all tabs
-from .utils.logging_config import setup_logging  # Import the logging configuration
+from mcsas3gui.gui.main_window import McSAS3MainWindow  # Main window with all tabs
+from mcsas3gui.utils.logging_config import setup_logging  # Import the logging configuration
 import logging
 
 
