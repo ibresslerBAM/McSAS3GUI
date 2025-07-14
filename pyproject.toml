@@ -1,6 +1,16 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = []
+
+[tool.setuptools.package-data]
+"mcsas3gui" = ["*.ui", "*.qrc", "icons/*", "resources/*"]
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["mcsas3gui"]
 
 [project]
 name = "McSAS3GUI"
@@ -11,9 +21,6 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{name = "Brian R. Pauw", email = "brian.pauw@bam.de"}]
 requires-python = ">=3.11"
-[project.urls]
-Homepage = "https://github.com/BAMresearch/McSAS3GUI"
-Issues = "https://github.com/BAMresearch/McSAS3GUI/issues"
 
 dependencies = [
     "PyQt6>=6.7.1",
@@ -26,8 +33,12 @@ dependencies = [
     "sasmodels",
     "pandas",
     "pint",
-    "mcsas3 @ git+https://github.com/BAMresearch/McSAS3.git",
+    "mcsas3@git+https://github.com/BAMresearch/McSAS3.git",
 ]
+
+[project.urls]
+Homepage = "https://github.com/BAMresearch/McSAS3GUI"
+Issues = "https://github.com/BAMresearch/McSAS3GUI/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -42,12 +53,7 @@ mcsas3gui = "mcsas3gui.main:main"
 m3gui = "mcsas3gui.main:main"
 
 
-[tool.setuptools.package-data]
-"mcsas3gui" = ["*.ui", "*.qrc", "icons/*", "resources/*"]
 
-[tool.setuptools.packages.find]
-where = ["src", "."]
-include = ["mcsas3gui"]
 
 [tool.pyinstaller]
 # Custom PyInstaller settings
