@@ -155,16 +155,6 @@ class DataLoadingTab(QWidget):
             logger.error(error_message)
             self.error_message_display.append(f"Error: {error_message}")
 
-    # def save_configuration(self):
-    #     """Save the YAML configuration and refresh the dropdown to include new files."""
-    #     file_name, _ = QFileDialog.getSaveFileName(self, "Save Configuration", "read_configurations/", "YAML Files (*.yaml)")
-    #     if file_name:
-    #         if not file_name.endswith(".yaml"):
-    #             file_name += ".yaml"
-    #         yaml_content = self.yaml_editor_widget.get_yaml_content()
-    #         save_yaml_file(file_name, yaml_content)
-    #         logger.debug(f"Configuration saved to {file_name}")
-    #         self.refresh_config_dropdown()
 
     def update_and_plot(self):
         """Load and plot the data file using the current YAML configuration."""
@@ -230,7 +220,7 @@ class DataLoadingTab(QWidget):
             mds = self.mds
         # If a plot window is already open, update it
         if self.plot_dialog is None or not self.plot_dialog.isVisible():
-            self.plot_dialog = QDialog(self)
+            self.plot_dialog = QDialog() # self removed to avoid constant placement on top of main
             self.plot_dialog.setWindowTitle("Data Plot")
             self.plot_dialog.setMinimumSize(700, 500)
             layout = QVBoxLayout(self.plot_dialog)
@@ -242,9 +232,12 @@ class DataLoadingTab(QWidget):
 
             # Embed the canvas in the dialog layout
             self.plot_dialog.setLayout(layout)
+            self.plot_dialog.show()
+
 
         # Clear the previous plot and redraw
-        self.ax.clear()
+        self.ax.clear() # how to maintain position?
+        self.plot_dialog.setWindowTitle(f"Data Plot for {mds.filename.name}")
         mds.rawData.plot('Q', 'I', yerr='ISigma', ax=self.ax, label='As provided data')
         mds.clippedData.plot('Q', 'I', yerr='ISigma', linestyle=None, linewidth=0, marker='.', ax=self.ax, label='Clipped data')
         mds.binnedData.plot(
@@ -273,5 +266,4 @@ class DataLoadingTab(QWidget):
 
         self.ax.legend()
         self.fig.canvas.draw()
-        self.plot_dialog.show()
         return self.ax # for those that need it. 
