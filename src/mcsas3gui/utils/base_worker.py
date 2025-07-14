@@ -26,7 +26,7 @@ class BaseWorker(QThread):
     def quote_path(self, path):
         """Ensure the path is properly quoted for safe command-line usage."""
         if isinstance(path, Path):
-            path = str(path)
+            path = str(path.as_posix())
         return f'"{path}"' if " " in path else path
 
     def run(self):
