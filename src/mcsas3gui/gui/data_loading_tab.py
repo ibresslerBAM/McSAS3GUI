@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from .yaml_editor_widget import YAMLEditorWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from ..utils.file_utils import get_default_config_files
+from ..utils.file_utils import get_default_config_files, get_main_path
 from ..utils.yaml_utils import load_yaml_file, save_yaml_file
 from pathlib import Path
 import yaml
 from mcsas3.mc_data_1d import McData1D
 from PyQt6.QtWidgets import QTextEdit
 from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word wrapping
+
 # from .drag_and_drop_mixin import DragAndDropMixin
 
 logger = logging.getLogger("McSAS3")
@@ -26,6 +27,7 @@ class DataLoadingTab(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.plot_dialog = None  # Track the plot dialog
+        self.main_path = get_main_path()  # Get the main path of the application
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_and_plot)  # Trigger plot after delay
@@ -42,7 +44,7 @@ class DataLoadingTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for data loading configuration
-        self.yaml_editor_widget = YAMLEditorWidget("read_configurations", parent=self, multipart=False)
+        self.yaml_editor_widget = YAMLEditorWidget(directory=self.main_path / "read_configurations", parent=self, multipart=False)
         layout.addWidget(QLabel("Data Loading Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -85,7 +87,7 @@ class DataLoadingTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None=None): # optional args to match signal signature
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory="read_configurations")
+        default_configs = get_default_config_files(directory=self.main_path / "read_configurations")
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None: 
@@ -110,7 +112,7 @@ class DataLoadingTab(QWidget):
         """Load the selected YAML configuration file into the YAML editor."""
         selected_file = self.config_dropdown.currentText()
         if selected_file and selected_file != "<Custom...>":
-            yaml_content = load_yaml_file(f"read_configurations/{selected_file}")
+            yaml_content = load_yaml_file(self.main_path / f"read_configurations/{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
 
     def on_yaml_editor_change(self):

@@ -103,7 +103,7 @@ class YAMLEditorWidget(QWidget):
 
     def __init__(self, directory, parent=None, multipart:bool=False):
         super().__init__(parent)
-        self.directory = directory
+        self.directory = str(directory)
         self.multipart = multipart # indicates a multipart yaml
         layout = QVBoxLayout()
 

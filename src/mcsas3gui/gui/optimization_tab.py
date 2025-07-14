@@ -9,6 +9,7 @@ import logging
 from .file_selection_widget import FileSelectionWidget
 from .file_line_selection_widget import FileLineSelectionWidget
 from ..utils.task_runner_mixin import TaskRunnerMixin
+from ..utils.file_utils import get_main_path
 
 logger = logging.getLogger("McSAS3")
 
@@ -17,6 +18,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
     def __init__(self, data_loading_tab, run_settings_tab, parent=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
+        self.main_path = get_main_path()  # Get the main path of the application
         self.run_settings_tab = run_settings_tab
 
         self.file_selection_widget = FileSelectionWidget(

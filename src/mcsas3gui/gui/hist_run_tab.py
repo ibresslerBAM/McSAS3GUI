@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushB
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
 from ..utils.task_runner_mixin import TaskRunnerMixin
+from ..utils.file_utils import get_main_path
 
 
 logger = logging.getLogger("McSAS3")
@@ -16,7 +17,7 @@ class HistRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
     def __init__(self, hist_settings_tab, parent=None):
         super().__init__(parent)
-
+        self.main_path = get_main_path()
         self.file_selection_widget = FileSelectionWidget(
             title="Select McSAS3-optimized Files for Histogramming:",
             acceptable_file_types="*.nxs *.h5 *.hdf5",

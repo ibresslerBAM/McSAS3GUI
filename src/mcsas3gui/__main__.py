@@ -9,9 +9,8 @@ import logging
 
 def main():
     # Initialize logging
-    logger = setup_logging(log_level=logging.DEBUG, log_to_file=True)  # Enables file logging if needed
-    logger.debug("Starting McSAS3 GUI application...")
-
+    logger = setup_logging(log_level=logging.INFO, log_to_file=True)  # Enables file logging if needed
+    logger.info("Starting McSAS3 GUI application...")
     # Start the PyQt application
     app = QApplication(sys.argv)
     main_window = McSAS3MainWindow()
@@ -19,7 +18,6 @@ def main():
 
     logger.debug("McSAS3 GUI is now visible.")
     sys.exit(app.exec())
-
 
 if __name__ == "__main__":
     main()

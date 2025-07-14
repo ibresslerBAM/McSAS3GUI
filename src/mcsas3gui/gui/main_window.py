@@ -1,7 +1,7 @@
 # main_window.py
 
+# import inspect
 from PyQt6.QtWidgets import QMainWindow, QTabWidget
-
 from .getting_started_tab import GettingStartedTab
 from .data_loading_tab import DataLoadingTab
 from .run_settings_tab import RunSettingsTab  # Import the new RunSettingsTab
@@ -10,6 +10,9 @@ from .hist_settings_tab import HistogramSettingsTab
 from .hist_run_tab import HistRunTab
 
 class McSAS3MainWindow(QMainWindow):
+    """Main window for the McSAS3 GUI application, containing all tabs."""
+    # use inspect to find main path for this package
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("McSAS3 Configuration Interface")

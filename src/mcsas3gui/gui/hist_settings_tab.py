@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
 import yaml
 from .yaml_editor_widget import YAMLEditorWidget
 from .file_line_selection_widget import FileLineSelectionWidget
-from ..utils.file_utils import get_default_config_files
+from ..utils.file_utils import get_default_config_files, get_main_path
 
 import subprocess
 
@@ -20,6 +20,7 @@ class HistogramSettingsTab(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.main_path = get_main_path()  # Get the main path of the application
         self.last_used_directory = Path(gettempdir())  # Default to system temp directory
         self.test_data_file = None  # Store the selected test data file
 
@@ -33,7 +34,7 @@ class HistogramSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for histogram settings
-        self.yaml_editor_widget = YAMLEditorWidget(directory="hist_configurations", parent=self, multipart=True)
+        self.yaml_editor_widget = YAMLEditorWidget(directory=self.main_path / "hist_configurations", parent=self, multipart=True)
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -81,7 +82,7 @@ class HistogramSettingsTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None = None): # args added to handle signal
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory="hist_configurations")
+        default_configs = get_default_config_files(directory= self.main_path / "hist_configurations")
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None: 
@@ -105,7 +106,7 @@ class HistogramSettingsTab(QWidget):
         if selected_file and selected_file != "<Custom...>":
             try:
                 # Construct the full path to the selected file
-                file_path = Path("hist_configurations") / selected_file
+                file_path = self.main_path / "hist_configurations" / selected_file
                 if file_path.is_file():
                     with open(file_path, 'r') as file:
                         # Parse YAML content as structured data

@@ -9,7 +9,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from PyQt6.QtCore import QTimer
 from matplotlib import pyplot as plt
 from .yaml_editor_widget import YAMLEditorWidget
-from ..utils.file_utils import get_default_config_files
+from ..utils.file_utils import get_default_config_files, get_main_path
 from ..utils.yaml_utils import load_yaml_file
 from sasmodels.core import load_model_info
 # from mcsas3.McSASOptimizer import McSASOptimizer
@@ -23,6 +23,7 @@ class RunSettingsTab(QWidget):
     def __init__(self, parent=None, data_loading_tab=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
+        self.main_path = get_main_path()  # Get the main path of the application
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_info_field)
@@ -37,7 +38,7 @@ class RunSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for run settings configuration
-        self.yaml_editor_widget = YAMLEditorWidget("run_configurations", parent=self, multipart=False)
+        self.yaml_editor_widget = YAMLEditorWidget(self.main_path / "run_configurations", parent=self, multipart=False)
         layout.addWidget(QLabel("Run Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -64,7 +65,7 @@ class RunSettingsTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None = None): # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory="run_configurations")
+        default_configs = get_default_config_files(directory=self.main_path / "run_configurations")
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None: 
@@ -89,7 +90,7 @@ class RunSettingsTab(QWidget):
         """Load the selected YAML configuration file into the YAML editor."""
         selected_file = self.config_dropdown.currentText()
         if selected_file and selected_file != "<Custom...>":
-            yaml_content = load_yaml_file(f"run_configurations/{selected_file}")
+            yaml_content = load_yaml_file(self.main_path / f"run_configurations/{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
             self.update_info_field()
 
@@ -282,7 +283,7 @@ class RunSettingsTab(QWidget):
         try:
             # Check if the optimization metrics dialog is open, create it if necessary
             if not hasattr(self, "metrics_dialog") or self.metrics_dialog is None or not self.metrics_dialog.isVisible():
-                self.metrics_dialog = QDialog(self)
+                self.metrics_dialog = QDialog() # do not use self or it'll end up on the main window
                 self.metrics_dialog.setWindowTitle("Optimization Metrics")
                 self.metrics_dialog.setMinimumSize(700, 500)
                 layout = QVBoxLayout(self.metrics_dialog)
@@ -294,6 +295,8 @@ class RunSettingsTab(QWidget):
 
                 # Embed the canvas in the dialog layout
                 self.metrics_dialog.setLayout(layout)
+                # Show the dialog
+                self.metrics_dialog.show()
 
             # Clear the previous plot and redraw
             self.metrics_ax.clear()
@@ -319,8 +322,6 @@ class RunSettingsTab(QWidget):
             self.metrics_fig.tight_layout()
             self.metrics_fig.canvas.draw()
 
-            # Show the dialog
-            self.metrics_dialog.show()
 
         except Exception as e:
             logger.error(f"Error plotting optimization metrics: {e}")
