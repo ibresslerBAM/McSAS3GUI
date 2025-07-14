@@ -86,7 +86,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         run_config = self.run_config_selector.get_file_path() or "run_config.yaml"
 
         command_template = (
-            "mcsas3-runner -f {input_file} -F {data_config} "
+            "python -m mcsas3.mcsas3_cli_runner -f {input_file} -F {data_config} "
             "-r {result_file} -R {run_config} -i 1 -d"
         )
 

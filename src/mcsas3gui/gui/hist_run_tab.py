@@ -64,7 +64,7 @@ class HistRunTab(QWidget, TaskRunnerMixin):
         hist_config = self.histogram_config_selector.get_file_path() or "data_config.yaml"
 
         command_template = (
-            "mcsas3-histogrammer -r {input_file} -H {hist_config} "
+            "python -m mcsas3.mcsas3_cli_histogrammer -r {input_file} -H {hist_config} "
             "-i 1"
         )
 

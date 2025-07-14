@@ -154,7 +154,7 @@ class HistogramSettingsTab(QWidget):
 
             # Construct the command
             command = [
-                "mcsas3-histogrammer",
+                "python", "-m", "mcsas3.mcsas3_cli_histogrammer",
                 "-r", test_file,
                 "-H", str(yaml_file),
                 "-i", "1",
