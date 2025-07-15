@@ -13,6 +13,7 @@ def main():
     logger.info("Starting McSAS3 GUI application...")
     # Start the PyQt application
     app = QApplication(sys.argv)
+
     main_window = McSAS3MainWindow()
     main_window.show()
 

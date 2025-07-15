@@ -13,8 +13,7 @@ html_description: |
                   font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
               }
               p, li {
-                  font-family: "Times New Roman", Times, serif;
-                  font-size: 14pt;
+                  /* font-family: "Times New Roman", Times, serif; */
                   text-indent: 2em;
                   line-height: 1.15;
               }
