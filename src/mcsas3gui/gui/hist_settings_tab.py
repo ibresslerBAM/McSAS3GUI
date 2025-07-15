@@ -2,6 +2,7 @@ import os
 import logging
 from pathlib import Path
 from sys import platform
+import sys
 from tempfile import gettempdir
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
@@ -157,7 +158,7 @@ class HistogramSettingsTab(QWidget):
 
             # Construct the command
             command = [
-                "python", "-m", "mcsas3.mcsas3_cli_histogrammer",
+                str(Path(sys.executable).as_posix()), "-m", "mcsas3.mcsas3_cli_histogrammer",
                 "-r", test_file,
                 "-H", str(yaml_file),
                 "-i", "1",

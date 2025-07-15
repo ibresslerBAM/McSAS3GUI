@@ -159,17 +159,17 @@ class GettingStartedTab(QWidget):
                 file_dict = yaml_content.get("configurations", {})
                 if self.data_loading_tab and "read_configuration_file" in file_dict:
                     self.apply_yaml_to_tab_pulldown(self.data_loading_tab, file_dict["read_configuration_file"])
-                    self.optimization_tab.data_config_selector.set_file_path(str(self.main_path / file_dict["read_configuration_file"]))
+                    self.optimization_tab.data_config_selector.set_file_path(str((self.main_path / file_dict["read_configuration_file"]).as_posix()))
 
                 # Apply run settings
                 if self.run_settings_tab and "run_configuration_file" in file_dict:
                     self.apply_yaml_to_tab_pulldown(self.run_settings_tab, file_dict["run_configuration_file"])
-                    self.optimization_tab.run_config_selector.set_file_path(str(self.main_path / file_dict["run_configuration_file"]))
+                    self.optimization_tab.run_config_selector.set_file_path(str((self.main_path / file_dict["run_configuration_file"]).as_posix()))
 
                 # Apply hist settings
                 if self.hist_settings_tab and "hist_configuration_file" in file_dict:
                     self.apply_yaml_to_tab_pulldown(self.hist_settings_tab, file_dict["hist_configuration_file"])
-                    self.histogramming_tab.histogram_config_selector.set_file_path(str(self.main_path / file_dict["hist_configuration_file"]))
+                    self.histogramming_tab.histogram_config_selector.set_file_path(str((self.main_path / file_dict["hist_configuration_file"]).as_posix()))
 
                 # set data files for the tabs: 
                 yaml_content = yaml_content.get("data_files", {})
