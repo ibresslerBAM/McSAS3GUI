@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+import sys
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLineEdit, QPushButton, QProgressBar, QHBoxLayout, QFileDialog
 
 from .file_line_selection_widget import FileLineSelectionWidget
@@ -65,7 +66,8 @@ class HistRunTab(QWidget, TaskRunnerMixin):
         hist_config = self.histogram_config_selector.get_file_path() or "data_config.yaml"
 
         command_template = (
-            "python -m mcsas3.mcsas3_cli_histogrammer -r {input_file} -H {hist_config} "
+            str(Path(sys.executable).as_posix()) + " "
+            "-m mcsas3.mcsas3_cli_histogrammer -r {input_file} -H {hist_config} "
             "-i 1"
         )
 
