@@ -143,6 +143,13 @@ class GettingStartedTab(QWidget):
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
         default_configs = get_default_config_files(directory=self.main_path / "prefab_configurations")
+        # sort entries alphabetically, but make sure "getting_started.yaml" is always first
+        if savedName and savedName in default_configs:
+            default_configs.remove(savedName)
+        default_configs.sort()
+        if savedName:
+            default_configs.insert(0, savedName)
+        
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.setCurrentText(savedName)  # Set a default selection
 
