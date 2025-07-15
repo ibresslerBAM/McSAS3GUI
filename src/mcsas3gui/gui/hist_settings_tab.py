@@ -198,7 +198,7 @@ class HistogramSettingsTab(QWidget):
             if 'darwin' in platform.lower():       # macOS
                 subprocess.Popen([f"open {Path(test_file).with_suffix('.pdf')}"], shell=True)
             elif 'windows' in platform.lower():    # Windows
-                os.startfile(Path(test_file).with_suffix('.pdf'))  # Open the PDF file
+                os.startfile(str(Path(test_file).with_suffix('.pdf').as_posix()))  # Open the PDF file
             else:                                   # linux variants
                 subprocess.Popen([f"xdg-open {Path(test_file).with_suffix('.pdf')}"], shell=True)
 
