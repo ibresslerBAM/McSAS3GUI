@@ -12,6 +12,15 @@ html_description: |
                   margin-top: 20%;
                   font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
               }
+              p, li {
+                  font-family: "Times New Roman", Times, serif;
+                  font-size: 14pt;
+                  text-indent: 2em;
+                  line-height: 1.15;
+              }
+              li {
+                  margin-bottom: 0.5em; /* optional spacing between list items */
+              }
           </style>
       </head>
       <body>
@@ -19,7 +28,10 @@ html_description: |
 
           <h1>The Advanced NeXus demo</h1>
           <p>This is an advanced demo for the McSAS3 GUI. It will show you how to set up a custom read, optimization and histogramming.</p>
-          <p>This uses a nexus file from the AutoMOFs project, which is on a dense, powder of faceted metal-organic-framework particles. We adjust the range of the data, increase the minimum uncertainty estimate (to de-emphasize the most precise datapoints), and use a model of spheres with a hardsphere structure factor to get close to a perfect fit. </p>
+          <p>This uses a nexus measurement file from the AutoMOFs project, which is on a dense, powder of faceted metal-organic-framework particles. </p>
+          <p>We adjust the range of the data, increase the minimum uncertainty estimate (to de-emphasize the most precise datapoints), and use a model of spheres with a hardsphere structure factor to get close to a perfect fit. </p>
+          <p>Finally, we histogram it in three different ways. Note from the last two histograms that changing from a linear to a logarithmic binning has an effect on the histogram (as the spacing between bin edges is now changed), but not on the population parameters! </p>
+          <p>Remember, if you make any adjustments to the read, run or histogramming configurations, you have to explicitly save them before you can use them in the Optimization or histogramming tabs... </p>
       </body>
   </html>
 
@@ -63,7 +75,7 @@ run_configuration: # ibid.
   staticParameters:
     sld: 8.126
     sld_solvent: 0
-    volfraction: 0.4
+    volfraction: 0.3
     structure_factor_mode: 1
     radius_effective_mode: 1
     background: 0

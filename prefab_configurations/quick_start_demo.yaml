@@ -12,6 +12,16 @@ html_description: |
                   margin-top: 20%;
                   font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
               }
+              p, li {
+                  font-family: "Times New Roman", Times, serif;
+                  font-size: 14pt;
+                  text-indent: 2em;
+                  line-height: 1.15;
+              }
+              li {
+                  margin-bottom: 0.5em; /* optional spacing between list items */
+              }
+              
           </style>
       </head>
       <body>
@@ -19,7 +29,17 @@ html_description: |
 
           <h1>The Quick Start demo</h1>
           <p>This is a quick start demo for the McSAS3 GUI. It will show you how to set up a simple optimization and histogramming run.</p>
-          
+          <p>This uses a test datafile from the original McSAS, which is a simulated dataset with three size-disperse populations of spherical scatterers. We use the simplest, automatically set model of spheres to get a perfect fit. </p>
+          <h3> Notes: </h3>
+          # make a list of notes: 
+          <ul>
+              <li>We use the simplest read configuration that reads data from a csv file. The options are fed directly to pandas.read_csv, so use those to adjust for different three-column text files. </li>
+              <li>The units are assumed to be (for now) in 1/nm for Q, and 1/m for I. Absolute scaled data will give you absolute volume fractions out.</li>
+              <li>These automatic settings are usually decent for real data too, just make sure to adjust the data range to a range that contains only scattering from non-regular structures. Diffraction effects (i.e. scattering from regular, ordered structures) cannot be modeled by McSAS.</li>
+          </ul>
+
+          <p>(Remember, if you make any adjustments to the read, run or histogramming configurations, you have to explicitly save them before you can use them in the Optimization or histogramming tabs)</p>
+
       </body>
   </html>
 

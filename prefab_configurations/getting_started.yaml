@@ -12,6 +12,16 @@ html_description: |
                   margin-top: 20%;
                   font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
               }
+              p, li {
+                  font-family: "Times New Roman", Times, serif;
+                  font-size: 14pt;
+                  text-indent: 2em;
+                  line-height: 1.15;
+              }
+
+              li {
+                  margin-bottom: 0.5em; /* optional spacing between list items */
+              }
           </style>
       </head>
       <body>
@@ -34,11 +44,14 @@ html_description: |
           <p>This McSAS3GUI interface guides you through setting up and running McSAS3 optimizations and histogramming. It is not required to run McSAS3, McSAS3 itself can run headlessly and can be integrated in any data pipeline. This UI is just here to help you set that up, or help you deal with fitting small batches</p>
 
           <h3>Oh my god, it's full of tabs!</h3>
-          <p>The UI has a handful of tabs, you nominally run through them from left to right. </p>
-          <p>You are now here, in the "Getting Started"-tab.</p>
-          <p>The tabs with "Settings" in the titles allow you to interactively configure and test the yaml configurations for data loading, McSAS optimization and (re)histogramming. </p>
-          <p>The "McSAS3 Optimization ..." tab let you run full McSAS3 optimizations on (batches of) measurement files. </p>
-          <p>Lastly, the "(Re)Histogramming ..." tab lets you (re-)histogram previously optimized results. </p>
+          <p>The UI has a handful of tabs, you nominally run through them from left to right: </p>
+          <ul>
+              <li>You are now here, in the "Getting Started"-tab. This is where you find help. Also, you can select examples from the pull-down menu at the top which will. prepopulate the fields in the following tabs with working examples.</li>
+              <li>The tabs with "Settings" in the titles allow you to interactively configure and test the yaml configurations that configure data loading, McSAS optimization and (re)histogramming. </li>
+              <li>The "McSAS3 Optimization ..." tab let you run full McSAS3 optimizations on (batches of) measurement files.</li>
+              <li>Lastly, the "(Re)Histogramming ..." tab lets you (re-)histogram previously optimized results..</li>
+          </ul>
+
           <p>Let's go through these tabs one by one...</p>
 
           <h3> The "Data Settings"-tab </h3>
@@ -65,5 +78,6 @@ html_description: |
           <p> Now you can configure how the histogramming should be done. You can choose a template from the pulldown menu at the top, with either a single or a dual histogram configured (you can add as many as you want). The configuration should speak for itself. At the moment, only volume-weighted histogramming is implemented, and the "minimum visibility limit" from the OG McSAS has not yet been implemented. Population </p>
 
           <h3> The "(Re-)Histogramming..."-tab </h3>
+          <p>In this tab, you can run the histogramming on the results of optimization(s). You can redo this as many times as you need, no need to re-optimize like in OG McSAS. You will have to populate the list as before in the Optimization tab, but now with the "_output.hdf5" files. Then select the histogramming configuration file. The histogramming will then be run on all the files in the list, and will be stored alongside the optimization in the "_output.hdf5" file. For your convenience, a useful plot is also stored alongside in a PDF file. But if you want to work with the results, the HDF5 file is where you will find *all* the information you would ever want. And then some.. </p>
       </body>
   </html>
