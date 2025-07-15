@@ -130,6 +130,11 @@ class RunSettingsTab(QWidget):
             info_text += f"  Convergence Criterion: {conv_crit}\n"
             info_text += f"  Cores: {n_cores}\n"
 
+            # do nothing if the model name is empty (None):
+            if not model_name:
+                info_text += "  Model Name is empty. No parameters available.\n"
+                continue
+
             if model_name.startswith("mcsas_"):
                 info_text += "  Using internal McSAS model. No additional parameters available.\n"
                 continue
