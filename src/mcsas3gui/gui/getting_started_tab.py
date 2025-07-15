@@ -8,7 +8,7 @@ from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
 
 
-TEMP_DIR = Path("temporary_files")
+TEMP_DIR = get_main_path() / "temporary_files"
 READ_CONFIG_PATH = TEMP_DIR / "data.yaml"
 RUN_CONFIG_PATH = TEMP_DIR / "run.yaml"
 HIST_CONFIG_PATH = TEMP_DIR / "hist.yaml"
