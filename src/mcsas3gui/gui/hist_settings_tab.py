@@ -1,6 +1,7 @@
 import os
 import logging
 from pathlib import Path
+from sys import platform
 from tempfile import gettempdir
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
@@ -18,7 +19,7 @@ logger = logging.getLogger("McSAS3")
 class HistogramSettingsTab(QWidget):
     _programmatic_change = False
     default_configs = []  # List to hold default configuration files
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.main_path = get_main_path()  # Get the main path of the application
@@ -192,7 +193,13 @@ class HistogramSettingsTab(QWidget):
             yaml_file.unlink()
             logger.debug("Temporary config file deleted.")
             logger.debug("Opening PDF")
-            subprocess.Popen([f"open {Path(test_file).with_suffix('.pdf')}"],shell=True)
+
+            if 'darwin' in platform.lower():       # macOS
+                subprocess.Popen([f"open {Path(test_file).with_suffix('.pdf')}"], shell=True)
+            elif 'windows' in platform.lower():    # Windows
+                os.startfile(Path(test_file).with_suffix('.pdf'))  # Open the PDF file
+            else:                                   # linux variants
+                subprocess.Popen([f"xdg-open {Path(test_file).with_suffix('.pdf')}"], shell=True)
 
         except Exception as e:
             logger.error(f"Error during histogramming test: {e}")
