@@ -29,7 +29,7 @@ class ParallelWorker(QThread):
             futures = []
 
             for i, file_path in enumerate(self.files):
-                result_file = str(Path(file_path).with_suffix("").parent / (Path(file_path).stem + "_mcsas3.nxs"))
+                result_file = str(Path(file_path).with_suffix("").parent / (Path(file_path).stem + "_mcsas3.hdf5"))
                 keywords = {
                     "input_file": file_path,
                     "result_file": result_file,

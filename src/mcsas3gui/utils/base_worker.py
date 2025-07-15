@@ -33,7 +33,7 @@ class BaseWorker(QThread):
         """Run commands sequentially."""
         total_files = len(self.selected_files)
         for row, file_name in enumerate(self.selected_files):
-            result_file = Path(file_name).parent / (Path(file_name).stem + "_output.nxs")
+            result_file = Path(file_name).parent / (Path(file_name).stem + "_output.hdf5")
             if result_file.is_file():
                 result_file.unlink()
 
