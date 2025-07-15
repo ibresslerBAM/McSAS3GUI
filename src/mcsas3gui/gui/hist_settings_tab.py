@@ -17,7 +17,8 @@ logger = logging.getLogger("McSAS3")
 
 class HistogramSettingsTab(QWidget):
     _programmatic_change = False
-
+    default_configs = []  # List to hold default configuration files
+    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.main_path = get_main_path()  # Get the main path of the application
@@ -82,12 +83,12 @@ class HistogramSettingsTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None = None): # args added to handle signal
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory= self.main_path / "hist_configurations")
-        self.config_dropdown.addItems(default_configs)
+        self.default_configs = get_default_config_files(directory= self.main_path / "hist_configurations")
+        self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None: 
             listName = str(Path(savedName).name)
-            if listName in default_configs: 
+            if listName in self.default_configs: 
                 self.config_dropdown.setCurrentText(listName)
             else:
                 self.config_dropdown.setCurrentText("<Custom...>")

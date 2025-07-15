@@ -1,0 +1,41 @@
+html_description: |
+  <html>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Quick Start demo</title>
+          <style>
+              .friendly-text {
+                  font-size: 48px;
+                  color: #4CAF50; /* A friendly green color */
+                  text-align: center;
+                  margin-top: 20%;
+                  font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
+              }
+          </style>
+      </head>
+      <body>
+          <div class="friendly-text">Quick Start demo</div>
+
+          <h1>The Quick Start demo</h1>
+          <p>This is a quick start demo for the McSAS3 GUI. It will show you how to set up a simple optimization and histogramming run.</p>
+          
+      </body>
+  </html>
+
+# data files relevant to this example: test files, and files for the full optimization.
+data_files:
+  read_test_file: testdata/quickstartdemo1.csv
+  histogramming_test_file: testdata/quickstartdemo1_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  optimization_files: 
+    - testdata/quickstartdemo1.csv
+    # - testdata/quickstartdemo2.csv
+  histogramming_files: # again, these will be created upon optimization
+    - testdata/quickstartdemo1_output.hdf5
+    # - testdata/quickstartdemo2_output.hdf5
+
+# read, run, histogram configurations in the directories specified below: 
+configurations: 
+  read_configuration_file: read_configurations/read_csv_simple.yaml
+  run_configuration_file: run_configuration/run_config_spheres_auto.yaml
+  histogramming_configuration_file: hist_configurations/hist_config_dual.yaml

@@ -26,7 +26,8 @@ class McSAS3MainWindow(QMainWindow):
         self.setup_tabs()
 
     def setup_tabs(self):
-        self.tabs.addTab(GettingStartedTab(self), "Getting Started")
+        GSTab = GettingStartedTab(self)
+        self.tabs.addTab(GSTab, "Getting Started")
         DLTab = DataLoadingTab(self)
         self.tabs.addTab(DLTab, "Data Settings")
         RSTab = RunSettingsTab(self, DLTab)
@@ -37,6 +38,16 @@ class McSAS3MainWindow(QMainWindow):
         self.tabs.addTab(HSTab, "Histogram Settings")
         HRTab = HistRunTab(self, HSTab)
         self.tabs.addTab(HRTab, "(Re-)Histogramming ...")
+
+        # connect the tabs to the getting started tab:
+        GSTab.data_loading_tab = DLTab
+        GSTab.run_settings_tab = RSTab
+        GSTab.optimization_tab = ORTab
+        GSTab.hist_settings_tab = HSTab
+        GSTab.histogramming_tab = HRTab
+        # re-trigger the dropdowns in the getting started tab
+        GSTab.refresh_config_dropdown(savedName="getting_started.yaml")
+        
         # make some signal connections we can't seem to do anywhere else: 
         # when a histogram file is saved in the hist settings tab, set this to the current file in the hist run tab
         HSTab.yaml_editor_widget.fileSaved.connect(HRTab.histogram_config_selector.set_file_path)  

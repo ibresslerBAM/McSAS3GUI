@@ -1,0 +1,126 @@
+html_description: |
+  <html>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Don't Panic</title>
+          <style>
+              .friendly-text {
+                  font-size: 48px;
+                  color: #4CAF50; /* A friendly green color */
+                  text-align: center;
+                  margin-top: 20%;
+                  font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
+              }
+          </style>
+      </head>
+      <body>
+          <div class="friendly-text">Don't Panic</div>
+
+          <h1>Welcome to McSAS3 GUI</h1>
+          
+          <p>It's been a long time coming, but now it's here: the graphical user interface to help you use McSAS3. </p>
+
+          <h2> McWho? </h2>
+          <p> McSAS3 (and its older sibling, McSAS) is a program to analyse small-angle scattering patterns using a Monte Carlo approach. If used right, with the appropriate model, it will fit your data perfectly, that is to say, to within the uncertainty of your datapoints. 
+          Underneath, it superimposes a set (300 or so) of identical model instances. 
+          The Monte Carlo optimization algorithm then uses an acceptance-rejection method to optimize one parameter on these model instances. In the end, it arrives at a set of parameter values that works best within the constraints given for your data. This can be histogrammed to give parameter distributions. </p>
+          <p> Usually, McSAS is used to extract form-free <b><i>size</i></b> distributions and volume fractions assuming, say, spherical scatterers. But it's good that you now understand it's not limited to that. Choose well, and it will make you happy. </p>
+
+          <h2>Getting Started</h2>
+          <p>This McSAS3GUI interface guides you through setting up and running McSAS3 optimizations and histogramming. It is not required to run McSAS3, that can run headlessly in any data pipeline. This is just here to help you set that up, or help you deal with fitting small batches</p>
+          <h3>Oh my god, it's full of tabs!</h3>
+          <p>The UI has a handful of tabs, you nominally run through them from left to right. </p>
+          <p>You are now here, in the "Getting Started"-tab.</p>
+          <p>The tabs with "Settings" in the titles allow you to interactively configure and test the yaml configurations for data loading, McSAS optimization and (re)histogramming. </p>
+          <p>The "McSAS3 Optimization ..." tab let you run full McSAS3 optimizations on (batches of) measurement files. </p>
+          <p>Lastly, the "(Re)Histogramming ..." tab lets you (re-)histogram previously optimized results. </p>
+          <p>Let's go through these tabs one by one...</p>
+
+          <h3> The "Data Settings"-tab </h3>
+          <p>In this tab, you can configure how your data should be read. McSAS3 has a very flexible data ingestor, which can read text-based formats (e.g. csv or pdh), as well as HDF5-based formats (such as NeXus or NXCanSAS) very flexibly. Several templates are available to show how this can be done. You can choose one of these templates from the pulldown menu at the top. This will load the template into the YAML editor widget. The YAML editor widget does syntax highlighting and validation for you, and you can load and save YAML files with the two buttons underneath the YAML editor field. Remember to save the configuration once you have tuned it to your wishes, as you'll need the saved data read configuration file later. </p>
+          <p>Before you start editing the YAML, however, I would recommend also loading a test datafile of the type you want to read. This can be done by either dragging and dropping into the text line field below the "Load Configuration" and "Save configuration" buttons. You can also use the "Browse" button to browse to a particular test datafile. </p>
+          <p>Now that you have a test file and a YAML, the interface will try to read your file. If it can, it will show (graphically) the resulting raw, clipped and binned data in a separate window. Keep this window open, it'll be useful. </p>
+          <p>For NeXus files, you'll need to indicate the paths to Q, I and ISigma, the uncertainty estimate on I (the better this uncertainty estimate, the better it'll work). If the NeXus file cannot be read, the information window at the bottom will show the paths to all the datasets in your test file; hopefully you can find there the data you are looking for. </p>
+          <p>For ascii/csv files, you can use the "csvargs" section to specify the keyword-value combinations that pandas.read_csv needs to work. For example, you can tell it how many lines to skip, what the separator is, and so on. </p>
+          <p>Data units and unit conversions will be implemented before the v1 release (maybe, if I can free up the time). </p>
+          <p>You can change the data limits you want to fit by adjusting the "dataRange" in the YAML, and you can use the "omitRanges" list of ranges to skip over data segments you don't want to fit, such as peaks.</p>
+          <p>You can set the minimum possible inter-datapoint uncertainty limit for your data using "IEmin", which is a fraction of the intensity, default set to 1%. nBins sets the number of (log-spaced) bins to rebin your data into. 100 bins per decade or two is usually more than sufficient, and ensures proper speed. </p> 
+          
+          <h3> The "Run Settings"-tab </h3>
+          <p>In this tab, you can configure how McSAS3 will run. You can choose a template from the pulldown menu at the top, which will load a template into the YAML editor widget. The YAML editor widget does syntax highlighting and validation for you, and you can load and save YAML files with the two buttons underneath the YAML editor field. Remember to save the configuration once you have tuned it to your wishes, as you'll need the saved run configuration file later. </p>
+          <p>In the YAML, you can set the number of iterations to run, the number of model instances to use, and the number of threads to use. It also configures which sasmodel to use, though not all options and combinations are avaiable (more precisely, you are limited only to models that specify a volume...). Once you construct a model name, the information panel will show the possible parameters to enter. Only one should be chosen as a fit parameter, the rest should be static parameters. Undefined parameters are filled with their default values. </p>
+          <p>A special note: take care to limit the maximum number of iteration (and optionally the maximum number to accept before completion), as there is no "stop" button at the moment to interrupt the independent workers. You could be waiting for a long time if set incorrectly! </p>
+          <p>You can test a single optimization on the test data loaded in the "Data Settings"-tab by clicking the "Test Run" button. This will run a single optimization with the current settings, and show the resulting fit curve in the data plot. </p>
+          <p>Once you are happy with the settings, you can save your settings, and run the full optimization on a (batch of) files in the "Optimization..." tab. </p>
+
+          <h3> The "Optimization..."-tab </h3>
+
+          <h3> The "Hist Settings"-tab </h3>
+
+          <h3> The "(Re-)Histogramming..."-tab </h3>
+      </body>
+  </html>
+
+# data files relevant to this example: test files, and files for the full optimization.
+data_files:
+  read_test_file: testdata/quickstartdemo1.csv
+  histogramming_test_file: testdata/quickstartdemo1_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  optimization_files: 
+    - testdata/quickstartdemo1.csv
+    # - testdata/quickstartdemo2.csv
+  histogramming_files: # again, these will be created upon optimization
+    - testdata/quickstartdemo1_output.hdf5
+    # - testdata/quickstartdemo2_output.hdf5
+
+# read, run, histogram configurations in the directories specified below: 
+configurations: 
+  read_configuration_file: read_configurations/read_csv_simple.yaml
+  run_configuration_file: run_configuration/run_config_spheres_auto.yaml
+  histogramming_configuration_file: hist_configurations/hist_config_dual.yaml
+
+# the configurations in the files given before will be overwritten if these are defined:
+read_configuration: # if defined, this will be stored to a temporary file and loaded instead
+  # Note that the units are assumed to be 1/(m sr) for I and 1/nm for Q
+  nbins: 90
+  dataRange:
+    - 0.0 # minimum
+    - .inf # maximum. Positive infinity starts with a dot. negative infinity is -.inf
+  csvargs:
+    sep: ";"
+    header: null # null translates to a Python "None"
+    names: # column names
+      - "Q"
+      - "I"
+      - "ISigma"
+
+run_configuration: # ibid.
+  modelName: "sphere"
+  nContrib: 300
+  modelDType: "default"
+  fitParameterLimits:
+    radius: 'auto' # automatic determination of radius limits based on the data limits. This is replaced in McHat by actual limits
+  staticParameters:
+    sld: 33.4 # units of 1e-6 A^-2
+    sld_solvent: 0
+  maxIter: 100000
+  maxAccept: 1000
+  convCrit: 1
+  nRep: 10
+  nCores: 5
+
+hist_configuration: # ibid.
+  - parameter: "radius"
+    nBin: 50
+    binScale: "log"
+    presetRangeMin: 3.14
+    presetRangeMax: 314
+    binWeighting: "vol"
+    autoRange: True
+  - parameter: "radius"
+    nBin: 50
+    binScale: "linear"
+    presetRangeMin: 10
+    presetRangeMax: 100
+    binWeighting: "vol"
+    autoRange: False

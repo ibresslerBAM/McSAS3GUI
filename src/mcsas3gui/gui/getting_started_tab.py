@@ -1,78 +1,198 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser
+import yaml
+from pathlib import Path
+from mcsas3gui.utils.file_utils import get_default_config_files, get_main_path
+from mcsas3gui.utils.yaml_utils import load_yaml_file
+from .yaml_editor_widget import CustomDumper
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
+
+
+TEMP_DIR = Path("temporary_files")
+READ_CONFIG_PATH = TEMP_DIR / "data.yaml"
+RUN_CONFIG_PATH = TEMP_DIR / "run.yaml"
+HIST_CONFIG_PATH = TEMP_DIR / "hist.yaml"
+
+CustomDumper.add_representer(dict, CustomDumper.represent_dict)
+CustomDumper.add_representer(list, CustomDumper.represent_list)
+
+
+def ensure_temp_dir():
+    TEMP_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def write_yaml_file(data, filepath):
+    with open(filepath, "w", encoding="utf-8") as f:
+        yaml.dump(data, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+
+
+def write_hist_yaml_block(hist_configs, filepath):
+    """
+    Write histogram block(s) to YAML. If a single block: plain YAML.
+    If multiple: separate documents using '---'.
+    """
+    with open(filepath, "w", encoding="utf-8") as f:
+        if isinstance(hist_configs, list):
+            if len(hist_configs) == 1:
+                yaml.dump(hist_configs[0], f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+            else:
+                for i, block in enumerate(hist_configs):
+                    # if i > 0:
+                    f.write("---\n")
+                    yaml.dump(block, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+        else:
+            # fallback for single dict passed instead of a list
+            yaml.dump(hist_configs, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+
+
+def load_template(template_path: Path) -> dict:
+    """
+    Load a project template (contained in a YAML structure) 
+    and generate temp files if inline configurations exist.
+
+    Returns the full parsed dictionary so GUI can populate HTML, files, etc.
+    """
+    ensure_temp_dir()
+
+    with open(template_path, "r", encoding="utf-8") as f:
+        template = yaml.safe_load(f)
+
+    # Save inline configs to temp files if present
+    if "read_configuration" in template:
+        write_yaml_file(template["read_configuration"], READ_CONFIG_PATH)
+        # update read configuration file to point at the temp file
+        template["configurations"]["read_configuration_file"] = str(READ_CONFIG_PATH)
+
+    if "run_configuration" in template:
+        write_yaml_file(template["run_configuration"], RUN_CONFIG_PATH)
+        # update run configuration file to point at the temp file
+        template["configurations"]["run_configuration_file"] = str(RUN_CONFIG_PATH)
+
+    if "hist_configuration" in template:
+        hist_config = template["hist_configuration"]
+        if isinstance(hist_config, list):
+            write_hist_yaml_block(hist_config, HIST_CONFIG_PATH)
+        else:
+            print("[WARNING] 'hist_configuration' must be a list of dicts.")
+        # update hist configuration file to point at the temp file
+        template["configurations"]["hist_configuration_file"] = str(HIST_CONFIG_PATH)
+
+    return template  # can be passed to GUI components
+
 
 class GettingStartedTab(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self,
+                 parent=None,
+                 data_loading_tab=None,
+                 run_settings_tab=None,
+                 optimization_tab=None,
+                 hist_settings_tab=None,
+                 histogramming_tab=None):
         super().__init__(parent)
+        self.data_loading_tab = data_loading_tab
+        self.run_settings_tab = run_settings_tab
+        self.optimization_tab = optimization_tab
+        self.hist_settings_tab = hist_settings_tab
+        self.histogramming_tab = histogramming_tab
         layout = QVBoxLayout()
+
+        # self.data_loading_tab = data_loading_tab
+        self.main_path = get_main_path()  # Get the main path
+        self.update_timer = QTimer(self)  # Timer for debouncing updates
+        self.update_timer.setSingleShot(True)
+        # self.update_timer.timeout.connect(self.update_info_field)
+
+        # Dropdown for default run configuration files
+        self.config_dropdown = QComboBox()
+        self.refresh_config_dropdown()
+        layout.addWidget(QLabel("Select prefab template:"))
+        layout.addWidget(self.config_dropdown)
+        self.config_dropdown.currentIndexChanged.connect(self.handle_dropdown_change)
+
         self.info_viewer = QTextBrowser()
         self.info_viewer.setOpenExternalLinks(True)
 
         # Load HTML content
-        html_content = """
-        <html>
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Don't Panic</title>
-                <style>
-                    .friendly-text {
-                        font-size: 48px;
-                        color: #4CAF50; /* A friendly green color */
-                        text-align: center;
-                        margin-top: 20%;
-                        font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="friendly-text">Don't Panic</div>
-
-                <h1>Welcome to McSAS3 GUI</h1>
-                
-                <p>It's been a long time coming, but now it's here: the graphical user interface to help you use McSAS3. </p>
-
-                <h2> McWho? </h2>
-                <p> McSAS3 (and its older sibling, McSAS) is a program to analyse small-angle scattering patterns using a Monte Carlo approach. If used right, with the appropriate model, it will fit your data perfectly, that is to say, to within the uncertainty of your datapoints. 
-                Underneath, it superimposes a set (300 or so) of identical model instances. 
-                The Monte Carlo optimization algorithm then uses an acceptance-rejection method to optimize one parameter on these model instances. In the end, it arrives at a set of parameter values that works best within the constraints given for your data. This can be histogrammed to give parameter distributions. </p>
-                <p> Usually, McSAS is used to extract form-free <b><i>size</i></b> distributions and volume fractions assuming, say, spherical scatterers. But it's good that you now understand it's not limited to that. Choose well, and it will make you happy. </p>
-
-                <h2>Getting Started</h2>
-                <p>This McSAS3GUI interface guides you through setting up and running McSAS3 optimizations and histogramming. It is not required to run McSAS3, that can run headlessly in any data pipeline. This is just here to help you set that up, or help you deal with fitting small batches</p>
-                <h3>Oh my god, it's full of tabs!</h3>
-                <p>The UI has a handful of tabs, you nominally run through them from left to right. </p>
-                <p>You are now here, in the "Getting Started"-tab.</p>
-                <p>The tabs with "Settings" in the titles allow you to interactively configure and test the yaml configurations for data loading, McSAS optimization and (re)histogramming. </p>
-                <p>The "McSAS3 Optimization ..." tab let you run full McSAS3 optimizations on (batches of) measurement files. </p>
-                <p>Lastly, the "(Re)Histogramming ..." tab lets you (re-)histogram previously optimized results. </p>
-                <p>Let's go through these tabs one by one...</p>
-
-                <h3> The "Data Settings"-tab </h3>
-                <p>In this tab, you can configure how your data should be read. McSAS3 has a very flexible data ingestor, which can read text-based formats (e.g. csv or pdh), as well as HDF5-based formats (such as NeXus or NXCanSAS) very flexibly. Several templates are available to show how this can be done. You can choose one of these templates from the pulldown menu at the top. This will load the template into the YAML editor widget. The YAML editor widget does syntax highlighting and validation for you, and you can load and save YAML files with the two buttons underneath the YAML editor field. Remember to save the configuration once you have tuned it to your wishes, as you'll need the saved data read configuration file later. </p>
-                <p>Before you start editing the YAML, however, I would recommend also loading a test datafile of the type you want to read. This can be done by either dragging and dropping into the text line field below the "Load Configuration" and "Save configuration" buttons. You can also use the "Browse" button to browse to a particular test datafile. </p>
-                <p>Now that you have a test file and a YAML, the interface will try to read your file. If it can, it will show (graphically) the resulting raw, clipped and binned data in a separate window. Keep this window open, it'll be useful. </p>
-                <p>For NeXus files, you'll need to indicate the paths to Q, I and ISigma, the uncertainty estimate on I (the better this uncertainty estimate, the better it'll work). If the NeXus file cannot be read, the information window at the bottom will show the paths to all the datasets in your test file; hopefully you can find there the data you are looking for. </p>
-                <p>For ascii/csv files, you can use the "csvargs" section to specify the keyword-value combinations that pandas.read_csv needs to work. For example, you can tell it how many lines to skip, what the separator is, and so on. </p>
-                <p>Data units and unit conversions will be implemented before the v1 release (maybe, if I can free up the time). </p>
-                <p>You can change the data limits you want to fit by adjusting the "dataRange" in the YAML, and you can use the "omitRanges" list of ranges to skip over data segments you don't want to fit, such as peaks.</p>
-                <p>You can set the minimum possible inter-datapoint uncertainty limit for your data using "IEmin", which is a fraction of the intensity, default set to 1%. nBins sets the number of (log-spaced) bins to rebin your data into. 100 bins per decade or two is usually more than sufficient, and ensures proper speed. </p> 
-                
-                <h3> The "Run Settings"-tab </h3>
-                <p>In this tab, you can configure how McSAS3 will run. You can choose a template from the pulldown menu at the top, which will load a template into the YAML editor widget. The YAML editor widget does syntax highlighting and validation for you, and you can load and save YAML files with the two buttons underneath the YAML editor field. Remember to save the configuration once you have tuned it to your wishes, as you'll need the saved run configuration file later. </p>
-                <p>In the YAML, you can set the number of iterations to run, the number of model instances to use, and the number of threads to use. It also configures which sasmodel to use, though not all options and combinations are avaiable (more precisely, you are limited only to models that specify a volume...). Once you construct a model name, the information panel will show the possible parameters to enter. Only one should be chosen as a fit parameter, the rest should be static parameters. Undefined parameters are filled with their default values. </p>
-                <p>A special note: take care to limit the maximum number of iteration (and optionally the maximum number to accept before completion), as there is no "stop" button at the moment to interrupt the independent workers. You could be waiting for a long time if set incorrectly! </p>
-                <p>You can test a single optimization on the test data loaded in the "Data Settings"-tab by clicking the "Test Run" button. This will run a single optimization with the current settings, and show the resulting fit curve in the data plot. </p>
-                <p>Once you are happy with the settings, you can save your settings, and run the full optimization on a (batch of) files in the "Optimization..." tab. </p>
-
-                <h3> The "Optimization..."-tab </h3>
-
-                <h3> The "Hist Settings"-tab </h3>
-
-                <h3> The "(Re-)Histogramming..."-tab </h3>
-            </body>
-        </html>
-        """
+        html_content = """<h1>Welcome to McSAS3</h1> - select a template from the dropdown menu above to start exploring!"""
         self.info_viewer.setHtml(html_content)
 
         layout.addWidget(self.info_viewer)
+
         self.setLayout(layout)
+
+        if self.config_dropdown.count() > 0:
+            # self.config_dropdown.setCurrentIndex(0)
+            self.load_selected_default_config()
+
+    def apply_yaml_to_tab_pulldown(self, tab, config_path_str: str):
+        """Generic helper to load YAML into a settings tab."""
+        config_path = Path(config_path_str)
+        list_name = config_path.name
+
+        if list_name in tab.default_configs:
+            tab.config_dropdown.setCurrentText(list_name)
+        else:
+            tab.config_dropdown.setCurrentText("<Custom...>")
+            try:
+                yaml_content = load_yaml_file(self.main_path / config_path)
+                tab.yaml_editor_widget.set_yaml_content(yaml_content)
+            except Exception as e:
+                print(f"[WARNING] Failed to load YAML content for {list_name}: {e}")
+
+    def refresh_config_dropdown(self, savedName: str | None = "getting_started.yaml"): # args is a dummy argument to handle signals
+        """Populate or refresh the configuration dropdown list."""
+        self.config_dropdown.clear()
+        default_configs = get_default_config_files(directory=self.main_path / "prefab_configurations")
+        self.config_dropdown.addItems(default_configs)
+        self.config_dropdown.setCurrentText(savedName)  # Set a default selection
+
+    def load_selected_default_config(self):
+        """Load the selected YAML configuration file."""        
+
+        selected_file = self.config_dropdown.currentText()
+        if selected_file:
+            try:
+                yaml_content = load_template(self.main_path / f"prefab_configurations/{selected_file}")
+                self.info_viewer.setHtml(yaml_content.get("html_description", "<p>No description available.</p>"))
+
+                # Apply data reading settings
+                file_dict = yaml_content.get("configurations", {})
+                if self.data_loading_tab and "read_configuration_file" in file_dict:
+                    self.apply_yaml_to_tab_pulldown(self.data_loading_tab, file_dict["read_configuration_file"])
+                    self.optimization_tab.data_config_selector.set_file_path(str(self.main_path / file_dict["read_configuration_file"]))
+
+                # Apply run settings
+                if self.run_settings_tab and "run_configuration_file" in file_dict:
+                    self.apply_yaml_to_tab_pulldown(self.run_settings_tab, file_dict["run_configuration_file"])
+                    self.optimization_tab.run_config_selector.set_file_path(str(self.main_path / file_dict["run_configuration_file"]))
+
+                # Apply hist settings
+                if self.hist_settings_tab and "hist_configuration_file" in file_dict:
+                    self.apply_yaml_to_tab_pulldown(self.hist_settings_tab, file_dict["hist_configuration_file"])
+                    self.histogramming_tab.histogram_config_selector.set_file_path(str(self.main_path / file_dict["hist_configuration_file"]))
+
+                # set data files for the tabs: 
+                yaml_content = yaml_content.get("data_files", {})
+                if self.data_loading_tab and "read_test_file" in yaml_content:
+                    self.data_loading_tab.file_line_selection_widget.set_file_path(str(self.main_path / yaml_content["read_test_file"]))
+
+                if self.data_loading_tab and "histogramming_test_file" in yaml_content: # does not show as it doesn't exist.. unfortunately
+                    self.hist_settings_tab.test_file_selector.set_file_path(str(self.main_path / yaml_content["histogramming_test_file"]))
+
+                # Lastly, fill the files into the optimization tab and histogramming run tab
+                if self.optimization_tab and "optimization_files" in yaml_content:
+                    for file_path in yaml_content["optimization_files"]:
+                        self.optimization_tab.file_selection_widget.add_file_to_table(str(self.main_path / file_path))
+
+                # Lastly, fill the files into the optimization tab and histogramming run tab
+                if self.histogramming_tab and "histogramming_files" in yaml_content:
+                    for file_path in yaml_content["histogramming_files"]:
+                        self.histogramming_tab.file_selection_widget.add_file_to_table(str(self.main_path / file_path))
+
+            except Exception as e:
+                self.info_viewer.setHtml(f"<p>Error loading template: {e}</p>")
+
+
+    def handle_dropdown_change(self, index: int):
+        # selected_text = self.config_dropdown.itemText(index)
+        self.load_selected_default_config()

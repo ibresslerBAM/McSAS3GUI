@@ -20,6 +20,10 @@ import numpy as np
 logger = logging.getLogger("McSAS3")
 
 class RunSettingsTab(QWidget):
+    """Tab for configuring run settings, including YAML editor and test optimization."""
+
+    default_configs = []  # List to hold default configuration files
+    
     def __init__(self, parent=None, data_loading_tab=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
@@ -65,12 +69,12 @@ class RunSettingsTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None = None): # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory=self.main_path / "run_configurations")
-        self.config_dropdown.addItems(default_configs)
+        self.default_configs = get_default_config_files(directory=self.main_path / "run_configurations")
+        self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None: 
             listName = str(Path(savedName).name)
-            if listName in default_configs: 
+            if listName in self.default_configs: 
                 self.config_dropdown.setCurrentText(listName)
             else:
                 self.config_dropdown.setCurrentText("<Custom...>")

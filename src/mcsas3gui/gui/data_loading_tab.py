@@ -24,6 +24,9 @@ from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word 
 logger = logging.getLogger("McSAS3")
 
 class DataLoadingTab(QWidget):
+    
+    default_configs = []  # List to hold default configuration files
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.plot_dialog = None  # Track the plot dialog
@@ -87,12 +90,12 @@ class DataLoadingTab(QWidget):
     def refresh_config_dropdown(self, savedName:str|None=None): # optional args to match signal signature
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory=self.main_path / "read_configurations")
-        self.config_dropdown.addItems(default_configs)
+        self.default_configs = get_default_config_files(directory=self.main_path / "read_configurations")
+        self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
-        if savedName is not None: 
+        if savedName is not None:
             listName = str(Path(savedName).name)
-            if listName in default_configs: 
+            if listName in self.default_configs:
                 self.config_dropdown.setCurrentText(listName)
             else:
                 self.config_dropdown.setCurrentText("<Custom...>")
