@@ -169,7 +169,7 @@ class HistogramSettingsTab(QWidget):
             working_directory = Path(".").resolve()  # Set the directory where the script exists
 
             # log the exectued command
-            logger.debug(f"Executing command:\n{command}")
+            logger.info(f"Running command:\n{command}")
 
             # log the working directory
             logger.debug(f"Working directory is {working_directory}.")
@@ -185,7 +185,7 @@ class HistogramSettingsTab(QWidget):
             # Handle the output
             if result.returncode == 0:
                 self.info_field.append(f"Command executed successfully:\n{result.stdout}")
-                logger.info(f"Command output:\n{result.stdout}")
+                logger.debug(f"Command output:\n{result.stdout}")
             else:
                 self.info_field.append(f"Command failed with error:\n{result.stderr}")
                 logger.error(f"Command error:\n{result.stderr}")
