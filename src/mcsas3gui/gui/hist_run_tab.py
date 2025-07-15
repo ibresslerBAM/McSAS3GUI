@@ -63,7 +63,7 @@ class HistRunTab(QWidget, TaskRunnerMixin):
         """Run histogramming on the selected files."""
 
         files = self.file_selection_widget.get_selected_files()
-        hist_config = self.histogram_config_selector.get_file_path() or "data_config.yaml"
+        hist_config = self.histogram_config_selector.get_file_path()
 
         command_template = (
             str(Path(sys.executable).as_posix()) + " "

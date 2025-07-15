@@ -85,8 +85,8 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
 
     def start_optimizations(self):
         files = self.file_selection_widget.get_selected_files()
-        data_config = self.data_config_selector.get_file_path() or "data_config.yaml"
-        run_config = self.run_config_selector.get_file_path() or "run_config.yaml"
+        data_config = self.data_config_selector.get_file_path()
+        run_config = self.run_config_selector.get_file_path()
 
         command_template = (
             str(Path(sys.executable).as_posix()) + " "
