@@ -57,10 +57,14 @@ def load_template(template_path: Path) -> dict:
     with open(template_path, "r", encoding="utf-8") as f:
         template = yaml.safe_load(f)
 
+    if "configurations" not in template:
+        template["configurations"] = {}
+
     # Save inline configs to temp files if present
     if "read_configuration" in template:
         write_yaml_file(template["read_configuration"], READ_CONFIG_PATH)
         # update read configuration file to point at the temp file
+
         template["configurations"]["read_configuration_file"] = str(READ_CONFIG_PATH)
 
     if "run_configuration" in template:

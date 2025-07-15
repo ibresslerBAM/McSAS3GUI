@@ -1,0 +1,101 @@
+html_description: |
+  <html>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Advanced NeXus demo</title>
+          <style>
+              .friendly-text {
+                  font-size: 48px;
+                  color: #4CAF50; /* A friendly green color */
+                  text-align: center;
+                  margin-top: 20%;
+                  font-family: 'Comic Sans MS', 'Arial', sans-serif; /* A playful font */
+              }
+          </style>
+      </head>
+      <body>
+          <div class="friendly-text">Advanced NeXus demo</div>
+
+          <h1>The Advanced NeXus demo</h1>
+          <p>This is an advanced demo for the McSAS3 GUI. It will show you how to set up a custom read, optimization and histogramming.</p>
+          <p>This uses a nexus file from the AutoMOFs project, which is on a dense, powder of faceted metal-organic-framework particles. We adjust the range of the data, increase the minimum uncertainty estimate (to de-emphasize the most precise datapoints), and use a model of spheres with a hardsphere structure factor to get close to a perfect fit. </p>
+      </body>
+  </html>
+
+# data files relevant to this example: test files, and files for the full optimization.
+data_files:
+  read_test_file: testdata/merged_AutoMOFs_7_L011.nxs
+  histogramming_test_file: testdata/merged_AutoMOFs_7_L011_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  optimization_files: 
+    - testdata/merged_AutoMOFs_7_L011.nxs
+    # - testdata/quickstartdemo2.csv
+  histogramming_files: # again, these will be created upon optimization
+    - testdata/merged_AutoMOFs_7_L011_output.hdf5
+    # - testdata/quickstartdemo2_output.hdf5
+
+# read, run, histogram configurations in the directories specified below: 
+# we use custom configurations here, so we don't use the default files. these will be overridden by the inline configurations below.
+configurations: 
+  read_configuration_file: read_configurations/read_csv_simple.yaml
+  run_configuration_file: run_configuration/run_config_spheres_auto.yaml
+  histogramming_configuration_file: hist_configurations/hist_config_dual.yaml
+
+# the configurations in the files given before will be overwritten if these are defined:
+read_configuration: # if defined, this will be stored to a temporary file and loaded instead
+  # Note that the units are assumed to be 1/(m sr) for I and 1/nm for Q
+  nbins: 100
+  dataRange: [0.02, 4.0]
+  IEmin: 0.02
+  pathDict:
+    Q: /entry/result/Q
+    I: /entry/result/I
+    ISigma: /entry/result/I_errors
+
+run_configuration: # ibid.
+  modelName: sphere@hardsphere
+  nContrib: 300
+  modelDType: default
+  fitParameterLimits:
+    radius: 
+    - 1
+    - 1000
+  staticParameters:
+    sld: 8.126
+    sld_solvent: 0
+    volfraction: 0.4
+    structure_factor_mode: 1
+    radius_effective_mode: 1
+    background: 0
+
+  maxIter: 100000
+  maxAccept: 3000
+  convCrit: 1
+  nRep: 10
+  nCores: 10
+
+
+hist_configuration: # ibid.
+  - parameter: radius
+    nBin: 50
+    binScale: log
+    presetRangeMin: 3.14
+    presetRangeMax: 314
+    binWeighting: vol
+    autoRange: true
+
+  - parameter: radius
+    nBin: 35
+    binScale: log
+    presetRangeMin: 1
+    presetRangeMax: 200
+    binWeighting: vol
+    autoRange: false
+
+  - parameter: radius
+    nBin: 30
+    binScale: linear
+    presetRangeMin: 1
+    presetRangeMax: 200
+    binWeighting: vol
+    autoRange: false

@@ -21,6 +21,9 @@ html_description: |
           
           <p>It's been a long time coming, but now it's here: the graphical user interface to help you use McSAS3. </p>
 
+          <h3> Get started quickly!!! </h3>
+          <p><i>If you cannot wait to get McSASing, you can get started quickly by loading the "Quick Start demo" prefab template from the pulldown menu at the top of this tab. This will pre-populate the fields with a test datafile (the OG from the original McSAS), which you can use directly to run a simple optimization, a 10-repetition optimization and some histogramming. </i></p>
+
           <h2> McWho? </h2>
           <p> McSAS3 (and its older sibling, McSAS) is a program to analyse small-angle scattering patterns using a Monte Carlo approach. If used right, with the appropriate model, it will fit your data perfectly, that is to say, to within the uncertainty of your datapoints. 
           Underneath, it superimposes a set (300 or so) of identical model instances. 
@@ -28,7 +31,8 @@ html_description: |
           <p> Usually, McSAS is used to extract form-free <b><i>size</i></b> distributions and volume fractions assuming, say, spherical scatterers. But it's good that you now understand it's not limited to that. Choose well, and it will make you happy. </p>
 
           <h2>Getting Started</h2>
-          <p>This McSAS3GUI interface guides you through setting up and running McSAS3 optimizations and histogramming. It is not required to run McSAS3, that can run headlessly in any data pipeline. This is just here to help you set that up, or help you deal with fitting small batches</p>
+          <p>This McSAS3GUI interface guides you through setting up and running McSAS3 optimizations and histogramming. It is not required to run McSAS3, McSAS3 itself can run headlessly and can be integrated in any data pipeline. This UI is just here to help you set that up, or help you deal with fitting small batches</p>
+
           <h3>Oh my god, it's full of tabs!</h3>
           <p>The UI has a handful of tabs, you nominally run through them from left to right. </p>
           <p>You are now here, in the "Getting Started"-tab.</p>
@@ -55,72 +59,11 @@ html_description: |
           <p>Once you are happy with the settings, you can save your settings, and run the full optimization on a (batch of) files in the "Optimization..." tab. </p>
 
           <h3> The "Optimization..."-tab </h3>
+          <p>In this tab, you can run a full McSAS3 optimization on a (batch of) files. While drag-and-drop does not work yet, you can add files to the list using the "Load Datafile(s)" button. You will also need to specify the data load and optimization configurations, these can be dragged and dropped into their respective lines. "Run McSAS3 Optimization ... " will then sequentially run the full optimization on all the files in the list. This has been tested with thousands of datafiles (and copious amounts of time). The results are stored in the filename_output.hdf5 files appearing alongside the originals. </p>
 
           <h3> The "Hist Settings"-tab </h3>
+          <p> Now you can configure how the histogramming should be done. You can choose a template from the pulldown menu at the top, with either a single or a dual histogram configured (you can add as many as you want). The configuration should speak for itself. At the moment, only volume-weighted histogramming is implemented, and the "minimum visibility limit" from the OG McSAS has not yet been implemented. Population </p>
 
           <h3> The "(Re-)Histogramming..."-tab </h3>
       </body>
   </html>
-
-# data files relevant to this example: test files, and files for the full optimization.
-data_files:
-  read_test_file: testdata/quickstartdemo1.csv
-  histogramming_test_file: testdata/quickstartdemo1_output.hdf5 # does not exist yet, but will be created by the optmization tab
-  optimization_files: 
-    - testdata/quickstartdemo1.csv
-    # - testdata/quickstartdemo2.csv
-  histogramming_files: # again, these will be created upon optimization
-    - testdata/quickstartdemo1_output.hdf5
-    # - testdata/quickstartdemo2_output.hdf5
-
-# read, run, histogram configurations in the directories specified below: 
-configurations: 
-  read_configuration_file: read_configurations/read_csv_simple.yaml
-  run_configuration_file: run_configuration/run_config_spheres_auto.yaml
-  histogramming_configuration_file: hist_configurations/hist_config_dual.yaml
-
-# the configurations in the files given before will be overwritten if these are defined:
-read_configuration: # if defined, this will be stored to a temporary file and loaded instead
-  # Note that the units are assumed to be 1/(m sr) for I and 1/nm for Q
-  nbins: 90
-  dataRange:
-    - 0.0 # minimum
-    - .inf # maximum. Positive infinity starts with a dot. negative infinity is -.inf
-  csvargs:
-    sep: ";"
-    header: null # null translates to a Python "None"
-    names: # column names
-      - "Q"
-      - "I"
-      - "ISigma"
-
-run_configuration: # ibid.
-  modelName: "sphere"
-  nContrib: 300
-  modelDType: "default"
-  fitParameterLimits:
-    radius: 'auto' # automatic determination of radius limits based on the data limits. This is replaced in McHat by actual limits
-  staticParameters:
-    sld: 33.4 # units of 1e-6 A^-2
-    sld_solvent: 0
-  maxIter: 100000
-  maxAccept: 1000
-  convCrit: 1
-  nRep: 10
-  nCores: 5
-
-hist_configuration: # ibid.
-  - parameter: "radius"
-    nBin: 50
-    binScale: "log"
-    presetRangeMin: 3.14
-    presetRangeMax: 314
-    binWeighting: "vol"
-    autoRange: True
-  - parameter: "radius"
-    nBin: 50
-    binScale: "linear"
-    presetRangeMin: 10
-    presetRangeMax: 100
-    binWeighting: "vol"
-    autoRange: False

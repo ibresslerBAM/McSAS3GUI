@@ -6,6 +6,7 @@ fitParameterLimits:
 staticParameters:
   sld: 33.4 # units of 1e-6 A^-2
   sld_solvent: 0
+  background: 0
 maxIter: 100000
 maxAccept: 1000
 convCrit: 1

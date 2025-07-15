@@ -6,6 +6,10 @@ fitParameterLimits:
 staticParameters:
   sld: 33.4
   sld_solvent: 0
+  background: 0
+  structure_factor_mode: 1
+  radius_effective_mode: 1
+  volfraction: 0.4
 maxIter: 100000
 maxAccept: 1000
 convCrit: 1
