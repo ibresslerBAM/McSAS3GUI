@@ -120,12 +120,19 @@ class FileSelectionWidget(QWidget):
 
     def eventFilter(self, source, event):
         """Handle drag-and-drop events."""
+        # # print event enum list : 
+        # for e in dir(event.Type):
+        #     if e.startswith("Drag") or e.startswith("Drop"):
+        #         print(f"Event Type: {e} = {getattr(event.Type, e)}")
         if source == self.file_table.viewport():
-            if event.type() == event.Type.DragEnter:
+            if event.type() in (event.Type.DragEnter, event.Type.DragMove):
+                # == event.Type.DragEnter or event.type() == event.Type.DragMove:
                 mime_data = event.mimeData()
                 if mime_data.hasUrls():
                     event.acceptProposedAction()
-            elif event.type() == event.Type.Drop:
+                    return True
+
+            if event.type() == event.Type.Drop:
                 mime_data = event.mimeData()
                 if mime_data.hasUrls():
                     for url in mime_data.urls():
@@ -138,5 +145,10 @@ class FileSelectionWidget(QWidget):
                             logging.debug(f"Adding file to table: {file_path}")
                             self.add_file_to_table(str(file_path.as_posix()))
                     event.acceptProposedAction()
-            return True
+                    return True
+                
+            # this must be here to render:
+            return super().eventFilter(source, event)
+        
+        # If the event is not handled, pass it to the base class
         return super().eventFilter(source, event)
