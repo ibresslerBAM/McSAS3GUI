@@ -1,11 +1,12 @@
 # src/gui/file_line_selection_widget.py
 
 from PyQt6.QtWidgets import QLineEdit, QHBoxLayout, QPushButton, QWidget, QFileDialog
-from PyQt6.QtCore import pyqtSignal, Qt #, QDragEnterEvent, QDropEvent, Qt
+from PyQt6.QtCore import pyqtSignal, Qt  # , QDragEnterEvent, QDropEvent, Qt
 from pathlib import Path
 import logging
 
 logger = logging.getLogger("McSAS3")
+
 
 class FilePathLineEdit(QLineEdit):
     """A QLineEdit widget with drag-and-drop and manual editing support."""
@@ -78,7 +79,6 @@ class FileLineSelectionWidget(QWidget):
         self.browse_button = QPushButton("Browse...")
         self.browse_button.clicked.connect(self.select_file)
         layout.addWidget(self.browse_button)
-
 
         self.setLayout(layout)
 

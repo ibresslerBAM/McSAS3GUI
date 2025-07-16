@@ -22,7 +22,7 @@ class FileSelectionWidget(QWidget):
         # File Table
         self.file_table = QTableWidget(0, 2)
         self.file_table.setStyleSheet("""
-            QTableWidget {
+            QTableWidget, QTableView, QTableWidget::item {
                 background-color: palette(base);
                 color: palette(text);
                 font-family: "Arial", "Helvetica", "Sans-Serif";
@@ -34,11 +34,14 @@ class FileSelectionWidget(QWidget):
                 font-weight: bold;
             }
             """)
+
         self.file_table.setHorizontalHeaderLabels(["File Name", "Status"])
         self.file_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         self.file_table.setColumnWidth(1, 150)  # Set fixed width for status column
         self.file_table.setAcceptDrops(True)
-        # self.file_table.setDragDropMode(QTableWidget.DragDropMode.DropOnly)
+        self.file_table.viewport().installEventFilter(self)
+        self.file_table.setDragEnabled(True)
+
         layout.addWidget(self.file_table)
 
         # Buttons for managing data files
@@ -52,25 +55,6 @@ class FileSelectionWidget(QWidget):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
-
-    def dragEnterEvent(self, event):
-        """Accept drag events containing files."""
-        if event.mimeData().hasUrls():
-            event.acceptProposedAction()
-            logger.debug("Drag enter event accepted.")
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        """Handle dropped files."""
-        if event.mimeData().hasUrls():
-            for url in event.mimeData().urls():
-                file_path = url.toLocalFile()
-                if (Path(file_path).suffix in self.acceptable_file_types.split()) or ("*.*" in self.acceptable_file_types.split()):
-                    self.add_file_to_table(file_path)
-            event.accept()
-        else:
-            event.ignore()
 
     def load_data_files(self):
         """Open a file dialog to load data files and add them to the table."""
@@ -90,10 +74,12 @@ class FileSelectionWidget(QWidget):
         if not self.is_file_in_table(file_name):
             row_position = self.file_table.rowCount()
             self.file_table.insertRow(row_position)
+            # print(f"Adding file: {file_name}, type: {type(file_name)}")
             self.file_table.setItem(row_position, 0, QTableWidgetItem(file_name))
             status_item = QTableWidgetItem("Pending")
             status_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.file_table.setItem(row_position, 1, status_item)
+
             logger.debug(f"Added file to table: {file_name}")
 
     def clear_selected_files(self):
@@ -143,9 +129,14 @@ class FileSelectionWidget(QWidget):
                 mime_data = event.mimeData()
                 if mime_data.hasUrls():
                     for url in mime_data.urls():
-                        file_path = url.toLocalFile()
-                        if Path(file_path).suffix in self.acceptable_file_types.split():
-                            self.add_file_to_table(file_path)
+                        logging.debug(f"Dropped URL: {url.toString()}")
+                        file_path = Path(url.toLocalFile())
+                        if "*.*" in self.acceptable_file_types or any(
+                                file_path.suffix.lower() == ft.lower().lstrip("*")
+                                for ft in self.acceptable_file_types.split()
+                                ):
+                            logging.debug(f"Adding file to table: {file_path}")
+                            self.add_file_to_table(str(file_path.as_posix()))
                     event.acceptProposedAction()
             return True
         return super().eventFilter(source, event)

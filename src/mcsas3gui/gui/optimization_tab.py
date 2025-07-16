@@ -14,8 +14,10 @@ from ..utils.file_utils import get_main_path
 
 logger = logging.getLogger("McSAS3")
 
+
 class OptimizationRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
+
     def __init__(self, data_loading_tab, run_settings_tab, parent=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
@@ -24,8 +26,8 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
 
         self.file_selection_widget = FileSelectionWidget(
             title="Loaded Files:",
-            acceptable_file_types="*",
-            last_used_directory = self.last_used_directory
+            acceptable_file_types="*.*",
+            last_used_directory=self.last_used_directory
         )
 
         layout = QVBoxLayout()
@@ -61,7 +63,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
 
         self.setLayout(layout)
 
-    def load_data_config_file(self, file_path:str):
+    def load_data_config_file(self, file_path: str):
         """Process the file after selection or drop."""
         if Path(file_path).exists():
             self.pdi = []   # clear any previous information
@@ -72,7 +74,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
             logger.warning(f"File does not exist: {file_path}")
             QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
-    def load_run_config_file(self, file_path:str):
+    def load_run_config_file(self, file_path: str):
         """Process the file after selection or drop."""
         if Path(file_path).exists():
             self.pdi = []   # clear any previous information
