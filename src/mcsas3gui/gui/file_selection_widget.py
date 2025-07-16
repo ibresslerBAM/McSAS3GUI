@@ -123,33 +123,39 @@ class FileSelectionWidget(QWidget):
                 break
 
     def eventFilter(self, source, event):
-        """Handle drag-and-drop events."""
+        """
+        Handle drag-and-drop events.
+        TODO: table still accepts internal drag-and-drop events, which should be disabled as they overwrite the file name in the other entries. 
+        """
 
-        if source == self.file_table.viewport():
+        if source != self.file_table.viewport():
+            # If the event is not from the viewport, pass it to the parent class
+            return super().eventFilter(source, event)
+
+        if event.type() not in (event.Type.DragEnter, event.Type.DragMove, event.Type.Drop):
+                return super().eventFilter(source, event)
+
+        mime_data = event.mimeData()
+        if mime_data.hasUrls():
+
             if event.type() in (event.Type.DragEnter, event.Type.DragMove):
-                # == event.Type.DragEnter or event.type() == event.Type.DragMove:
-                mime_data = event.mimeData()
-                if mime_data.hasUrls():
-                    event.acceptProposedAction()
-                    return True
+                event.acceptProposedAction()
+                return True
 
             if event.type() == event.Type.Drop:
-                mime_data = event.mimeData()
-                if mime_data.hasUrls():
-                    for url in mime_data.urls():
-                        logging.debug(f"Dropped URL: {url.toString()}")
-                        file_path = Path(url.toLocalFile())
-                        if "*.*" in self.acceptable_file_types or any(
-                                file_path.suffix.lower() == ft.lower().lstrip("*")
-                                for ft in self.acceptable_file_types.split()
-                                ):
-                            logging.debug(f"Adding file to table: {file_path}")
-                            self.add_file_to_table(str(file_path.as_posix()))
-                    event.acceptProposedAction()
-                    return True
-                
-            # this must be here to render:
-            return super().eventFilter(source, event)
-        
-        # If the event is not handled, pass it to the base class
+                for url in mime_data.urls():
+                    logging.debug(f"Dropped URL: {url.toString()}")
+                    file_path = Path(url.toLocalFile())
+
+                    if "*.*" in self.acceptable_file_types or any(
+                            file_path.suffix.lower() == ft.lower().lstrip("*")
+                            for ft in self.acceptable_file_types.split()
+                            ):
+                        logging.debug(f"Adding file to table: {file_path}")
+                        self.add_file_to_table(str(file_path.as_posix()))
+                event.acceptProposedAction()
+                return True
+            
+        # this must be here to render:
         return super().eventFilter(source, event)
+        
