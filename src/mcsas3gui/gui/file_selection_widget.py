@@ -27,6 +27,10 @@ class FileSelectionWidget(QWidget):
                 color: palette(text);
                 font-family: "Arial", "Helvetica", "Sans-Serif";
             }
+            QTableWidget::item:selected {
+                background-color: #cce5ff;  /* light blue highlight */
+                color: black;               /* ensure text is visible */
+            }
             QHeaderView::section {
                 background-color: palette(base);
                 color: palette(text);
@@ -120,10 +124,7 @@ class FileSelectionWidget(QWidget):
 
     def eventFilter(self, source, event):
         """Handle drag-and-drop events."""
-        # # print event enum list : 
-        # for e in dir(event.Type):
-        #     if e.startswith("Drag") or e.startswith("Drop"):
-        #         print(f"Event Type: {e} = {getattr(event.Type, e)}")
+
         if source == self.file_table.viewport():
             if event.type() in (event.Type.DragEnter, event.Type.DragMove):
                 # == event.Type.DragEnter or event.type() == event.Type.DragMove:
