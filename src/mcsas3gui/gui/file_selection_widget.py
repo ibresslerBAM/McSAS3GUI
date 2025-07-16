@@ -23,11 +23,13 @@ class FileSelectionWidget(QWidget):
         self.file_table = QTableWidget(0, 2)
         self.file_table.setStyleSheet("""
             QTableWidget {
-                background-color: #f7f7ff;
-                font-family: "Segoe UI", "Helvetica", "Sans-Serif";
+                background-color: palette(base);
+                color: palette(text);
+                font-family: "Arial", "Helvetica", "Sans-Serif";
             }
             QHeaderView::section {
-                background-color: #eeeeee;
+                background-color: palette(base);
+                color: palette(text);
                 padding: 4px;
                 font-weight: bold;
             }

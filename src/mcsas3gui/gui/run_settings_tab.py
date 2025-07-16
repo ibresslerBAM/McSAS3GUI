@@ -61,9 +61,8 @@ class RunSettingsTab(QWidget):
         self.info_field.setStyleSheet(
             """
             QTextEdit, QPlainTextEdit {
-                background-color: #f7f7ff;
-                border: 1px solid #ccc;
-                padding: 8px;
+                background-color: palette(base);
+                color: palette(text);
             }
             """
             )

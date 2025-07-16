@@ -65,9 +65,8 @@ class FileLineSelectionWidget(QWidget):
         self.file_path_line.setStyleSheet(
             """
                 QLineEdit {
-                    background-color: #f7f7ff;
-                    border: 1px solid #ccc;
-                    padding: 4px;
+                    background-color: palette(base);
+                    color: palette(text);
                     font-family: "Courier New", monospace;
                 }
             """)
