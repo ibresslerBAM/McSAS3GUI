@@ -119,7 +119,8 @@ class GettingStartedTab(QWidget):
         self.info_viewer.setStyleSheet(
             """
             QTextBrowser {
-                background-color: #f7f7ff;
+                background-color: palette(base);
+                color: palette(text);
                 border: 1px solid #ccc;
                 padding: 8px;
             }
