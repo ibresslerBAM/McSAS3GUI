@@ -108,6 +108,7 @@ class GettingStartedTab(QWidget):
 
         # Dropdown for default run configuration files
         self.config_dropdown = QComboBox()
+
         self.refresh_config_dropdown()
         layout.addWidget(QLabel("Select prefab template:"))
         layout.addWidget(self.config_dropdown)
@@ -115,6 +116,15 @@ class GettingStartedTab(QWidget):
 
         self.info_viewer = QTextBrowser()
         self.info_viewer.setOpenExternalLinks(True)
+        self.info_viewer.setStyleSheet(
+            """
+            QTextBrowser {
+                background-color: #f7f7ff;
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+            """
+            )
 
         # Load HTML content
         html_content = """<h1>Welcome to McSAS3</h1> - select a template from the dropdown menu above to start exploring!"""

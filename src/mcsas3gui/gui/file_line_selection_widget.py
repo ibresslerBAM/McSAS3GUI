@@ -62,6 +62,15 @@ class FileLineSelectionWidget(QWidget):
 
         # Drag-and-drop and editable QLineEdit
         self.file_path_line = FilePathLineEdit()
+        self.file_path_line.setStyleSheet(
+            """
+                QLineEdit {
+                    background-color: #f7f7ff;
+                    border: 1px solid #ccc;
+                    padding: 4px;
+                    font-family: "Courier New", monospace;
+                }
+            """)
         self.file_path_line.setPlaceholderText(placeholder_text)
         self.file_path_line.fileChanged.connect(self._emit_file_selected)
         layout.addWidget(self.file_path_line)

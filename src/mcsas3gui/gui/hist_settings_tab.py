@@ -60,6 +60,15 @@ class HistogramSettingsTab(QWidget):
 
         # Information Output
         self.info_field = QTextEdit()
+        self.info_field.setStyleSheet(
+            """
+            QTextEdit, QPlainTextEdit {
+                background-color: #f7f7ff;
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+            """
+            )
         self.info_field.setReadOnly(True)
         layout.addWidget(QLabel("Test Output:"))
         layout.addWidget(self.info_field)

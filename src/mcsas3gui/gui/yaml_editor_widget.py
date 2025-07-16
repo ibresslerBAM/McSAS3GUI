@@ -109,6 +109,14 @@ class YAMLEditorWidget(QWidget):
 
         # YAML Editor with Error Highlighting
         self.yaml_editor = QTextEdit()
+        self.yaml_editor.setStyleSheet("""
+                QTextEdit, QPlainTextEdit {
+                    background-color: #f7f7ff;
+                    border: 1px solid #cccccc;
+                    padding: 6px;
+                    font-family: "Courier New", monospace;
+                }
+            """)
         self.yaml_editor.setAcceptDrops(False)  # Disable drag-and-drop
         self.error_highlighter = YAMLErrorHighlighter(self.yaml_editor.document())
         self.yaml_editor.textChanged.connect(self.validate_yaml)  # Connect validation

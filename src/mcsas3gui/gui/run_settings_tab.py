@@ -23,7 +23,7 @@ class RunSettingsTab(QWidget):
     """Tab for configuring run settings, including YAML editor and test optimization."""
 
     default_configs = []  # List to hold default configuration files
-    
+
     def __init__(self, parent=None, data_loading_tab=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
@@ -36,6 +36,7 @@ class RunSettingsTab(QWidget):
 
         # Dropdown for default run configuration files
         self.config_dropdown = QComboBox()
+
         self.refresh_config_dropdown()
         layout.addWidget(QLabel("Select Default Run Configuration:"))
         layout.addWidget(self.config_dropdown)
@@ -57,6 +58,15 @@ class RunSettingsTab(QWidget):
 
         # Info text field for model parameters
         self.info_field = QTextEdit()
+        self.info_field.setStyleSheet(
+            """
+            QTextEdit, QPlainTextEdit {
+                background-color: #f7f7ff;
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+            """
+            )
         self.info_field.setReadOnly(True)
         layout.addWidget(QLabel("Model Parameters Info:"))
         layout.addWidget(self.info_field)

@@ -24,7 +24,7 @@ from PyQt6.QtGui import QTextOption, QTextCursor  # Import QTextOption for word 
 logger = logging.getLogger("McSAS3")
 
 class DataLoadingTab(QWidget):
-    
+
     default_configs = []  # List to hold default configuration files
 
     def __init__(self, parent=None):
@@ -66,10 +66,19 @@ class DataLoadingTab(QWidget):
 
         # Error Message Display at the Bottom
         self.error_message_display = QTextEdit()
+        self.error_message_display.setStyleSheet(
+            """
+            QTextEdit, QPlainTextEdit {
+                background-color: #f7f7ff;
+                border: 1px solid #ccc;
+                padding: 8px;
+            }
+            """
+            )
         self.error_message_display.setReadOnly(True)  # Make the display non-editable
         self.error_message_display.setWordWrapMode(QTextOption.WrapMode.WordWrap)  # Enable word wrap
         self.error_message_display.setPlaceholderText("Messages will be displayed here.")
-        self.error_message_display.setStyleSheet("color: darkgreen;")  # Display messages in green
+        # self.error_message_display.setStyleSheet("color: darkgreen;")  # Display messages in green
         layout.addWidget(self.error_message_display)
 
         self.setLayout(layout)
