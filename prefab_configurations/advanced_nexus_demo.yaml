@@ -31,7 +31,7 @@ html_description: |
           <p>We adjust the range of the data, increase the minimum uncertainty estimate (to de-emphasize the most precise datapoints), and use a model of spheres with a hardsphere structure factor to get close to a perfect fit. </p>
           <p>Finally, we histogram it in three different ways. Note from the last two histograms that changing from a linear to a logarithmic binning has an effect on the histogram (as the spacing between bin edges is now changed), but not on the population parameters! </p>
           <p>Remember, if you make any adjustments to the read, run or histogramming configurations, you have to explicitly save them before you can use them in the Optimization or histogramming tabs... </p>
-          <p>Note: try and see the effect of adding "logRandom: true" to the run configuration (note the capitalization). It will use a log-uniform random number generator and should reduce the number of required iterations from about 86000 to about 5000. This setting can be useful for data with a broad range.</p>
+          <p>Note: try and see the effect of adding "logRandom: true" to the run configuration (note the capitalization). It will use a log-uniform random number generator and should reduce the number of required iterations from about 86000 to about 5000. This setting can be useful for data with a broad range. FutureWarning: This is a beta test implementation, and the syntax will change in the future.</p>
       </body>
   </html>
 

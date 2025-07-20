@@ -33,8 +33,9 @@ html_description: |
               <li>A document with information on the units, the sample composition and photon energy used for the collection of the data</li>
               <li>An excel sheet in which the researcher could fill in their results</li>
           </ul>
-          <p>The results of this were published in <a href="https://doi.org/10.1107/S1600576723008324">Pauw et al., J. Appl. Cryst. 2023</a>. </p>
+          <p>The results of this were published in <a href="https://doi.org/10.1107/S1600576723008324">Pauw et al., J. Appl. Cryst. 2023</a>. The original information sent out to participants (together with the datasets) can be downloaded from here <a href="https://zenodo.org/records/7506365">https://zenodo.org/records/7506365</a>.</p>
 
+          <p>This demo uses the first dataset, which is a measurement of a bimodal gold nanoparticle suspension. The smaller population was half the size and only 10% in quantity of the larger population, to ensure the signal of the smaller particles are nicely hidden. This was the easiest dataset to fit with McSAS. </p>
       </body>
   </html>
 
