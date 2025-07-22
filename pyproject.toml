@@ -20,7 +20,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 authors = [{name = "Brian R. Pauw", email = "brian.pauw@bam.de"}]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 
 dependencies = [
     "PyQt6>=6.7.1",
