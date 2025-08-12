@@ -1,0 +1,22 @@
+# Changes here will be overwritten by Copier
+_commit: v1.1.6
+_src_path: yapy-copier-template
+author_count: 2
+author_emails: brian.pauw@bam.de, ingo.bressler@bam.de
+author_names: Brian R. Pauw, Ingo Breßler
+author_websites: https://lookingatnothing.com, https://github.com/ibresslerBAM
+copyright_from: 2024
+docs_url: https://BAMresearch.github.io/mcsas3gui
+license: MIT
+project_description: A graphical user interface for the McSAS3 software.
+project_name: McSAS3GUI
+pypi_host: test.pypi.org
+python_versions:
+- '3.12'
+release_date_question: 24-10-31
+repo_hosting_domain: github.com
+repo_main_branch: main
+repo_name: mcsas3gui
+repo_userorg: BAMresearch
+sphinx_theme: furo
+version: 0.1.1

@@ -1,0 +1,45 @@
+name: Build
+
+# Controls when the action will run.
+on:
+  workflow_call:
+
+jobs:
+  build:
+    # convert this to a matrix if builds differ between platforms
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+    steps:
+
+      - name: Checking out the repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setting up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            ci/requirements.txt
+
+      - name: Install dependencies
+        shell: sh
+        run: |
+          [ -d "/c/miniconda" ] && /c/miniconda/condabin/activate.bat
+          python -m pip install --upgrade pip
+          python -m pip install --progress-bar=off -r ci/requirements.txt
+
+      - name: Build
+        run: tox -e build -v
+
+      - name: Upload packages for publishing job
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.os }}
+          path: |
+              dist/*.whl
+              dist/*.tar.gz
