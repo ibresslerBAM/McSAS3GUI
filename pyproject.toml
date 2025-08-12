@@ -77,7 +77,7 @@ path = "coverage-report"  # see coverage.yml github action
 # on version numbers: https://peps.python.org/pep-0440/
 # and bottom of https://softwareengineering.stackexchange.com/a/151558
 [tool.semantic_release]
-#major_on_zero = false # no major release when current major version is zero
+allow_zero_version = true
 version_variables = [                        # version location
     "src/mcsas3gui/__init__.py:__version__",
     "docs/conf.py:version",
