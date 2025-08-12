@@ -1,16 +1,19 @@
-import sys
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QLineEdit, QProgressBar, QMessageBox, QHBoxLayout, QHeaderView
-)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-import subprocess
-from pathlib import Path
 import logging
+import sys
+from pathlib import Path
 
-from .file_selection_widget import FileSelectionWidget
-from .file_line_selection_widget import FileLineSelectionWidget
-from ..utils.task_runner_mixin import TaskRunnerMixin
+from PyQt6.QtWidgets import (
+    QMessageBox,
+    QProgressBar,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
+
 from ..utils.file_utils import get_main_path
+from ..utils.task_runner_mixin import TaskRunnerMixin
+from .file_line_selection_widget import FileLineSelectionWidget
+from .file_selection_widget import FileSelectionWidget
 
 logger = logging.getLogger("McSAS3")
 
@@ -27,7 +30,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         self.file_selection_widget = FileSelectionWidget(
             title="Loaded Files:",
             acceptable_file_types="*.*",
-            last_used_directory=self.last_used_directory
+            last_used_directory=self.last_used_directory,
         )
 
         layout = QVBoxLayout()
@@ -36,20 +39,26 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         # Data Configuration Section
         self.data_config_selector = FileLineSelectionWidget(
             placeholder_text="Select data load configuration file",
-            file_types="YAML data config Files (*.yaml)"
+            file_types="YAML data config Files (*.yaml)",
         )
-        self.data_config_selector.fileSelected.connect(self.load_data_config_file)  # Handle file selection
-        # self.data_loading_tab.yaml_editor_widget.yaml_editor.fileSaved.connect(self.data_config_selector.set_file_path)  # Handle file save
+        self.data_config_selector.fileSelected.connect(
+            self.load_data_config_file
+        )  # Handle file selection
+        # self.data_loading_tab.yaml_editor_widget.yaml_editor.fileSaved.\
+        # connect(self.data_config_selector.set_file_path)  # Handle file save
 
         layout.addWidget(self.data_config_selector)
 
         # Run Configuration Section
         self.run_config_selector = FileLineSelectionWidget(
             placeholder_text="Select run configuration file",
-            file_types="YAML run config Files (*.yaml)"
+            file_types="YAML run config Files (*.yaml)",
         )
-        self.run_config_selector.fileSelected.connect(self.load_run_config_file)  # Handle file selection
-        # self.run_settings_tab.yaml_editor_widget.yaml_editor.fileSaved.connect(self.run_config_selector.set_file_path)  # Handle file save
+        self.run_config_selector.fileSelected.connect(
+            self.load_run_config_file
+        )  # Handle file selection
+        # self.run_settings_tab.yaml_editor_widget.yaml_editor.fileSaved.\
+        # connect(self.run_config_selector.set_file_path)  # Handle file save
 
         layout.addWidget(self.run_config_selector)
 
@@ -66,7 +75,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
     def load_data_config_file(self, file_path: str):
         """Process the file after selection or drop."""
         if Path(file_path).exists():
-            self.pdi = []   # clear any previous information
+            self.pdi = []  # clear any previous information
             logger.debug(f"File loaded: {file_path}")
             self.selected_file = file_path
             self.data_config_selector.set_file_path(self.selected_file)
@@ -77,7 +86,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
     def load_run_config_file(self, file_path: str):
         """Process the file after selection or drop."""
         if Path(file_path).exists():
-            self.pdi = []   # clear any previous information
+            self.pdi = []  # clear any previous information
             logger.debug(f"File loaded: {file_path}")
             self.selected_file = file_path
             self.run_config_selector.set_file_path(self.selected_file)

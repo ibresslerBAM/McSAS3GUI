@@ -1,18 +1,25 @@
-import os
 import logging
+import os
+import subprocess
+import sys
 from pathlib import Path
 from sys import platform
-import sys
 from tempfile import gettempdir
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QFileDialog, QMessageBox, QComboBox
-)
-import yaml
-from .yaml_editor_widget import YAMLEditorWidget
-from .file_line_selection_widget import FileLineSelectionWidget
-from ..utils.file_utils import get_default_config_files, get_main_path
 
-import subprocess
+import yaml
+from PyQt6.QtWidgets import (
+    QComboBox,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
+from ..utils.file_utils import get_default_config_files, get_main_path
+from .file_line_selection_widget import FileLineSelectionWidget
+from .yaml_editor_widget import YAMLEditorWidget
 
 logger = logging.getLogger("McSAS3")
 
@@ -37,18 +44,22 @@ class HistogramSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for histogram settings
-        self.yaml_editor_widget = YAMLEditorWidget(directory=self.main_path / "hist_configurations", parent=self, multipart=True)
+        self.yaml_editor_widget = YAMLEditorWidget(
+            directory=self.main_path / "hist_configurations", parent=self, multipart=True
+        )
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
-        self.yaml_editor_widget.fileSaved.connect(self.refresh_config_dropdown)  # Refresh dropdown after save
+        self.yaml_editor_widget.fileSaved.connect(
+            self.refresh_config_dropdown
+        )  # Refresh dropdown after save
 
         # File Selection for Test Datafile
         self.test_file_selector = FileLineSelectionWidget(
             placeholder_text="Select test McSAS Optimization Result file",
-            file_types="McSAS3 Optimization Result Files (*.nxs *.hdf5 *.h5)"
+            file_types="McSAS3 Optimization Result Files (*.nxs *.hdf5 *.h5)",
         )
         self.test_file_selector.fileSelected.connect(self.load_test_file)
         layout.addWidget(self.test_file_selector)
@@ -67,7 +78,7 @@ class HistogramSettingsTab(QWidget):
                 color: palette(text);
             }
             """
-            )
+        )
         self.info_field.setReadOnly(True)
         layout.addWidget(QLabel("Test Output:"))
         layout.addWidget(self.info_field)
@@ -79,10 +90,10 @@ class HistogramSettingsTab(QWidget):
             self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
 
-    def load_test_file(self, file_path:str):
+    def load_test_file(self, file_path: str):
         """Process the file after selection or drop."""
         if Path(file_path).exists():
-            self.pdi = []   # clear any previous information
+            self.pdi = []  # clear any previous information
             logger.debug(f"File loaded: {file_path}")
             self.selected_file = file_path
             self.test_file_selector.set_file_path(self.selected_file)
@@ -90,15 +101,17 @@ class HistogramSettingsTab(QWidget):
             logger.warning(f"File does not exist: {file_path}")
             QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
-    def refresh_config_dropdown(self, savedName:str|None = None): # args added to handle signal
+    def refresh_config_dropdown(self, savedName: str | None = None):  # args added to handle signal
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
-        self.default_configs = get_default_config_files(directory= self.main_path / "hist_configurations")
+        self.default_configs = get_default_config_files(
+            directory=self.main_path / "hist_configurations"
+        )
         self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
-        if savedName is not None: 
+        if savedName is not None:
             listName = str(Path(savedName).name)
-            if listName in self.default_configs: 
+            if listName in self.default_configs:
                 self.config_dropdown.setCurrentText(listName)
             else:
                 self.config_dropdown.setCurrentText("<Custom...>")
@@ -119,7 +132,7 @@ class HistogramSettingsTab(QWidget):
                 # Construct the full path to the selected file
                 file_path = self.main_path / "hist_configurations" / selected_file
                 if file_path.is_file():
-                    with open(file_path, 'r') as file:
+                    with open(file_path, "r") as file:
                         # Parse YAML content as structured data
                         yaml_content = list(yaml.safe_load_all(file))
                     # Pass parsed content to the YAML editor
@@ -132,7 +145,9 @@ class HistogramSettingsTab(QWidget):
                     QMessageBox.warning(self, "Error", f"File not found: {file_path}")
             except Exception as e:
                 logger.error(f"Error loading histogramming configuration: {e}")
-                QMessageBox.critical(self, "Error", f"Error loading histogramming configuration: {e}")
+                QMessageBox.critical(
+                    self, "Error", f"Error loading histogramming configuration: {e}"
+                )
 
     def on_yaml_editor_change(self):
         """Mark the dropdown as <Custom...> if the YAML content is modified by the user."""
@@ -158,18 +173,25 @@ class HistogramSettingsTab(QWidget):
 
             # Store the yaml content in a temporary file
             yaml_file = Path(gettempdir()) / "hist_config_temp_ui.yaml"
-            with open(yaml_file, 'w') as file:
-                yaml.dump_all(yaml_content, file, default_flow_style=False)  # Use dump_all for multi-document YAML
+            with open(yaml_file, "w") as file:
+                yaml.dump_all(
+                    yaml_content, file, default_flow_style=False
+                )  # Use dump_all for multi-document YAML
 
             logger.debug("Launching histogramming test.")
             self.info_field.append("Launching histogramming test...")
 
             # Construct the command
             command = [
-                str(Path(sys.executable).as_posix()), "-m", "mcsas3.mcsas3_cli_histogrammer",
-                "-r", test_file,
-                "-H", str(yaml_file),
-                "-i", "1",
+                str(Path(sys.executable).as_posix()),
+                "-m",
+                "mcsas3.mcsas3_cli_histogrammer",
+                "-r",
+                test_file,
+                "-H",
+                str(yaml_file),
+                "-i",
+                "1",
                 # "-v", "-d"
             ]
 
@@ -186,8 +208,8 @@ class HistogramSettingsTab(QWidget):
             result = subprocess.run(
                 command,
                 cwd=working_directory,  # Run the command from the specified directory
-                capture_output=True,    # Capture stdout and stderr
-                text=True               # Decode output as text
+                capture_output=True,  # Capture stdout and stderr
+                text=True,  # Decode output as text
             )
 
             # Handle the output
@@ -203,13 +225,13 @@ class HistogramSettingsTab(QWidget):
             logger.debug("Temporary config file deleted.")
             logger.debug("Opening PDF")
 
-            if 'darwin' in platform.lower():       # macOS
+            if "darwin" in platform.lower():  # macOS
                 subprocess.Popen([f"open {Path(test_file).with_suffix('.pdf')}"], shell=True)
-            elif 'win' in platform.lower():    # Windows
-                pdf_file = str(Path(test_file).with_suffix('.pdf').as_posix())
+            elif "win" in platform.lower():  # Windows
+                pdf_file = str(Path(test_file).with_suffix(".pdf").as_posix())
                 logging.info(f"Showing PDF histogram in {pdf_file}")
                 os.startfile(pdf_file)  # Open the PDF file
-            else:                                   # linux variants
+            else:  # linux variants
                 subprocess.Popen([f"xdg-open {Path(test_file).with_suffix('.pdf')}"], shell=True)
 
         except Exception as e:

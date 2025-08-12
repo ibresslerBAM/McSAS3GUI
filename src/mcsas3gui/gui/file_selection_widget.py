@@ -1,15 +1,30 @@
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QTableWidget, QTableWidgetItem, QPushButton, QFileDialog, QHBoxLayout, QHeaderView
-)
-from PyQt6.QtCore import Qt
-from pathlib import Path
 import logging
+from pathlib import Path
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (
+    QFileDialog,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 logger = logging.getLogger("McSAS3")
 
 
 class FileSelectionWidget(QWidget):
-    def __init__(self, title: str, acceptable_file_types: str = "*.*", last_used_directory: Path = Path("~").expanduser(), parent=None):
+    def __init__(
+        self,
+        title: str,
+        acceptable_file_types: str = "*.*",
+        last_used_directory: Path = Path("~").expanduser(),
+        parent=None,
+    ):
         super().__init__(parent)
         self.acceptable_file_types = acceptable_file_types
         self.last_used_directory = last_used_directory
@@ -21,7 +36,8 @@ class FileSelectionWidget(QWidget):
 
         # File Table
         self.file_table = QTableWidget(0, 2)
-        self.file_table.setStyleSheet("""
+        self.file_table.setStyleSheet(
+            """
             QTableWidget, QTableView, QTableWidget::item {
                 background-color: palette(base);
                 color: palette(text);
@@ -37,7 +53,8 @@ class FileSelectionWidget(QWidget):
                 padding: 4px;
                 font-weight: bold;
             }
-            """)
+            """
+        )
 
         self.file_table.setHorizontalHeaderLabels(["File Name", "Status"])
         self.file_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
@@ -66,7 +83,7 @@ class FileSelectionWidget(QWidget):
             self,
             "Select Files",
             str(self.last_used_directory),
-            f"Files ({self.acceptable_file_types})"
+            f"Files ({self.acceptable_file_types})",
         )
         if file_names:
             self.last_used_directory = Path(file_names[0]).parent
@@ -101,18 +118,15 @@ class FileSelectionWidget(QWidget):
 
     def get_selected_files(self):
         """Retrieve the list of selected files from the table."""
-        return [
-            self.file_table.item(row, 0).text()
-            for row in range(self.file_table.rowCount())
-        ]
-    
-    def set_status_by_row(self, row:int = None, status: str = 'Pending'):
+        return [self.file_table.item(row, 0).text() for row in range(self.file_table.rowCount())]
+
+    def set_status_by_row(self, row: int = None, status: str = "Pending"):
         """Set the status for a specific file."""
         if row is not None:
             self.file_table.item(row, 1).setText(status)
             return
 
-    def set_status_by_file_name(self, file_path: str | Path, status: str = 'Pending'):
+    def set_status_by_file_name(self, file_path: str | Path, status: str = "Pending"):
         """Set the status for a specific file."""
         if isinstance(file_path, Path):
             file_path = str(file_path)
@@ -125,7 +139,8 @@ class FileSelectionWidget(QWidget):
     def eventFilter(self, source, event):
         """
         Handle drag-and-drop events.
-        TODO: table still accepts internal drag-and-drop events, which should be disabled as they overwrite the file name in the other entries. 
+        TODO: table still accepts internal drag-and-drop events,
+              which should be disabled as they overwrite the file name in the other entries.
         """
 
         if source != self.file_table.viewport():
@@ -133,7 +148,7 @@ class FileSelectionWidget(QWidget):
             return super().eventFilter(source, event)
 
         if event.type() not in (event.Type.DragEnter, event.Type.DragMove, event.Type.Drop):
-                return super().eventFilter(source, event)
+            return super().eventFilter(source, event)
 
         mime_data = event.mimeData()
         if mime_data.hasUrls():
@@ -148,14 +163,13 @@ class FileSelectionWidget(QWidget):
                     file_path = Path(url.toLocalFile())
 
                     if "*.*" in self.acceptable_file_types or any(
-                            file_path.suffix.lower() == ft.lower().lstrip("*")
-                            for ft in self.acceptable_file_types.split()
-                            ):
+                        file_path.suffix.lower() == ft.lower().lstrip("*")
+                        for ft in self.acceptable_file_types.split()
+                    ):
                         logging.debug(f"Adding file to table: {file_path}")
                         self.add_file_to_table(str(file_path.as_posix()))
                 event.acceptProposedAction()
                 return True
-            
+
         # this must be here to render:
         return super().eventFilter(source, event)
-        

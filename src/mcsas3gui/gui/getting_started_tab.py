@@ -1,12 +1,13 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextBrowser
-import yaml
 from pathlib import Path
+
+import yaml
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import QComboBox, QLabel, QTextBrowser, QVBoxLayout, QWidget
+
 from mcsas3gui.utils.file_utils import get_default_config_files, get_main_path
 from mcsas3gui.utils.yaml_utils import load_yaml_file
-from .yaml_editor_widget import CustomDumper
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox
 
+from .yaml_editor_widget import CustomDumper
 
 TEMP_DIR = get_main_path() / "temporary_files"
 READ_CONFIG_PATH = TEMP_DIR / "data.yaml"
@@ -34,20 +35,30 @@ def write_hist_yaml_block(hist_configs, filepath):
     with open(filepath, "w", encoding="utf-8") as f:
         if isinstance(hist_configs, list):
             if len(hist_configs) == 1:
-                yaml.dump(hist_configs[0], f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+                yaml.dump(
+                    hist_configs[0],
+                    f,
+                    Dumper=CustomDumper,
+                    default_flow_style=None,
+                    sort_keys=False,
+                )
             else:
                 for i, block in enumerate(hist_configs):
                     # if i > 0:
                     f.write("---\n")
-                    yaml.dump(block, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+                    yaml.dump(
+                        block, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False
+                    )
         else:
             # fallback for single dict passed instead of a list
-            yaml.dump(hist_configs, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
+            yaml.dump(
+                hist_configs, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False
+            )
 
 
 def load_template(template_path: Path) -> dict:
     """
-    Load a project template (contained in a YAML structure) 
+    Load a project template (contained in a YAML structure)
     and generate temp files if inline configurations exist.
 
     Returns the full parsed dictionary so GUI can populate HTML, files, etc.
@@ -85,13 +96,15 @@ def load_template(template_path: Path) -> dict:
 
 
 class GettingStartedTab(QWidget):
-    def __init__(self,
-                 parent=None,
-                 data_loading_tab=None,
-                 run_settings_tab=None,
-                 optimization_tab=None,
-                 hist_settings_tab=None,
-                 histogramming_tab=None):
+    def __init__(
+        self,
+        parent=None,
+        data_loading_tab=None,
+        run_settings_tab=None,
+        optimization_tab=None,
+        hist_settings_tab=None,
+        histogramming_tab=None,
+    ):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
         self.run_settings_tab = run_settings_tab
@@ -125,10 +138,13 @@ class GettingStartedTab(QWidget):
                 padding: 8px;
             }
             """
-            )
+        )
 
         # Load HTML content
-        html_content = """<h1>Welcome to McSAS3</h1> - select a template from the dropdown menu above to start exploring!"""
+        html_content = (
+            "<h1>Welcome to McSAS3</h1> - "
+            "select a template from the dropdown menu above to start exploring!"
+        )
         self.info_viewer.setHtml(html_content)
 
         layout.addWidget(self.info_viewer)
@@ -154,66 +170,95 @@ class GettingStartedTab(QWidget):
             except Exception as e:
                 print(f"[WARNING] Failed to load YAML content for {list_name}: {e}")
 
-    def refresh_config_dropdown(self, savedName: str | None = "getting_started.yaml"): # args is a dummy argument to handle signals
+    def refresh_config_dropdown(
+        self, savedName: str | None = "getting_started.yaml"
+    ):  # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(directory=self.main_path / "prefab_configurations")
+        default_configs = get_default_config_files(
+            directory=self.main_path / "prefab_configurations"
+        )
         # sort entries alphabetically, but make sure "getting_started.yaml" is always first
         if savedName and savedName in default_configs:
             default_configs.remove(savedName)
         default_configs.sort()
         if savedName:
             default_configs.insert(0, savedName)
-        
+
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.setCurrentText(savedName)  # Set a default selection
 
     def load_selected_default_config(self):
-        """Load the selected YAML configuration file."""        
+        """Load the selected YAML configuration file."""
 
         selected_file = self.config_dropdown.currentText()
         if selected_file:
             try:
-                yaml_content = load_template(self.main_path / f"prefab_configurations/{selected_file}")
-                self.info_viewer.setHtml(yaml_content.get("html_description", "<p>No description available.</p>"))
+                yaml_content = load_template(
+                    self.main_path / f"prefab_configurations/{selected_file}"
+                )
+                self.info_viewer.setHtml(
+                    yaml_content.get("html_description", "<p>No description available.</p>")
+                )
 
                 # Apply data reading settings
                 file_dict = yaml_content.get("configurations", {})
                 if self.data_loading_tab and "read_configuration_file" in file_dict:
-                    self.apply_yaml_to_tab_pulldown(self.data_loading_tab, file_dict["read_configuration_file"])
-                    self.optimization_tab.data_config_selector.set_file_path(str((self.main_path / file_dict["read_configuration_file"]).as_posix()))
+                    self.apply_yaml_to_tab_pulldown(
+                        self.data_loading_tab, file_dict["read_configuration_file"]
+                    )
+                    self.optimization_tab.data_config_selector.set_file_path(
+                        str((self.main_path / file_dict["read_configuration_file"]).as_posix())
+                    )
 
                 # Apply run settings
                 if self.run_settings_tab and "run_configuration_file" in file_dict:
-                    self.apply_yaml_to_tab_pulldown(self.run_settings_tab, file_dict["run_configuration_file"])
-                    self.optimization_tab.run_config_selector.set_file_path(str((self.main_path / file_dict["run_configuration_file"]).as_posix()))
+                    self.apply_yaml_to_tab_pulldown(
+                        self.run_settings_tab, file_dict["run_configuration_file"]
+                    )
+                    self.optimization_tab.run_config_selector.set_file_path(
+                        str((self.main_path / file_dict["run_configuration_file"]).as_posix())
+                    )
 
                 # Apply hist settings
                 if self.hist_settings_tab and "hist_configuration_file" in file_dict:
-                    self.apply_yaml_to_tab_pulldown(self.hist_settings_tab, file_dict["hist_configuration_file"])
-                    self.histogramming_tab.histogram_config_selector.set_file_path(str((self.main_path / file_dict["hist_configuration_file"]).as_posix()))
+                    self.apply_yaml_to_tab_pulldown(
+                        self.hist_settings_tab, file_dict["hist_configuration_file"]
+                    )
+                    self.histogramming_tab.histogram_config_selector.set_file_path(
+                        str((self.main_path / file_dict["hist_configuration_file"]).as_posix())
+                    )
 
-                # set data files for the tabs: 
+                # set data files for the tabs:
                 yaml_content = yaml_content.get("data_files", {})
                 if self.data_loading_tab and "read_test_file" in yaml_content:
-                    self.data_loading_tab.file_line_selection_widget.set_file_path(str(self.main_path / yaml_content["read_test_file"]))
+                    self.data_loading_tab.file_line_selection_widget.set_file_path(
+                        str(self.main_path / yaml_content["read_test_file"])
+                    )
 
-                if self.data_loading_tab and "histogramming_test_file" in yaml_content: # does not show as it doesn't exist.. unfortunately
-                    self.hist_settings_tab.test_file_selector.set_file_path(str(self.main_path / yaml_content["histogramming_test_file"]))
+                if (
+                    self.data_loading_tab and "histogramming_test_file" in yaml_content
+                ):  # does not show as it doesn't exist.. unfortunately
+                    self.hist_settings_tab.test_file_selector.set_file_path(
+                        str(self.main_path / yaml_content["histogramming_test_file"])
+                    )
 
                 # Lastly, fill the files into the optimization tab and histogramming run tab
                 if self.optimization_tab and "optimization_files" in yaml_content:
                     for file_path in yaml_content["optimization_files"]:
-                        self.optimization_tab.file_selection_widget.add_file_to_table(str(self.main_path / file_path))
+                        self.optimization_tab.file_selection_widget.add_file_to_table(
+                            str(self.main_path / file_path)
+                        )
 
                 # Lastly, fill the files into the optimization tab and histogramming run tab
                 if self.histogramming_tab and "histogramming_files" in yaml_content:
                     for file_path in yaml_content["histogramming_files"]:
-                        self.histogramming_tab.file_selection_widget.add_file_to_table(str(self.main_path / file_path))
+                        self.histogramming_tab.file_selection_widget.add_file_to_table(
+                            str(self.main_path / file_path)
+                        )
 
             except Exception as e:
                 self.info_viewer.setHtml(f"<p>Error loading template: {e}</p>")
-
 
     def handle_dropdown_change(self, index: int):
         # selected_text = self.config_dropdown.itemText(index)

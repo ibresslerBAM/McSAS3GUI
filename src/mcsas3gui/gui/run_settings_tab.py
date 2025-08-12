@@ -1,23 +1,27 @@
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Sequence
+
 import h5py
-# from tempfile import NamedTemporaryFile
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QTextEdit, QPushButton, QDialog
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-from PyQt6.QtCore import QTimer
 from matplotlib import pyplot as plt
-from .yaml_editor_widget import YAMLEditorWidget
-from ..utils.file_utils import get_default_config_files, get_main_path
-from ..utils.yaml_utils import load_yaml_file
-from sasmodels.core import load_model_info
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+
 # from mcsas3.McSASOptimizer import McSASOptimizer
 # from mcsas3.mc_data_1d import McData1D
 from mcsas3.mc_hat import McHat
-import numpy as np
+from PyQt6.QtCore import QTimer
+
+# from tempfile import NamedTemporaryFile
+from PyQt6.QtWidgets import QComboBox, QDialog, QLabel, QPushButton, QTextEdit, QVBoxLayout, QWidget
+from sasmodels.core import load_model_info
+
+from ..utils.file_utils import get_default_config_files, get_main_path
+from ..utils.yaml_utils import load_yaml_file
+from .yaml_editor_widget import YAMLEditorWidget
 
 logger = logging.getLogger("McSAS3")
+
 
 class RunSettingsTab(QWidget):
     """Tab for configuring run settings, including YAML editor and test optimization."""
@@ -43,13 +47,17 @@ class RunSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for run settings configuration
-        self.yaml_editor_widget = YAMLEditorWidget(self.main_path / "run_configurations", parent=self, multipart=False)
+        self.yaml_editor_widget = YAMLEditorWidget(
+            self.main_path / "run_configurations", parent=self, multipart=False
+        )
         layout.addWidget(QLabel("Run Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
         # Monitor changes in the YAML editor to detect custom changes
         self.yaml_editor_widget.yaml_editor.textChanged.connect(self.on_yaml_editor_change)
-        self.yaml_editor_widget.fileSaved.connect(self.refresh_config_dropdown)  # Refresh dropdown after save
+        self.yaml_editor_widget.fileSaved.connect(
+            self.refresh_config_dropdown
+        )  # Refresh dropdown after save
 
         # Test Run Button
         test_run_button = QPushButton("Test single repetition on loaded Test Data")
@@ -65,7 +73,7 @@ class RunSettingsTab(QWidget):
                 color: palette(text);
             }
             """
-            )
+        )
         self.info_field.setReadOnly(True)
         layout.addWidget(QLabel("Model Parameters Info:"))
         layout.addWidget(self.info_field)
@@ -75,15 +83,19 @@ class RunSettingsTab(QWidget):
             self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
 
-    def refresh_config_dropdown(self, savedName:str|None = None): # args is a dummy argument to handle signals
+    def refresh_config_dropdown(
+        self, savedName: str | None = None
+    ):  # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        self.default_configs = get_default_config_files(directory=self.main_path / "run_configurations")
+        self.default_configs = get_default_config_files(
+            directory=self.main_path / "run_configurations"
+        )
         self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
-        if savedName is not None: 
+        if savedName is not None:
             listName = str(Path(savedName).name)
-            if listName in self.default_configs: 
+            if listName in self.default_configs:
                 self.config_dropdown.setCurrentText(listName)
             else:
                 self.config_dropdown.setCurrentText("<Custom...>")
@@ -155,7 +167,7 @@ class RunSettingsTab(QWidget):
             try:
                 model_info = load_model_info(model_name)
                 model_parameters = model_info.parameters.defaults.copy()
-                exclude_patterns = [r'up_.*', r'.*_M0', r'.*_mtheta', r'.*_mphi']
+                exclude_patterns = [r"up_.*", r".*_M0", r".*_mtheta", r".*_mphi"]
                 filtered_parameters = {
                     param: default_value
                     for param, default_value in model_parameters.items()
@@ -166,7 +178,10 @@ class RunSettingsTab(QWidget):
                 for param, default_value in filtered_parameters.items():
                     info_text += f"    - {param}: {default_value}\n"
 
-                info_text += "  To configure parameters, add each to 'fitParameterLimits' or 'staticParameters' in the YAML editor.\n"
+                info_text += (
+                    "  To configure parameters, add each to 'fitParameterLimits'"
+                    " or 'staticParameters' in the YAML editor.\n"
+                )
                 info_text += "  For 'fitParameterLimits', specify lower and upper limits as a list."
             except Exception as e:
                 info_text += f"  Error loading model parameters: {e}\n"
@@ -195,7 +210,9 @@ class RunSettingsTab(QWidget):
                 combined_yaml_content = {}
                 for doc in yaml_content:
                     if not isinstance(doc, dict):
-                        self.info_field.setPlainText("One or more YAML documents are not valid configurations.")
+                        self.info_field.setPlainText(
+                            "One or more YAML documents are not valid configurations."
+                        )
                         return
                     combined_yaml_content.update(doc)
                 yaml_content = combined_yaml_content
@@ -213,21 +230,33 @@ class RunSettingsTab(QWidget):
             logger.debug(f"Temporary HDF5 file created at: {self.tempFileName}")
 
             mds.store(self.tempFileName)
-            yaml_content.update({'nRep': 1})  # Update configuration for single repetition
+            yaml_content.update({"nRep": 1})  # Update configuration for single repetition
 
             mh = McHat(**yaml_content)
             mh.run(mds.measData.copy(), self.tempFileName)
 
             self.info_field.setPlainText("Optimization completed successfully.")
 
-            with h5py.File(self.tempFileName, 'r') as h5f:
-                fitQ = h5f['/analyses/MCResult1/mcdata/measData/Q'][()].flatten()  # model Q
-                fitI = h5f['/analyses/MCResult1/optimization/repetition0/modelI'][()]  # model intensity
-                acceptedGofs = h5f['/analyses/MCResult1/optimization/repetition0/acceptedGofs'][()]  # list of GOFs
-                acceptedSteps = h5f['/analyses/MCResult1/optimization/repetition0/acceptedSteps'][()]  # steps accepted
-                maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][()]  # max iterations
-                maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][()]  # max accepts
-                x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][()]  # scaling and background
+            with h5py.File(self.tempFileName, "r") as h5f:
+                fitQ = h5f["/analyses/MCResult1/mcdata/measData/Q"][()].flatten()  # model Q
+                fitI = h5f["/analyses/MCResult1/optimization/repetition0/modelI"][
+                    ()
+                ]  # model intensity
+                acceptedGofs = h5f["/analyses/MCResult1/optimization/repetition0/acceptedGofs"][
+                    ()
+                ]  # list of GOFs
+                acceptedSteps = h5f["/analyses/MCResult1/optimization/repetition0/acceptedSteps"][
+                    ()
+                ]  # steps accepted
+                maxIter = h5f["/analyses/MCResult1/optimization/repetition0/maxIter"][
+                    ()
+                ]  # max iterations
+                maxAccept = h5f["/analyses/MCResult1/optimization/repetition0/maxAccept"][
+                    ()
+                ]  # max accepts
+                x0 = h5f["/analyses/MCResult1/optimization/repetition0/x0"][
+                    ()
+                ]  # scaling and background
 
             self._plot_fit(
                 fit_q=fitQ,
@@ -236,7 +265,7 @@ class RunSettingsTab(QWidget):
                 accepted_steps=acceptedSteps,
                 max_iter=maxIter,
                 max_accept=maxAccept,
-                x0=x0
+                x0=x0,
             )
 
             # Clean up the temporary file
@@ -254,7 +283,7 @@ class RunSettingsTab(QWidget):
         accepted_steps: Sequence[int],
         max_iter: int,
         max_accept: int,
-        x0: Sequence[float]
+        x0: Sequence[float],
     ) -> None:
         """
         Plot the fit results in the existing data plot or reopen it if not open,
@@ -277,7 +306,7 @@ class RunSettingsTab(QWidget):
 
             # Plot the fit on the existing data plot with zorder for proper layering
             scaled_fit_intensity = x0[0] * fit_intensity + x0[1]
-            ax.plot(fit_q, scaled_fit_intensity, 'r--', label="Test McSAS3 Optimization", zorder=10)
+            ax.plot(fit_q, scaled_fit_intensity, "r--", label="Test McSAS3 Optimization", zorder=10)
             ax.legend()
             data_tab.fig.canvas.draw()
 
@@ -290,7 +319,8 @@ class RunSettingsTab(QWidget):
 
     def _plot_optimization_metrics(self, accepted_gofs, accepted_steps, max_iter, max_accept):
         """
-        Plot the optimization metrics: accepted goodness-of-fit values vs. accepted steps in a QDialog.
+        Plot the optimization metrics:
+            accepted goodness-of-fit values vs. accepted steps in a QDialog.
 
         Args:
             accepted_gofs (array-like): Accepted goodness-of-fit values.
@@ -300,8 +330,14 @@ class RunSettingsTab(QWidget):
         """
         try:
             # Check if the optimization metrics dialog is open, create it if necessary
-            if not hasattr(self, "metrics_dialog") or self.metrics_dialog is None or not self.metrics_dialog.isVisible():
-                self.metrics_dialog = QDialog() # do not use self or it'll end up on the main window
+            if (
+                not hasattr(self, "metrics_dialog")
+                or self.metrics_dialog is None
+                or not self.metrics_dialog.isVisible()
+            ):
+                self.metrics_dialog = (
+                    QDialog()
+                )  # do not use self or it'll end up on the main window
                 self.metrics_dialog.setWindowTitle("Optimization Metrics")
                 self.metrics_dialog.setMinimumSize(700, 500)
                 layout = QVBoxLayout(self.metrics_dialog)
@@ -318,28 +354,28 @@ class RunSettingsTab(QWidget):
 
             # Clear the previous plot and redraw
             self.metrics_ax.clear()
-            self.metrics_ax.plot(accepted_steps, accepted_gofs, 'bo-', label="Accepted GOFs")
-            self.metrics_ax.set_xscale('linear')
-            self.metrics_ax.set_yscale('log')
+            self.metrics_ax.plot(accepted_steps, accepted_gofs, "bo-", label="Accepted GOFs")
+            self.metrics_ax.set_xscale("linear")
+            self.metrics_ax.set_yscale("log")
             self.metrics_ax.set_xlabel("Total Attempts")
             self.metrics_ax.set_ylabel("Goodness of Fit (GOF)")
             self.metrics_ax.set_title("Optimization Metrics")
 
             # Display maxIter and maxAccept as annotations
             self.metrics_ax.text(
-                0.95, 0.75,
+                0.95,
+                0.75,
                 f"Max Iter: {max_iter}\nMax Accept: {max_accept}",
                 transform=self.metrics_ax.transAxes,
                 fontsize=10,
-                verticalalignment='bottom',
-                horizontalalignment='right',
-                bbox=dict(boxstyle="round,pad=0.3", edgecolor='black', facecolor='white')
+                verticalalignment="bottom",
+                horizontalalignment="right",
+                bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"),
             )
 
             self.metrics_ax.legend()
             self.metrics_fig.tight_layout()
             self.metrics_fig.canvas.draw()
-
 
         except Exception as e:
             logger.error(f"Error plotting optimization metrics: {e}")

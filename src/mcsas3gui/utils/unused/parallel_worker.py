@@ -1,7 +1,7 @@
-from pathlib import Path
-
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+
 from PyQt6.QtCore import QThread, pyqtSignal
 
 
@@ -29,7 +29,9 @@ class ParallelWorker(QThread):
             futures = []
 
             for i, file_path in enumerate(self.files):
-                result_file = str(Path(file_path).with_suffix("").parent / (Path(file_path).stem + "_mcsas3.hdf5"))
+                result_file = str(
+                    Path(file_path).with_suffix("").parent / (Path(file_path).stem + "_mcsas3.hdf5")
+                )
                 keywords = {
                     "input_file": file_path,
                     "result_file": result_file,
@@ -37,10 +39,8 @@ class ParallelWorker(QThread):
                 }
                 command = self.command_template.format(**keywords)
                 self.command_signal.emit(command)
-                
-                futures.append(
-                    executor.submit(self.execute_command, command, i)
-                )
+
+                futures.append(executor.submit(self.execute_command, command, i))
 
             for future in as_completed(futures):
                 if self.abort_requested:
@@ -58,7 +58,9 @@ class ParallelWorker(QThread):
     def execute_command(self, command, row):
         try:
             self.status_signal.emit(row, "Running")
-            process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            process = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
             self.processes.append(process)
             stdout, stderr = process.communicate()
             self.processes.remove(process)

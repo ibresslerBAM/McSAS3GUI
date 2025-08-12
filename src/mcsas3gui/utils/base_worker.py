@@ -1,10 +1,12 @@
+import logging
 import shlex
-from PyQt6.QtCore import QThread, pyqtSignal
 import subprocess
 from pathlib import Path
-import logging
+
+from PyQt6.QtCore import QThread, pyqtSignal
 
 logger = logging.getLogger("McSAS3")
+
 
 class BaseWorker(QThread):
     progress_signal = pyqtSignal(int)
@@ -37,14 +39,12 @@ class BaseWorker(QThread):
             if result_file.is_file():
                 result_file.unlink()
 
-
             # Add file-specific keywords, quoting paths
             keywords = {
                 "input_file": self.quote_path(Path(file_name)),
                 "result_file": self.quote_path(Path(result_file)),
-                **{key: self.quote_path(value) for key, value in self.extra_keywords.items()}
+                **{key: self.quote_path(value) for key, value in self.extra_keywords.items()},
             }
-
 
             # Replace placeholders in the command template
             command = shlex.split(self.command_template.format(**keywords))

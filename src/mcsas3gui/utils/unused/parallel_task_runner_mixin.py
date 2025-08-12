@@ -1,6 +1,5 @@
-from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QThreadPool
-
+from PyQt6.QtWidgets import QMessageBox
 from utils.parallel_worker import ParallelWorker
 
 
@@ -42,7 +41,7 @@ class TaskRunnerMixin:
         """Append the resolved command to the output field."""
         if hasattr(self, "output_field"):
             self.output_field.append(f"Command: {command}")
-        
+
     def update_progress(self, progress):
         """Update the progress bar."""
         self.progress_bar.setValue(progress)
@@ -66,7 +65,7 @@ class TaskRunnerMixin:
         QMessageBox.information(self, "Run Tasks", "All tasks are complete.")
 
     def abort_running_tasks(self):
-        if hasattr(self, 'worker') and self.worker.isRunning():
+        if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.abort()
         """Abort all running tasks."""
         for worker in self.running_tasks:
