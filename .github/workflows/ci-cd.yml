@@ -15,7 +15,6 @@ jobs:
   # check if everything works first
   tests:
     #uses: ./.github/workflows/tests.yml
-    runs-on: ubuntu-latest
     steps:
       - run: echo
 
