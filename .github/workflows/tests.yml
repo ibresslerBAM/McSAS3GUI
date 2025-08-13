@@ -48,6 +48,7 @@ jobs:
           PLATFORM="$(echo "$RUNNER_OS" | tr '[:upper:]' '[:lower:]')"
           REQFN="ci/requirements_$PLATFORM.txt"
           if [ "$PLATFORM" = "linux" ] && [ -f "$REQFN" ]; then
+            sudo apt-get update  # update package DB, to avoid outdated lists
             sudo apt-get -y install $(sed -e '/^\s*#/d' "$REQFN")
           elif [ "$PLATFORM" = "windows" ] && [ -f "$REQFN" ]; then
             choco install $(sed -e '/^\s*#/d' "$REQFN")
