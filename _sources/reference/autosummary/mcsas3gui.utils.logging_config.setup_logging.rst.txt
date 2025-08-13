@@ -1,0 +1,6 @@
+mcsas3gui.utils.logging\_config.setup\_logging
+==============================================
+
+.. currentmodule:: mcsas3gui.utils.logging_config
+
+.. autofunction:: setup_logging

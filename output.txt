@@ -1,0 +1,3 @@
+readme.rst:3: [broken] https://github.com/BAMresearch/mcsas3gui/compare/v0.1.2...main: 404 Client Error: Not Found for url: https://github.com/BAMresearch/mcsas3gui/compare/v0.1.2...main
+readme.rst:3: [broken] https://github.com/BAMresearch/mcsas3gui/actions/workflows/ci-cd.yml/badge.svg: 404 Client Error: Not Found for url: https://github.com/BAMresearch/mcsas3gui/actions/workflows/ci-cd.yml/badge.svg
+contributing.rst:52: [broken] https://tox.wiki/en/latest/installation.html: 429 Client Error: Too Many Requests for url: https://tox.wiki/en/latest/installation.html

@@ -1,0 +1,6 @@
+mcsas3gui.utils.file\_utils.get\_default\_config\_files
+=======================================================
+
+.. currentmodule:: mcsas3gui.utils.file_utils
+
+.. autofunction:: get_default_config_files

@@ -1,0 +1,31 @@
+mcsas3gui.utils.base\_worker
+============================
+
+.. automodule:: mcsas3gui.utils.base_worker
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: class.rst
+   
+      BaseWorker
+   
+   
+
+   
+   
+   
+
+
+

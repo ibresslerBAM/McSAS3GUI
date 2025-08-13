@@ -1,0 +1,31 @@
+mcsas3gui.utils.file\_utils
+===========================
+
+.. automodule:: mcsas3gui.utils.file_utils
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_default_config_files
+      get_main_path
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

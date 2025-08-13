@@ -1,0 +1,33 @@
+﻿mcsas3gui
+=========
+
+.. automodule:: mcsas3gui
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: module.rst
+   :recursive:
+
+   gui
+   utils
+

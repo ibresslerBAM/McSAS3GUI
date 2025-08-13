@@ -1,0 +1,6 @@
+mcsas3gui.utils.file\_utils.get\_main\_path
+===========================================
+
+.. currentmodule:: mcsas3gui.utils.file_utils
+
+.. autofunction:: get_main_path

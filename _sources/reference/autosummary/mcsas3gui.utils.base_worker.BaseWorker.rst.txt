@@ -1,0 +1,109 @@
+mcsas3gui.utils.base\_worker.BaseWorker
+=======================================
+
+.. currentmodule:: mcsas3gui.utils.base_worker
+
+.. autoclass:: BaseWorker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BaseWorker.__init__
+      ~BaseWorker.blockSignals
+      ~BaseWorker.childEvent
+      ~BaseWorker.children
+      ~BaseWorker.connectNotify
+      ~BaseWorker.currentThread
+      ~BaseWorker.currentThreadId
+      ~BaseWorker.customEvent
+      ~BaseWorker.deleteLater
+      ~BaseWorker.disconnect
+      ~BaseWorker.disconnectNotify
+      ~BaseWorker.dumpObjectInfo
+      ~BaseWorker.dumpObjectTree
+      ~BaseWorker.dynamicPropertyNames
+      ~BaseWorker.event
+      ~BaseWorker.eventDispatcher
+      ~BaseWorker.eventFilter
+      ~BaseWorker.exec
+      ~BaseWorker.exit
+      ~BaseWorker.findChild
+      ~BaseWorker.findChildren
+      ~BaseWorker.idealThreadCount
+      ~BaseWorker.inherits
+      ~BaseWorker.installEventFilter
+      ~BaseWorker.isCurrentThread
+      ~BaseWorker.isFinished
+      ~BaseWorker.isInterruptionRequested
+      ~BaseWorker.isMainThread
+      ~BaseWorker.isQuickItemType
+      ~BaseWorker.isRunning
+      ~BaseWorker.isSignalConnected
+      ~BaseWorker.isWidgetType
+      ~BaseWorker.isWindowType
+      ~BaseWorker.killTimer
+      ~BaseWorker.loopLevel
+      ~BaseWorker.metaObject
+      ~BaseWorker.moveToThread
+      ~BaseWorker.msleep
+      ~BaseWorker.objectName
+      ~BaseWorker.parent
+      ~BaseWorker.priority
+      ~BaseWorker.property
+      ~BaseWorker.pyqtConfigure
+      ~BaseWorker.quit
+      ~BaseWorker.quote_path
+      ~BaseWorker.receivers
+      ~BaseWorker.removeEventFilter
+      ~BaseWorker.requestInterruption
+      ~BaseWorker.run
+      ~BaseWorker.sender
+      ~BaseWorker.senderSignalIndex
+      ~BaseWorker.serviceLevel
+      ~BaseWorker.setEventDispatcher
+      ~BaseWorker.setObjectName
+      ~BaseWorker.setParent
+      ~BaseWorker.setPriority
+      ~BaseWorker.setProperty
+      ~BaseWorker.setServiceLevel
+      ~BaseWorker.setStackSize
+      ~BaseWorker.setTerminationEnabled
+      ~BaseWorker.signalsBlocked
+      ~BaseWorker.sleep
+      ~BaseWorker.stackSize
+      ~BaseWorker.start
+      ~BaseWorker.startTimer
+      ~BaseWorker.terminate
+      ~BaseWorker.thread
+      ~BaseWorker.timerEvent
+      ~BaseWorker.tr
+      ~BaseWorker.usleep
+      ~BaseWorker.wait
+      ~BaseWorker.yieldCurrentThread
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BaseWorker.destroyed
+      ~BaseWorker.finished
+      ~BaseWorker.finished_signal
+      ~BaseWorker.objectNameChanged
+      ~BaseWorker.progress_signal
+      ~BaseWorker.started
+      ~BaseWorker.staticMetaObject
+      ~BaseWorker.status_signal
+   
+   

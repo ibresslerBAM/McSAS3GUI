@@ -1,0 +1,41 @@
+mcsas3gui.gui.getting\_started\_tab
+===================================
+
+.. automodule:: mcsas3gui.gui.getting_started_tab
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      ensure_temp_dir
+      load_template
+      write_hist_yaml_block
+      write_yaml_file
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: class.rst
+   
+      GettingStartedTab
+   
+   
+
+   
+   
+   
+
+
+

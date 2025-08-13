@@ -1,0 +1,540 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Authors" href="authors.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>CHANGELOG - McSAS3GUI 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=34bb78ad" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">McSAS3GUI 0.1.2 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">McSAS3GUI 0.1.2 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">McSAS3GUI (v0.1.2)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference/index.html">Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.html">mcsas3gui</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of mcsas3gui</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.html">mcsas3gui.gui</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.data_loading_tab.html">mcsas3gui.gui.data_loading_tab</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.data_loading_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.data_loading_tab.DataLoadingTab.html">mcsas3gui.gui.data_loading_tab.DataLoadingTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.file_line_selection_widget.html">mcsas3gui.gui.file_line_selection_widget</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.file_line_selection_widget</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.file_line_selection_widget.FileLineSelectionWidget.html">mcsas3gui.gui.file_line_selection_widget.FileLineSelectionWidget</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.file_line_selection_widget.FilePathLineEdit.html">mcsas3gui.gui.file_line_selection_widget.FilePathLineEdit</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.file_selection_widget.html">mcsas3gui.gui.file_selection_widget</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.file_selection_widget</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.file_selection_widget.FileSelectionWidget.html">mcsas3gui.gui.file_selection_widget.FileSelectionWidget</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.html">mcsas3gui.gui.getting_started_tab</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.getting_started_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.ensure_temp_dir.html">mcsas3gui.gui.getting_started_tab.ensure_temp_dir</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.load_template.html">mcsas3gui.gui.getting_started_tab.load_template</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.write_hist_yaml_block.html">mcsas3gui.gui.getting_started_tab.write_hist_yaml_block</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.write_yaml_file.html">mcsas3gui.gui.getting_started_tab.write_yaml_file</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.getting_started_tab.GettingStartedTab.html">mcsas3gui.gui.getting_started_tab.GettingStartedTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.hist_run_tab.html">mcsas3gui.gui.hist_run_tab</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.hist_run_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.hist_run_tab.HistRunTab.html">mcsas3gui.gui.hist_run_tab.HistRunTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.hist_settings_tab.html">mcsas3gui.gui.hist_settings_tab</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.hist_settings_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.hist_settings_tab.HistogramSettingsTab.html">mcsas3gui.gui.hist_settings_tab.HistogramSettingsTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.main_window.html">mcsas3gui.gui.main_window</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.main_window</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.main_window.McSAS3MainWindow.html">mcsas3gui.gui.main_window.McSAS3MainWindow</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.optimization_tab.html">mcsas3gui.gui.optimization_tab</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.optimization_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.optimization_tab.OptimizationRunTab.html">mcsas3gui.gui.optimization_tab.OptimizationRunTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.run_settings_tab.html">mcsas3gui.gui.run_settings_tab</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.run_settings_tab</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.run_settings_tab.RunSettingsTab.html">mcsas3gui.gui.run_settings_tab.RunSettingsTab</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.yaml_editor_widget.html">mcsas3gui.gui.yaml_editor_widget</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of mcsas3gui.gui.yaml_editor_widget</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.yaml_editor_widget.CustomDumper.html">mcsas3gui.gui.yaml_editor_widget.CustomDumper</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.yaml_editor_widget.YAMLEditorWidget.html">mcsas3gui.gui.yaml_editor_widget.YAMLEditorWidget</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.gui.yaml_editor_widget.YAMLErrorHighlighter.html">mcsas3gui.gui.yaml_editor_widget.YAMLErrorHighlighter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.html">mcsas3gui.utils</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.base_worker.html">mcsas3gui.utils.base_worker</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.base_worker</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.base_worker.BaseWorker.html">mcsas3gui.utils.base_worker.BaseWorker</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.file_utils.html">mcsas3gui.utils.file_utils</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.file_utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.file_utils.get_default_config_files.html">mcsas3gui.utils.file_utils.get_default_config_files</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.file_utils.get_main_path.html">mcsas3gui.utils.file_utils.get_main_path</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.logging_config.html">mcsas3gui.utils.logging_config</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.logging_config</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.logging_config.setup_logging.html">mcsas3gui.utils.logging_config.setup_logging</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.task_runner_mixin.html">mcsas3gui.utils.task_runner_mixin</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.task_runner_mixin</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.task_runner_mixin.TaskRunnerMixin.html">mcsas3gui.utils.task_runner_mixin.TaskRunnerMixin</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_syntax_highlighter.html">mcsas3gui.utils.yaml_syntax_highlighter</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.yaml_syntax_highlighter</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_syntax_highlighter.YAMLHighlighter.html">mcsas3gui.utils.yaml_syntax_highlighter.YAMLHighlighter</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_utils.html">mcsas3gui.utils.yaml_utils</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle navigation of mcsas3gui.utils.yaml_utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_utils.check_yaml_syntax.html">mcsas3gui.utils.yaml_utils.check_yaml_syntax</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_utils.load_yaml_file.html">mcsas3gui.utils.yaml_utils.load_yaml_file</a></li>
+<li class="toctree-l5"><a class="reference internal" href="reference/autosummary/mcsas3gui.utils.yaml_utils.save_yaml_file.html">mcsas3gui.utils.yaml_utils.save_yaml_file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">CHANGELOG</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/BAMresearch/mcsas3gui">View on GitHub</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/changelog.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="changelog">
+<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="v0-1-2-2025-08-13">
+<h2>v0.1.2 (2025-08-13)<a class="headerlink" href="#v0-1-2-2025-08-13" title="Link to this heading">¶</a></h2>
+<section id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Project</strong>: McSAS3 dependency available on PyPI now (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/cf280f89e12b583ac9ce267d0912645a8cdb914c"><code class="docutils literal notranslate"><span class="pre">cf280f8</span></code></a>)</p></li>
+</ul>
+</section>
+<section id="code-style">
+<h3>Code style<a class="headerlink" href="#code-style" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>General</strong>: formatting improved (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/9159f968c560aebdd19b741570a2dff1c0b54e3f"><code class="docutils literal notranslate"><span class="pre">9159f96</span></code></a>)</p></li>
+</ul>
+</section>
+<section id="continuous-integration">
+<h3>Continuous integration<a class="headerlink" href="#continuous-integration" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Release</strong>: debug job (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/82c195284a4eb405f725d4b83ed1438d4744432c"><code class="docutils literal notranslate"><span class="pre">82c1952</span></code></a>)</p></li>
+<li><p><strong>Docs</strong>: update package DB here as well (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/04960719d998362802bdb02735cf2e403288e655"><code class="docutils literal notranslate"><span class="pre">0496071</span></code></a>)</p></li>
+<li><p><strong>Tests</strong>: before installing sys packages, update package DB, to avoid outdated lists (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e00a085cac8194b0d44eee98624ef4a851f503be"><code class="docutils literal notranslate"><span class="pre">e00a085</span></code></a>)</p></li>
+<li><p><strong>Tests</strong>: try installing PyQt6 system-wide to get all required binary dependencies (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/be3e5f5d451f0225831cee7d2b1a9a48cda9295c"><code class="docutils literal notranslate"><span class="pre">be3e5f5</span></code></a>)</p></li>
+<li><p><strong>Tests</strong>: typo installing additional system packages required by PyQt6 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/909c2084939253d4809b25f6c14593862e7b7918"><code class="docutils literal notranslate"><span class="pre">909c208</span></code></a>)</p></li>
+<li><p><strong>Tests</strong>: additional system packages required by PyQt6 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/9584c296dc85826ce99b39dc9be157782b19dc70"><code class="docutils literal notranslate"><span class="pre">9584c29</span></code></a>)</p></li>
+</ul>
+</section>
+<section id="unknown-scope">
+<h3>Unknown Scope<a class="headerlink" href="#unknown-scope" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Revert “ci(Release): debug job” (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e3fd4eddf990a05d2ca6845615cafbcac426158d"><code class="docutils literal notranslate"><span class="pre">e3fd4ed</span></code></a>)</p></li>
+<li><p>tests(Utils): remove unused code which causes import errors (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/c40719635f67c603d7c310ed6224b8c5a59258d1"><code class="docutils literal notranslate"><span class="pre">c407196</span></code></a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-1-1-2025-08-12">
+<h2>v0.1.1 (2025-08-12)<a class="headerlink" href="#v0-1-1-2025-08-12" title="Link to this heading">¶</a></h2>
+<section id="id1">
+<h3>Unknown Scope<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>0.1.1 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/29a34cc454885061f918336042de2ab032ac5afa"><code class="docutils literal notranslate"><span class="pre">29a34cc</span></code></a>)</p></li>
+<li><p>Last example: RR dataset 3 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/210889e1ac642cfa78eb3059d7fdd24db760f056"><code class="docutils literal notranslate"><span class="pre">210889e</span></code></a>)</p></li>
+<li><p>will work on 3.10 as well. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/4ed299edb749589b7a340f0b13af91e606351350"><code class="docutils literal notranslate"><span class="pre">4ed299e</span></code></a>)</p></li>
+<li><p>modern numpy now works as well, removing restriction on python 3.13 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/86cf44b0e8dbf16a45203a2935eb6da1b93c2e23"><code class="docutils literal notranslate"><span class="pre">86cf44b</span></code></a>)</p></li>
+<li><p>Extra explanation (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/400c602cdc51987e59cc574bc3f74d299184d743"><code class="docutils literal notranslate"><span class="pre">400c602</span></code></a>)</p></li>
+<li><p>Updates to the examples (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/bb33ec86c63a5970f41d18fe73edadba9b766c0b"><code class="docutils literal notranslate"><span class="pre">bb33ec8</span></code></a>)</p></li>
+<li><p>Adjustment to the advanced nexus demo (highlighting logRandom), and addition of the round robin 1 demo (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/6fa5d84cc3a746a8b1371b2321493d568d11a756"><code class="docutils literal notranslate"><span class="pre">6fa5d84</span></code></a>)</p></li>
+<li><p>adding logo (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/49e14dae7fc0f70679a69371027d6da7d9555a7b"><code class="docutils literal notranslate"><span class="pre">49e14da</span></code></a>)</p></li>
+<li><p>improved structure of eventFilter. Still allows internal drag and drops though. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/d9e0025c2d72588bffb4cc25c2856f762bb7a6c5"><code class="docutils literal notranslate"><span class="pre">d9e0025</span></code></a>)</p></li>
+<li><p>Fixing table highlight color (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/02a7232d5d8be148c73b07d1737ebbdcba2af330"><code class="docutils literal notranslate"><span class="pre">02a7232</span></code></a>)</p></li>
+<li><p>Drag and drop fix for the file table widgets. This was hard. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/28036dad7596bac08abcec02c47ffa3781ec63d2"><code class="docutils literal notranslate"><span class="pre">28036da</span></code></a>)</p></li>
+<li><p>Add drag-and-drop support for files into the tables. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/02b80098cca0be226a478c901026f942bf8d287b"><code class="docutils literal notranslate"><span class="pre">02b8009</span></code></a>)</p></li>
+<li><p>last one (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/3014af06cded75b2d23dcdf46f80196e10eb95d4"><code class="docutils literal notranslate"><span class="pre">3014af0</span></code></a>)</p></li>
+<li><p>Ok, windows is a pain in the butt. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/800965ff2a59fafb97c1ad0717bbc4c01f7adef7"><code class="docutils literal notranslate"><span class="pre">800965f</span></code></a>)</p></li>
+<li><p>Applying some style to override Window’s dark defaults. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/20572e91b5470c372327a29494e4ad6d3aadcbda"><code class="docutils literal notranslate"><span class="pre">20572e9</span></code></a>)</p></li>
+<li><p>Stopped messing around with fonts as they’re not consistent cross-platform. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/0ba0b0912222ce30bd0db7f9c793b5751fe48033"><code class="docutils literal notranslate"><span class="pre">0ba0b09</span></code></a>)</p></li>
+<li><p>minifix. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/3281589709ba3c11446fc502619743515a5211d3"><code class="docutils literal notranslate"><span class="pre">3281589</span></code></a>)</p></li>
+<li><p>Changing debug levels (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/0f2cd55ad1111717052f5aee541aecdf07663604"><code class="docutils literal notranslate"><span class="pre">0f2cd55</span></code></a>)</p></li>
+<li><p>Improving the text on the three examples. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/166ee4f45d8fe6e2d60cbc3c218c96cda53e13f9"><code class="docutils literal notranslate"><span class="pre">166ee4f</span></code></a>)</p></li>
+<li><p>New nexus example, and an update to the configuration files (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/9d67def732be0f613859e1851e989e44aa09b558"><code class="docutils literal notranslate"><span class="pre">9d67def</span></code></a>)</p></li>
+<li><p>Update order and text. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/d049a3602474c867997eed693efeb93bc233547f"><code class="docutils literal notranslate"><span class="pre">d049a36</span></code></a>)</p></li>
+<li><p>showing the test histogram PDF, even on Windows (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/2b7119fd12bb8a4ae32f577a77bb53b052059a21"><code class="docutils literal notranslate"><span class="pre">2b7119f</span></code></a>)</p></li>
+<li><p>Trying to get the PDF to show on Windows. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/0cd38899a94ada933fe7cc6591d974efe9df7256"><code class="docutils literal notranslate"><span class="pre">0cd3889</span></code></a>)</p></li>
+<li><p>Bug fixes for windows (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/1d21d518ad5197c4608f2a263272b21b88b4a3b8"><code class="docutils literal notranslate"><span class="pre">1d21d51</span></code></a>)</p></li>
+<li><p>making sure we can plot the test histogram also in windows (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/4fa9b371e365a1aad851368e7a12f2b3150b389b"><code class="docutils literal notranslate"><span class="pre">4fa9b37</span></code></a>)</p></li>
+<li><p>minifix (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/519335e04fd9cc9145d002ed3fbf45a8aca1077a"><code class="docutils literal notranslate"><span class="pre">519335e</span></code></a>)</p></li>
+<li><p>Can load prefabricated examples from a single yaml (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/6dcdc12768557f790b7078ac90d321611f911d89"><code class="docutils literal notranslate"><span class="pre">6dcdc12</span></code></a>)</p></li>
+<li><p>Removing too challenging nexus data from the test data. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/6e6a379b80a8307ec6277659f1e507f233861765"><code class="docutils literal notranslate"><span class="pre">6e6a379</span></code></a>)</p></li>
+<li><p>updating getting started. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e0a138eddb0c639d370238dcba0e9c639c56728b"><code class="docutils literal notranslate"><span class="pre">e0a138e</span></code></a>)</p></li>
+<li><p>correcting file extension of processed files to .hdf5 (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/606d5d1b82f408fd1fa3347e190b43da52faef36"><code class="docutils literal notranslate"><span class="pre">606d5d1</span></code></a>)</p></li>
+<li><p>fixing a path issue on windows (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/d6c6783a657595214e8ce25e047569bc0d60e8b5"><code class="docutils literal notranslate"><span class="pre">d6c6783</span></code></a>)</p></li>
+<li><p>prevent breaking on windows with empty model name (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/75c0cb3b661baba02e8e261139d4cf1e4a23a76a"><code class="docutils literal notranslate"><span class="pre">75c0cb3</span></code></a>)</p></li>
+<li><p>Ensure that the default configurations are loaded from the correct path (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/b87a922e98ffd57b385f09b749fcc3cda86da534"><code class="docutils literal notranslate"><span class="pre">b87a922</span></code></a>)</p></li>
+<li><p>fixed annoying window repositioning issue (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/5446eaf405a5c2daa1612d943571c7752a4215d2"><code class="docutils literal notranslate"><span class="pre">5446eaf</span></code></a>)</p></li>
+<li><p>Fixing small usability issue - launch with python -m mcsas3gui (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/7b56ae637fd53f2935e6d4f481544d8353ca1b60"><code class="docutils literal notranslate"><span class="pre">7b56ae6</span></code></a>)</p></li>
+<li><p>Change the way mcsas3 is launched to avoid command-line scripts. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/008f094812f386df1b180f762d2fd63287d4a60e"><code class="docutils literal notranslate"><span class="pre">008f094</span></code></a>)</p></li>
+<li><p>enforcing posix paths on CLI (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/2f3c3ee15874d4ba5e2bd6e917b2080a2450f24e"><code class="docutils literal notranslate"><span class="pre">2f3c3ee</span></code></a>)</p></li>
+<li><p>Updated pyproject fixing bug (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/a44d9227daf0a341a3b0cdc0e548c6282c08ecf7"><code class="docutils literal notranslate"><span class="pre">a44d922</span></code></a>)</p></li>
+<li><p>small update (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/02b6018ed1dbaea46e3e84daa49801a880d909c8"><code class="docutils literal notranslate"><span class="pre">02b6018</span></code></a>)</p></li>
+<li><p>pyinstaller –name McSAS3GUI –windowed src/mcsas3gui/main.py # not yet fully functional executable (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/7986876ac6c8822689e6d7468c9acd4b3e69ed32"><code class="docutils literal notranslate"><span class="pre">7986876</span></code></a>)</p></li>
+<li><p>updated pyproject towards build (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/34128cdb70ffc23e2fc037c3c1daacd920e08c24"><code class="docutils literal notranslate"><span class="pre">34128cd</span></code></a>)</p></li>
+<li><p>reorganisation to enable pip installability, resulting in command-line m3gui (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/63a0795a10fffeb9d3e6a974827be0ac735233e2"><code class="docutils literal notranslate"><span class="pre">63a0795</span></code></a>)</p></li>
+<li><p>connecting signals to set saved config files in the optimization and histogramming tabs (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/411d120fd89b2fa388aa48b624740c451a9f3af7"><code class="docutils literal notranslate"><span class="pre">411d120</span></code></a>)</p></li>
+<li><p>Updating pulldown menus on save (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/ab2a492725630fc731b6d89d9023f3ae392bd05c"><code class="docutils literal notranslate"><span class="pre">ab2a492</span></code></a>)</p></li>
+<li><p>A readme and a license (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/477e819ee5886bdbfaf542999fd06d90819d6907"><code class="docutils literal notranslate"><span class="pre">477e819</span></code></a>)</p></li>
+<li><p>updated requirements to remove particular mcsas3 commit (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/36546740980b9a533f608d66e7331358c79d2a09"><code class="docutils literal notranslate"><span class="pre">3654674</span></code></a>)</p></li>
+<li><p>handling of IEmin in data settings tab (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/16a2b558fae752795bc38a1975ac37dba7ad4815"><code class="docutils literal notranslate"><span class="pre">16a2b55</span></code></a>)</p></li>
+<li><p>Minor edits for readability (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/5aa460b50ac60dc6edc0fda4921d716aed914de4"><code class="docutils literal notranslate"><span class="pre">5aa460b</span></code></a>)</p></li>
+<li><p>Adjusting the yaml display and saving with a custom dumper (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/967be910dd17abad581f77b4ed083bc012840db5"><code class="docutils literal notranslate"><span class="pre">967be91</span></code></a>)</p></li>
+<li><p>Fleshing out the “Getting Started” helpful bits. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e109fd65981cd3d3cc77e0e9b36d5a3da5e9aaba"><code class="docutils literal notranslate"><span class="pre">e109fd6</span></code></a>)</p></li>
+<li><p>Clearer plotting when using omit (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/2d5639ebb1ada7d7d59a8214a38ad378e6a2bd4c"><code class="docutils literal notranslate"><span class="pre">2d5639e</span></code></a>)</p></li>
+<li><p>Test histogram now opens PDF automatically. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/c815eebfb7b6e05a7784fac0301b6df278e69dcf"><code class="docutils literal notranslate"><span class="pre">c815eeb</span></code></a>)</p></li>
+<li><p>Histogramming works and editor works.. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/1f9afb0dc07d4f0d03f224b9699d502ea5bf95de"><code class="docutils literal notranslate"><span class="pre">1f9afb0</span></code></a>)</p></li>
+<li><p>fix file extensions (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/48cdc8f9c3040b036cd8c2cc2010378d11dee26a"><code class="docutils literal notranslate"><span class="pre">48cdc8f</span></code></a>)</p></li>
+<li><p>Drag and drop file line entry widgets now all working. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/7fe3e2d448cbf5acdfb7f9ea30768df5b2522de8"><code class="docutils literal notranslate"><span class="pre">7fe3e2d</span></code></a>)</p></li>
+<li><p>Abstracted the file line selection widget (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/1364400e63ce706e073d16a4e67c3472583fb2ef"><code class="docutils literal notranslate"><span class="pre">1364400</span></code></a>)</p></li>
+<li><p>Adding a reusable file-line selection widget with drag and drop (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/9ef410aeb8c9bbd0b7c52cb0df5a91f82ffb886a"><code class="docutils literal notranslate"><span class="pre">9ef410a</span></code></a>)</p></li>
+<li><p>bug resolved with spaces in filenames. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e36b7eeaa27b68980bbe74bd632247e2a7806290"><code class="docutils literal notranslate"><span class="pre">e36b7ee</span></code></a>)</p></li>
+<li><p>Trying to get drag and drop working in the file tabulation widget (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/5dc689c22615951ea9a297e10a4ae8bd9d9df9ca"><code class="docutils literal notranslate"><span class="pre">5dc689c</span></code></a>)</p></li>
+<li><p>Updates… (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/dd65ab4d74057a55b4e644563f537b2b5b650598"><code class="docutils literal notranslate"><span class="pre">dd65ab4</span></code></a>)</p></li>
+<li><p>separated the file selection table for optimization and histogramming (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/90da9e6e225080d362cc1c007bc564864a34fe33"><code class="docutils literal notranslate"><span class="pre">90da9e6</span></code></a>)</p></li>
+<li><p>setting previously used directories for user convenience (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/07316469bc8feeaec549b178be181503614a6b1e"><code class="docutils literal notranslate"><span class="pre">0731646</span></code></a>)</p></li>
+<li><p>cleanup (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/dfbfe610c26aefc5b51cc001c48a3ea3e50c8348"><code class="docutils literal notranslate"><span class="pre">dfbfe61</span></code></a>)</p></li>
+<li><p>editor now functional for multipart yamls (needed for histogramming) (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/1e7f061d4d102bfbad42c991e9d273524a14d9bd"><code class="docutils literal notranslate"><span class="pre">1e7f061</span></code></a>)</p></li>
+<li><p>Getting there.. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/e9224e19dc1794778861d6c4c8f0e9ba4d9a3140"><code class="docutils literal notranslate"><span class="pre">e9224e1</span></code></a>)</p></li>
+<li><p>updates. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/2948074e1b3cf6b384e89661ea936dd0ebc2608a"><code class="docutils literal notranslate"><span class="pre">2948074</span></code></a>)</p></li>
+<li><p>Somewhat functional, processes cannot be killed yet, however. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/8e2a449945f2c3eed1ea0a7330451fd5e6e63067"><code class="docutils literal notranslate"><span class="pre">8e2a449</span></code></a>)</p></li>
+<li><p>Now can run and show a test optimization (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/983f12c44059e9ae3bfa0dd6081651e29e1354c6"><code class="docutils literal notranslate"><span class="pre">983f12c</span></code></a>)</p></li>
+<li><p>Setting up test runs in run_settings tab. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/30f50338e9ca8306de518189706b8c93bde24079"><code class="docutils literal notranslate"><span class="pre">30f5033</span></code></a>)</p></li>
+<li><p>updating run settings (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/73b8279f28535de04e7da75036b88c67cc1c0256"><code class="docutils literal notranslate"><span class="pre">73b8279</span></code></a>)</p></li>
+<li><p>Updates to data loading, I think it works for now. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/be9fd1775814de9f43494f08e97eb4c9603f2b93"><code class="docutils literal notranslate"><span class="pre">be9fd17</span></code></a>)</p></li>
+<li><p>upgrades (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/24cae6dfff2fd65aaeb4a3872f712a47b9769613"><code class="docutils literal notranslate"><span class="pre">24cae6d</span></code></a>)</p></li>
+<li><p>working ok now. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/3b4334421909c860cd475e39d15984025407eb96"><code class="docutils literal notranslate"><span class="pre">3b43344</span></code></a>)</p></li>
+<li><p>data loading tab starting to look like something useful now. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/8a4e925f6d5615f968887bbba41ec9a544d30a7e"><code class="docutils literal notranslate"><span class="pre">8a4e925</span></code></a>)</p></li>
+<li><p>Now loads and plots (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/0d7dc3cbda5e39a58c8e673a43f10f50283d02e0"><code class="docutils literal notranslate"><span class="pre">0d7dc3c</span></code></a>)</p></li>
+<li><p>minimal change in naming. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/3859dcd1f01f27d0cab3181b52fae126d34a2e18"><code class="docutils literal notranslate"><span class="pre">3859dcd</span></code></a>)</p></li>
+<li><p>Updated main window naming (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/20b0063c5cb92ad4090784545f6c61424052e819"><code class="docutils literal notranslate"><span class="pre">20b0063</span></code></a>)</p></li>
+<li><p>Drafted the optimization tab contents (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/d3b1e89feb88e1bcbcfddf9ee4da907d7315b83e"><code class="docutils literal notranslate"><span class="pre">d3b1e89</span></code></a>)</p></li>
+<li><p>some additions, but nothing working yet (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/41acbd8b07b5ac7b037caa601943db774e51129b"><code class="docutils literal notranslate"><span class="pre">41acbd8</span></code></a>)</p></li>
+<li><p>sasmodels automatically interpreted (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/b11ae9753576468414fccf8ced6f10708aa94e56"><code class="docutils literal notranslate"><span class="pre">b11ae97</span></code></a>)</p></li>
+<li><p>run config now working with central yaml editor. editor has syntax highlighting and syntax error tooltips. (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/1d02a85c4505a4f8a5ebf168b8f7e37c49481a64"><code class="docutils literal notranslate"><span class="pre">1d02a85</span></code></a>)</p></li>
+<li><p>Centralizing the yaml editor widget (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/8cc27612dbebd744f506298368fc3475e1c86a70"><code class="docutils literal notranslate"><span class="pre">8cc2761</span></code></a>)</p></li>
+<li><p>sort of working (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/0bfbf07bc2780e5cec404b8915434b2996dcde27"><code class="docutils literal notranslate"><span class="pre">0bfbf07</span></code></a>)</p></li>
+<li><p>first commit (<a class="reference external" href="https://github.com/ibresslerBAM/McSAS3GUI/commit/5fcbc09d9be2d84324c4bbc48caa1d5eee7e77df"><code class="docutils literal notranslate"><span class="pre">5fcbc09</span></code></a>)</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="authors.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Authors</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024-2025, Brian R. Pauw and Ingo Breßler
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on Aug 13, 2025 (git 1dd20f0)</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">CHANGELOG</a><ul>
+<li><a class="reference internal" href="#v0-1-2-2025-08-13">v0.1.2 (2025-08-13)</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug fixes</a></li>
+<li><a class="reference internal" href="#code-style">Code style</a></li>
+<li><a class="reference internal" href="#continuous-integration">Continuous integration</a></li>
+<li><a class="reference internal" href="#unknown-scope">Unknown Scope</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#v0-1-1-2025-08-12">v0.1.1 (2025-08-12)</a><ul>
+<li><a class="reference internal" href="#id1">Unknown Scope</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=92734c54"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

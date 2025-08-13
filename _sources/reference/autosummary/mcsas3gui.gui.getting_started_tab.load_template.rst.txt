@@ -1,0 +1,6 @@
+mcsas3gui.gui.getting\_started\_tab.load\_template
+==================================================
+
+.. currentmodule:: mcsas3gui.gui.getting_started_tab
+
+.. autofunction:: load_template
