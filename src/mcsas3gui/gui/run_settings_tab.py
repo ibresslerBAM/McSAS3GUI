@@ -7,12 +7,9 @@ import h5py
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 
-# from mcsas3.McSASOptimizer import McSASOptimizer
-# from mcsas3.mc_data_1d import McData1D
 from mcsas3.mc_hat import McHat
 from PyQt6.QtCore import QTimer
 
-# from tempfile import NamedTemporaryFile
 from PyQt6.QtWidgets import QComboBox, QDialog, QLabel, QPushButton, QTextEdit, QVBoxLayout, QWidget
 from sasmodels.core import load_model_info
 
@@ -27,9 +24,12 @@ class RunSettingsTab(QWidget):
     """Tab for configuring run settings, including YAML editor and test optimization."""
 
     default_configs = []  # List to hold default configuration files
+    _temp_dir = None  # provided by __main__
 
-    def __init__(self, parent=None, data_loading_tab=None):
+    def __init__(self, parent=None, data_loading_tab=None, temp_dir:Path=None):
         super().__init__(parent)
+        assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
+        self._temp_dir = temp_dir
         self.data_loading_tab = data_loading_tab
         self.config_path = get_main_path()  / "configurations/run"
         self.update_timer = QTimer(self)  # Timer for debouncing updates
@@ -216,15 +216,8 @@ class RunSettingsTab(QWidget):
                 yaml_content = combined_yaml_content
 
             # Create a temporary file to save data for the optimizer
-            temp_dir = Path("temporary_files")
-            temp_dir.mkdir(exist_ok=True)
-            temp_file = temp_dir / "test_data.hdf5"
+            temp_file = self._temp_dir / "test_data.hdf5"
             self.tempFileName = Path(temp_file.name)
-
-            # with NamedTemporaryFile(delete=False, suffix=".hdf5") as temp_file:
-            #     temp_file.close()
-            #     self.tempFileName = Path(temp_file.name)
-
             logger.debug(f"Temporary HDF5 file created at: {self.tempFileName}")
 
             mds.store(self.tempFileName)

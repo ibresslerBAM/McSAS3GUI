@@ -34,7 +34,7 @@ class McSAS3MainWindow(QMainWindow):
         self.tabs.addTab(GSTab, "Getting Started")
         DLTab = DataLoadingTab(self)
         self.tabs.addTab(DLTab, "Data Settings")
-        RSTab = RunSettingsTab(self, DLTab)
+        RSTab = RunSettingsTab(self, DLTab, temp_dir=temp_dir)
         self.tabs.addTab(RSTab, "Run Settings")
         ORTab = OptimizationRunTab(self, DLTab, RSTab)
         self.tabs.addTab(ORTab, "McSAS3 Optimization ...")
