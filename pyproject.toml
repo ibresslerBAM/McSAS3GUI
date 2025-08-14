@@ -22,15 +22,6 @@ classifiers = [
 ]
 dependencies = [
     "PyQt6>=6.7.1",
-    "numpy",
-    "scipy",
-    "h5py",
-    "matplotlib",
-    "pyyaml",
-    "attrs",
-    "sasmodels",
-    "pandas",
-    "pint",
     "mcsas3",
 ]
 
