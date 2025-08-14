@@ -31,7 +31,7 @@ class RunSettingsTab(QWidget):
     def __init__(self, parent=None, data_loading_tab=None):
         super().__init__(parent)
         self.data_loading_tab = data_loading_tab
-        self.main_path = get_main_path()  # Get the main path of the application
+        self.config_path = get_main_path()  / "configurations/run"
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_info_field)
@@ -48,7 +48,7 @@ class RunSettingsTab(QWidget):
 
         # YAML Editor for run settings configuration
         self.yaml_editor_widget = YAMLEditorWidget(
-            self.main_path / "run_configurations", parent=self, multipart=False
+            self.config_path, parent=self, multipart=False
         )
         layout.addWidget(QLabel("Run Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
@@ -88,9 +88,7 @@ class RunSettingsTab(QWidget):
     ):  # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        self.default_configs = get_default_config_files(
-            directory=self.main_path / "run_configurations"
-        )
+        self.default_configs = get_default_config_files(directory=self.config_path)
         self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None:
@@ -115,7 +113,7 @@ class RunSettingsTab(QWidget):
         """Load the selected YAML configuration file into the YAML editor."""
         selected_file = self.config_dropdown.currentText()
         if selected_file and selected_file != "<Custom...>":
-            yaml_content = load_yaml_file(self.main_path / f"run_configurations/{selected_file}")
+            yaml_content = load_yaml_file(self.config_path / f"{selected_file}")
             self.yaml_editor_widget.set_yaml_content(yaml_content)
             self.update_info_field()
 

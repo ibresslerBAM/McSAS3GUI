@@ -115,6 +115,7 @@ class GettingStartedTab(QWidget):
 
         # self.data_loading_tab = data_loading_tab
         self.main_path = get_main_path()  # Get the main path
+        self.config_path = self.main_path / "configurations/prefab"
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         # self.update_timer.timeout.connect(self.update_info_field)
@@ -155,17 +156,17 @@ class GettingStartedTab(QWidget):
             # self.config_dropdown.setCurrentIndex(0)
             self.load_selected_default_config()
 
-    def apply_yaml_to_tab_pulldown(self, tab, config_path_str: str):
+    def apply_yaml_to_tab_pulldown(self, tab, config_path_rel_str: str):
         """Generic helper to load YAML into a settings tab."""
-        config_path = Path(config_path_str)
-        list_name = config_path.name
+        config_path_rel = Path(config_path_rel_str)
+        list_name = config_path_rel.name
 
         if list_name in tab.default_configs:
             tab.config_dropdown.setCurrentText(list_name)
         else:
             tab.config_dropdown.setCurrentText("<Custom...>")
             try:
-                yaml_content = load_yaml_file(self.main_path / config_path)
+                yaml_content = load_yaml_file(self.main_path / config_path_rel)
                 tab.yaml_editor_widget.set_yaml_content(yaml_content)
             except Exception as e:
                 print(f"[WARNING] Failed to load YAML content for {list_name}: {e}")
@@ -175,9 +176,7 @@ class GettingStartedTab(QWidget):
     ):  # args is a dummy argument to handle signals
         """Populate or refresh the configuration dropdown list."""
         self.config_dropdown.clear()
-        default_configs = get_default_config_files(
-            directory=self.main_path / "prefab_configurations"
-        )
+        default_configs = get_default_config_files(directory=self.config_path)
         # sort entries alphabetically, but make sure "getting_started.yaml" is always first
         if savedName and savedName in default_configs:
             default_configs.remove(savedName)
@@ -194,9 +193,7 @@ class GettingStartedTab(QWidget):
         selected_file = self.config_dropdown.currentText()
         if selected_file:
             try:
-                yaml_content = load_template(
-                    self.main_path / f"prefab_configurations/{selected_file}"
-                )
+                yaml_content = load_template(self.config_path / selected_file)
                 self.info_viewer.setHtml(
                     yaml_content.get("html_description", "<p>No description available.</p>")
                 )

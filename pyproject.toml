@@ -56,7 +56,9 @@ where = ["src"]
 include = ["mcsas3gui*"]
 
 [tool.setuptools.package-data]
-mcsas3gui = ["*.ui", "*.qrc", "icons/*", "resources/*"]
+mcsas3gui = ["resources/*.svg"]
+"mcsas3gui.configurations" = ["*.yaml"]
+"mcsas3gui.testdata" = ["*.dat", "*.csv", "*.nxs"]
 
 [tool.setuptools.dynamic]
 version = {attr = "mcsas3gui.__version__"}

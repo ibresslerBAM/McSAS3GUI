@@ -30,7 +30,7 @@ class HistogramSettingsTab(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.main_path = get_main_path()  # Get the main path of the application
+        self.config_path = get_main_path()  / "configurations/histogram"
         self.last_used_directory = Path(gettempdir())  # Default to system temp directory
         self.test_data_file = None  # Store the selected test data file
 
@@ -45,7 +45,7 @@ class HistogramSettingsTab(QWidget):
 
         # YAML Editor for histogram settings
         self.yaml_editor_widget = YAMLEditorWidget(
-            directory=self.main_path / "hist_configurations", parent=self, multipart=True
+            directory=self.config_path, parent=self, multipart=True
         )
         layout.addWidget(QLabel("Histogramming Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
@@ -104,9 +104,7 @@ class HistogramSettingsTab(QWidget):
     def refresh_config_dropdown(self, savedName: str | None = None):  # args added to handle signal
         """Populate or refresh the histogramming configuration dropdown."""
         self.config_dropdown.clear()
-        self.default_configs = get_default_config_files(
-            directory=self.main_path / "hist_configurations"
-        )
+        self.default_configs = get_default_config_files(directory=self.config_path)
         self.config_dropdown.addItems(self.default_configs)
         self.config_dropdown.addItem("<Custom...>")
         if savedName is not None:
@@ -130,7 +128,7 @@ class HistogramSettingsTab(QWidget):
         if selected_file and selected_file != "<Custom...>":
             try:
                 # Construct the full path to the selected file
-                file_path = self.main_path / "hist_configurations" / selected_file
+                file_path = self.config_path / selected_file
                 if file_path.is_file():
                     with open(file_path, "r") as file:
                         # Parse YAML content as structured data

@@ -1,4 +1,5 @@
 from pathlib import Path
+from importlib.resources import files
 
 
 def get_default_config_files(directory: Path) -> list[str]:
@@ -10,6 +11,7 @@ def get_default_config_files(directory: Path) -> list[str]:
 
 
 def get_main_path() -> Path:
-    """Get the main path of the application."""
-    # Assuming the main path is the directory of this file
-    return Path(__file__).resolve().parents[3]
+    """Get the main path of the application. See also:
+    https://setuptools.pypa.io/en/latest/userguide/datafiles.html#accessing-data-files-at-runtime
+    """
+    return files('mcsas3gui')

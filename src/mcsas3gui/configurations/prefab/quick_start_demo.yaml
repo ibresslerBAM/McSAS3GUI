@@ -55,6 +55,6 @@ data_files:
 
 # read, run, histogram configurations in the directories specified below: 
 configurations: 
-  read_configuration_file: read_configurations/read_csv_simple.yaml
-  run_configuration_file: run_configurations/run_config_spheres_auto.yaml
-  hist_configuration_file: hist_configurations/hist_config_dual.yaml
+  read_configuration_file: configurations/readdata/read_csv_simple.yaml
+  run_configuration_file: configurations/run/run_config_spheres_auto.yaml
+  hist_configuration_file: configurations/histogram/hist_config_dual.yaml

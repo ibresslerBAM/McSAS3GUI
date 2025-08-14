@@ -49,9 +49,9 @@ data_files:
 # read, run, histogram configurations in the directories specified below: 
 # we use custom configurations here, so we don't use the default files. these will be overridden by the inline configurations below.
 configurations: 
-  read_configuration_file: read_configurations/read_csv_simple.yaml
-  run_configuration_file: run_configurations/run_config_spheres_auto.yaml
-  hist_configuration_file: hist_configurations/hist_config_dual.yaml
+  read_configuration_file: configurations/readdata/read_csv_simple.yaml
+  run_configuration_file: configurations/run/run_config_spheres_auto.yaml
+  hist_configuration_file: configurations/histogram/hist_config_dual.yaml
 
 # the configurations in the files given before will be overwritten if these are defined:
 read_configuration: # if defined, this will be stored to a temporary file and loaded instead

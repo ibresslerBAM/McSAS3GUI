@@ -23,9 +23,9 @@ html_description: |
           </style>
       </head>
       <body>
-          <div class="friendly-text">Round Robin dataset 3</div>
+          <div class="friendly-text">Round Robin dataset 1</div>
 
-          <h1>The Data Analysis Round Robin dataset 3</h1>
+          <h1>The Data Analysis Round Robin dataset 1</h1>
 
           <p>The small-angle scattering data analysis round robin was an experiment to find out how the results of a small-angle scattering analysis may depend on the person who is carrying out the analysis. To this end, we collated four datasets of dispersions of spherical scatterers, and provided:</p>
           <ul>
@@ -35,40 +35,33 @@ html_description: |
           </ul>
           <p>The results of this were published in <a href="https://doi.org/10.1107/S1600576723008324">Pauw et al., J. Appl. Cryst. 2023</a>. The original information sent out to participants (together with the datasets) can be downloaded from here <a href="https://zenodo.org/records/7506365">https://zenodo.org/records/7506365</a>.</p>
 
-          <p>This demo uses the third dataset, which is a measurement of a powder mixture of two different sizes of spherical silica particles. Since this is an intercalating powder of low-polydispersity particles, there is a significant structure factor visible. The following is noteworthy:</p>
-          <ul>
-              <li>If we have significant structure factors and large structure scattering, we may want to increase the maximum dimension in the model size parameter to ensure we can get a porod-slope from the smallest Q.</li>
-              <li>We also need to limit the data range in the data read-in config to avoid the wide-angle silica scattering hump. </li>
-              <li>This sample is a bit harder to analyze but with the right settings, you can arrive at valid solutions. Note, however, how the size distribution is affected by the configured volume fraction (you can get valid answers from ~0.46 - 0.6, which also affects the resulting distribution). In other words, you cannot get both volume fraction and size distribution uniquely, but must fix one to retrieve the other as they're inextricably linked... We chose 0.55 because it is one of the fastest settings.</li>
-              <li>Furthermore, we increased the number of contributions to improve smoothness of the result at the cost of increased computation time. </li>
-              <li>Lastly, we histogram the total distribution as well as the two populations separately. The volume-weighted mean radius (!) can be read from the population statistics summarized at the top of the histogramming tab.</li>
-          </ul>
+          <p>This demo uses the first dataset, which is a measurement of a bimodal gold nanoparticle suspension. The smaller population was half the size and only 10% in quantity of the larger population, to ensure the signal of the smaller particles are nicely hidden. This was the easiest dataset to fit with McSAS. </p>
       </body>
   </html>
 
 # data files relevant to this example: test files, and files for the full optimization.
 data_files:
-  read_test_file: testdata/round_robin_dataset_3.dat
-  histogramming_test_file: testdata/round_robin_dataset_3_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  read_test_file: testdata/round_robin_dataset_1.dat
+  histogramming_test_file: testdata/round_robin_dataset_1_output.hdf5 # does not exist yet, but will be created by the optmization tab
   optimization_files: 
-    - testdata/round_robin_dataset_3.dat
+    - testdata/round_robin_dataset_1.dat
     # - testdata/quickstartdemo2.csv
   histogramming_files: # again, these will be created upon optimization
-    - testdata/round_robin_dataset_3_output.hdf5
+    - testdata/round_robin_dataset_1_output.hdf5
     # - testdata/quickstartdemo2_output.hdf5
 
 # read, run, histogram configurations in the directories specified below: 
 # we use custom configurations here, so we don't use the default files. these will be overridden by the inline configurations below.
 configurations: 
-  read_configuration_file: read_configurations/read_csv_simple.yaml
-  run_configuration_file: run_configurations/run_config_spheres_auto.yaml
-  hist_configuration_file: hist_configurations/hist_config_dual.yaml
+  read_configuration_file: configurations/readdata/read_csv_simple.yaml
+  run_configuration_file: configurations/run/run_config_spheres_auto.yaml
+  hist_configuration_file: configurations/histogram/hist_config_dual.yaml
 
 # the configurations in the files given before will be overwritten if these are defined:
 read_configuration: # if defined, this will be stored to a temporary file and loaded instead
   # Note that the units are assumed to be 1/(m sr) for I and 1/nm for Q
   nbins: 100
-  dataRange: [0.0, 8]
+  dataRange: [0.0, .inf]
   IEmin: 0.01
   csvargs:
     sep: \s+
@@ -76,24 +69,20 @@ read_configuration: # if defined, this will be stored to a temporary file and lo
     names: [Q, I, ISigma]
 
 run_configuration: # ibid.
-  modelName: sphere@hardsphere
-  nContrib: 600
+  modelName: sphere
+  nContrib: 300
   modelDType: default
   fitParameterLimits:
-    radius: [0.5, 314]
+    radius: auto
   staticParameters:
     sld: 33.4
     sld_solvent: 0
     background: 0
-    structure_factor_mode: 1
-    radius_effective_mode: 1
-    volfraction: 0.55
   maxIter: 50000
   maxAccept: 5000
   convCrit: 1
   nRep: 10
   nCores: 10
-  logRandom: true
 
 hist_configuration: # ibid.
   - parameter: radius
@@ -107,16 +96,15 @@ hist_configuration: # ibid.
   - parameter: radius
     nBin: 15
     binScale: linear
-    presetRangeMin: 3
-    presetRangeMax: 30
+    presetRangeMin: 10
+    presetRangeMax: 20
     binWeighting: vol
     autoRange: false
 
   - parameter: radius
     nBin: 30
     binScale: linear
-    presetRangeMin: 30
-    presetRangeMax: 300
+    presetRangeMin: 20
+    presetRangeMax: 50
     binWeighting: vol
     autoRange: false
-

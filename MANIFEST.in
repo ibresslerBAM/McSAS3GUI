@@ -3,9 +3,6 @@ exclude docs/reference/autosummary/*
 graft src
 graft ci
 graft tests
-graft testdata
-
-include *_configurations/*
 
 include .editorconfig
 include .pre-commit-config.yaml
