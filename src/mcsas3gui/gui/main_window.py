@@ -2,6 +2,7 @@
 
 # import inspect
 from PyQt6.QtWidgets import QMainWindow, QTabWidget
+from pathlib import Path
 
 from .data_loading_tab import DataLoadingTab
 from .getting_started_tab import GettingStartedTab
@@ -16,7 +17,7 @@ class McSAS3MainWindow(QMainWindow):
 
     # use inspect to find main path for this package
 
-    def __init__(self):
+    def __init__(self, temp_dir:Path):
         super().__init__()
         self.setWindowTitle("McSAS3 Configuration Interface")
         self.setGeometry(100, 100, 800, 600)
@@ -26,10 +27,10 @@ class McSAS3MainWindow(QMainWindow):
         self.setCentralWidget(self.tabs)
 
         # Initialize and add tabs
-        self.setup_tabs()
+        self.setup_tabs(temp_dir)
 
-    def setup_tabs(self):
-        GSTab = GettingStartedTab(self)
+    def setup_tabs(self, temp_dir:Path):
+        GSTab = GettingStartedTab(self, temp_dir=temp_dir)
         self.tabs.addTab(GSTab, "Getting Started")
         DLTab = DataLoadingTab(self)
         self.tabs.addTab(DLTab, "Data Settings")

@@ -9,17 +9,9 @@ from mcsas3gui.utils.yaml_utils import load_yaml_file
 
 from .yaml_editor_widget import CustomDumper
 
-TEMP_DIR = get_main_path() / "temporary_files"
-READ_CONFIG_PATH = TEMP_DIR / "data.yaml"
-RUN_CONFIG_PATH = TEMP_DIR / "run.yaml"
-HIST_CONFIG_PATH = TEMP_DIR / "hist.yaml"
-
 CustomDumper.add_representer(dict, CustomDumper.represent_dict)
 CustomDumper.add_representer(list, CustomDumper.represent_list)
 
-
-def ensure_temp_dir():
-    TEMP_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def write_yaml_file(data, filepath):
@@ -56,46 +48,9 @@ def write_hist_yaml_block(hist_configs, filepath):
             )
 
 
-def load_template(template_path: Path) -> dict:
-    """
-    Load a project template (contained in a YAML structure)
-    and generate temp files if inline configurations exist.
-
-    Returns the full parsed dictionary so GUI can populate HTML, files, etc.
-    """
-    ensure_temp_dir()
-
-    with open(template_path, "r", encoding="utf-8") as f:
-        template = yaml.safe_load(f)
-
-    if "configurations" not in template:
-        template["configurations"] = {}
-
-    # Save inline configs to temp files if present
-    if "read_configuration" in template:
-        write_yaml_file(template["read_configuration"], READ_CONFIG_PATH)
-        # update read configuration file to point at the temp file
-
-        template["configurations"]["read_configuration_file"] = str(READ_CONFIG_PATH)
-
-    if "run_configuration" in template:
-        write_yaml_file(template["run_configuration"], RUN_CONFIG_PATH)
-        # update run configuration file to point at the temp file
-        template["configurations"]["run_configuration_file"] = str(RUN_CONFIG_PATH)
-
-    if "hist_configuration" in template:
-        hist_config = template["hist_configuration"]
-        if isinstance(hist_config, list):
-            write_hist_yaml_block(hist_config, HIST_CONFIG_PATH)
-        else:
-            print("[WARNING] 'hist_configuration' must be a list of dicts.")
-        # update hist configuration file to point at the temp file
-        template["configurations"]["hist_configuration_file"] = str(HIST_CONFIG_PATH)
-
-    return template  # can be passed to GUI components
-
-
 class GettingStartedTab(QWidget):
+    _temp_dir = None  # stores sub-configurations extracted from prefab config files
+
     def __init__(
         self,
         parent=None,
@@ -104,8 +59,11 @@ class GettingStartedTab(QWidget):
         optimization_tab=None,
         hist_settings_tab=None,
         histogramming_tab=None,
+        temp_dir:Path=None,
     ):
         super().__init__(parent)
+        assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
+        self._temp_dir = temp_dir
         self.data_loading_tab = data_loading_tab
         self.run_settings_tab = run_settings_tab
         self.optimization_tab = optimization_tab
@@ -187,13 +145,55 @@ class GettingStartedTab(QWidget):
         self.config_dropdown.addItems(default_configs)
         self.config_dropdown.setCurrentText(savedName)  # Set a default selection
 
+    def load_template(self, template_path: Path) -> dict:
+        """
+        Load a project template (contained in a YAML structure)
+        and generate temp files if inline configurations exist.
+
+        Returns the full parsed dictionary so GUI can populate HTML, files, etc.
+        """
+
+        read_config_path = self._temp_dir / "data.yaml"
+        run_config_path = self._temp_dir / "run.yaml"
+        hist_config_path = self._temp_dir / "hist.yaml"
+
+        with open(template_path, "r", encoding="utf-8") as f:
+            template = yaml.safe_load(f)
+
+        if "configurations" not in template:
+            template["configurations"] = {}
+
+        # Save inline configs to temp files if present
+        if "read_configuration" in template:
+            write_yaml_file(template["read_configuration"], read_config_path)
+            # update read configuration file to point at the temp file
+
+            template["configurations"]["read_configuration_file"] = str(read_config_path)
+
+        if "run_configuration" in template:
+            write_yaml_file(template["run_configuration"], run_config_path)
+            # update run configuration file to point at the temp file
+            template["configurations"]["run_configuration_file"] = str(run_config_path)
+
+        if "hist_configuration" in template:
+            hist_config = template["hist_configuration"]
+            if isinstance(hist_config, list):
+                write_hist_yaml_block(hist_config, hist_config_path)
+            else:
+                print("[WARNING] 'hist_configuration' must be a list of dicts.")
+            # update hist configuration file to point at the temp file
+            template["configurations"]["hist_configuration_file"] = str(hist_config_path)
+
+        return template  # can be passed to GUI components
+
+
     def load_selected_default_config(self):
         """Load the selected YAML configuration file."""
 
         selected_file = self.config_dropdown.currentText()
         if selected_file:
             try:
-                yaml_content = load_template(self.config_path / selected_file)
+                yaml_content = self.load_template(self.config_path / selected_file)
                 self.info_viewer.setHtml(
                     yaml_content.get("html_description", "<p>No description available.</p>")
                 )
