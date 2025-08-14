@@ -222,7 +222,7 @@ class DataLoadingTab(QWidget):
             self.mds = McData1D(
                 filename=Path(file_path),
                 nbins=int(yaml_config.get("nbins", 100)),
-                csvargs=yaml_config.get("csvargs", None),
+                csvargs=yaml_config.get("csvargs", {}),
                 pathDict=yaml_config.get("pathDict", None),
                 IEmin=float(yaml_config.get("IEmin", 0.01)),
                 dataRange=yaml_config.get("dataRange", [-np.inf, np.inf]),
