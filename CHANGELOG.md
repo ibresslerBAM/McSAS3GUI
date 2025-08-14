@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## v0.1.3 (2025-08-14)
+
+### Bug fixes
+
+* **PreFab**: output files from testdata written to temp directory as well ([`0fd0442`](https://github.com/ibresslerBAM/McSAS3GUI/commit/0fd044266f0c10ea9fca3cf297af7982a643965a))
+
+* **RunSettingsTab**: use the same temp dir in run_test_optimization() ([`7ac2399`](https://github.com/ibresslerBAM/McSAS3GUI/commit/7ac2399c6d52fa046c12120d55c737436958dbb5))
+
+* **GettingStartedTab & Logging**: create a proper temp dir out-of-source for log files and intermediate configs ([`a4b5bdf`](https://github.com/ibresslerBAM/McSAS3GUI/commit/a4b5bdfe6116703fe8859c380fc4cca06b53d219))
+
+* **DataLoadingTab**: csvargs is expected as dict in McSAS ([`209dc62`](https://github.com/ibresslerBAM/McSAS3GUI/commit/209dc62fc5ef5a9b84b304fdea35e7873f893c65))
+
+* **Configurations Examples**: moved to src dir since they need to be installed along ([`e75c5a6`](https://github.com/ibresslerBAM/McSAS3GUI/commit/e75c5a6639dace8885961bbe0e4c510b7f45b326))
+
+* **Project**: remove redundant dependencies implied by mcsas3 ([`2e550ef`](https://github.com/ibresslerBAM/McSAS3GUI/commit/2e550ef646360d91be1a3115f1b4f6a30e873ea6))
+
+### Continuous integration
+
+* **Publish**: show verbose messages in case of error ([`35c0bed`](https://github.com/ibresslerBAM/McSAS3GUI/commit/35c0bedd1df81a22a44748752ceefb3b6ab47087))
+
+* **Tests**: testing Windows ([`5ff1ebc`](https://github.com/ibresslerBAM/McSAS3GUI/commit/5ff1ebc1d98f9713adca8ea4a5b1c63d3caf7b32))
+
+* **Publish**: pypi url needs /legacy/ suffix ([`15121e8`](https://github.com/ibresslerBAM/McSAS3GUI/commit/15121e8f5dce114220e0d00b5787769e6ca9703f))
+
+* **Publish**: use test.pypi.org ([`505c64a`](https://github.com/ibresslerBAM/McSAS3GUI/commit/505c64aa07fc683f990b9b65217edcddd0ed5c6a))
+
 ## v0.1.2 (2025-08-13)
 
 ### Bug fixes
