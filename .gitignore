@@ -81,3 +81,5 @@ docs/reference/autosummary
 
 # Mypy Cache
 .mypy_cache/
+
+logs/
