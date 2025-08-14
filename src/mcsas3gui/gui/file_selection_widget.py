@@ -118,7 +118,7 @@ class FileSelectionWidget(QWidget):
 
     def get_selected_files(self):
         """Retrieve the list of selected files from the table."""
-        return [self.file_table.item(row, 0).text() for row in range(self.file_table.rowCount())]
+        return [Path(self.file_table.item(row, 0).text()) for row in range(self.file_table.rowCount())]
 
     def set_status_by_row(self, row: int = None, status: str = "Pending"):
         """Set the status for a specific file."""

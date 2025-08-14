@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ..utils.file_utils import get_main_path
+from ..utils.file_utils import make_out_path
 from ..utils.task_runner_mixin import TaskRunnerMixin
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
@@ -23,9 +23,10 @@ logger = logging.getLogger("McSAS3")
 class HistRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
 
-    def __init__(self, hist_settings_tab, parent=None):
+    def __init__(self, hist_settings_tab, parent=None, temp_dir:Path=None):
         super().__init__(parent)
-        self.main_path = get_main_path()
+        assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
+        self._temp_dir = temp_dir
         self.file_selection_widget = FileSelectionWidget(
             title="Select McSAS3-optimized Files for Histogramming:",
             acceptable_file_types="*.nxs *.h5 *.hdf5",
@@ -80,8 +81,10 @@ class HistRunTab(QWidget, TaskRunnerMixin):
             "-i 1"
         )
 
+        files_in_out = {infn: make_out_path(infn, self._temp_dir) for infn in files}
+        print(f"TEST {files_in_out=}")
         extra_keywords = {"hist_config": hist_config}
-        self.run_tasks(files, command_template, extra_keywords)
+        self.run_tasks(files_in_out, command_template, extra_keywords)
 
         # selected_files = self.file_selection_widget.get_selected_files()
         # if not selected_files:

@@ -13,15 +13,15 @@ class BaseWorker(QThread):
     status_signal = pyqtSignal(int, str)
     finished_signal = pyqtSignal()
 
-    def __init__(self, selected_files, command_template, extra_keywords=None):
+    def __init__(self, files_in_out, command_template, extra_keywords=None):
         """
         Args:
-            selected_files (list): List of file paths to process.
+            files_in_out (dict): Pairs for {input:output} file paths to process.
             command_template (str): Command template with placeholders for replacement.
             extra_keywords (dict): Additional keywords for replacing in the command template.
         """
         super().__init__()
-        self.selected_files = selected_files
+        self.files_in_out = files_in_out
         self.command_template = command_template
         self.extra_keywords = extra_keywords or {}
 
@@ -33,9 +33,8 @@ class BaseWorker(QThread):
 
     def run(self):
         """Run commands sequentially."""
-        total_files = len(self.selected_files)
-        for row, file_name in enumerate(self.selected_files):
-            result_file = Path(file_name).parent / (Path(file_name).stem + "_output.hdf5")
+        total_files = len(self.files_in_out)
+        for row, (file_name, result_file) in enumerate(self.files_in_out.items()):
             if result_file.is_file():
                 result_file.unlink()
 

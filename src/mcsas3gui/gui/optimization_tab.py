@@ -10,8 +10,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ..utils.file_utils import get_main_path
 from ..utils.task_runner_mixin import TaskRunnerMixin
+from ..utils.file_utils import get_main_path, make_out_path
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
 
@@ -20,11 +20,13 @@ logger = logging.getLogger("McSAS3")
 
 class OptimizationRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
+    _temp_dir = None  # provided by __main__, for testdata results, out-of-source
 
-    def __init__(self, data_loading_tab, run_settings_tab, parent=None):
+    def __init__(self, data_loading_tab, run_settings_tab, parent=None, temp_dir:Path=None):
         super().__init__(parent)
+        assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
+        self._temp_dir = temp_dir
         self.data_loading_tab = data_loading_tab
-        self.main_path = get_main_path()  # Get the main path of the application
         self.run_settings_tab = run_settings_tab
 
         self.file_selection_widget = FileSelectionWidget(
@@ -105,5 +107,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
             "-r {result_file} -R {run_config} -i 1 -d"
         )
 
+        files_in_out = {infn: make_out_path(infn, self._temp_dir) for infn in files}
+        print(f"TEST {files_in_out=}")
         extra_keywords = {"data_config": data_config, "run_config": run_config}
-        self.run_tasks(files, command_template, extra_keywords)
+        self.run_tasks(files_in_out, command_template, extra_keywords)
