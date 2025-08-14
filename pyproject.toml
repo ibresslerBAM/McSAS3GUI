@@ -53,7 +53,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["mcsas3gui*"]
 
 [tool.setuptools.package-data]
 mcsas3gui = ["resources/*.svg"]
