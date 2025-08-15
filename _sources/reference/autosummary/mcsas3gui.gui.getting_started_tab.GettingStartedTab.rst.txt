@@ -143,6 +143,7 @@ mcsas3gui.gui.getting\_started\_tab.GettingStartedTab
       ~GettingStartedTab.layoutDirection
       ~GettingStartedTab.leaveEvent
       ~GettingStartedTab.load_selected_default_config
+      ~GettingStartedTab.load_template
       ~GettingStartedTab.locale
       ~GettingStartedTab.logicalDpiX
       ~GettingStartedTab.logicalDpiY

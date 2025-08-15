@@ -14,8 +14,6 @@ mcsas3gui.gui.getting\_started\_tab
    .. autosummary::
       :toctree:
    
-      ensure_temp_dir
-      load_template
       write_hist_yaml_block
       write_yaml_file
    

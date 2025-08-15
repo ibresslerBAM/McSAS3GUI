@@ -16,6 +16,8 @@ mcsas3gui.utils.file\_utils
    
       get_default_config_files
       get_main_path
+      is_base_path
+      make_out_path
    
    
 

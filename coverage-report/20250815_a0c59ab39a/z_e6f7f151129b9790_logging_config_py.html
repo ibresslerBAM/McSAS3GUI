@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for src/mcsas3gui/utils/logging_config.py: 18.18%</title>
+    <title>Coverage for src/mcsas3gui/utils/logging_config.py: 16.67%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_6b508a39.css" type="text/css">
     <script src="coverage_html_cb_6fb7b396.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>src/mcsas3gui/utils/logging_config.py</b>:
-            <span class="pc_cov">18.18%</span>
+            <span class="pc_cov">16.67%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="z_e6f7f151129b9790_task_runner_mixin_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.10.3">coverage.py v7.10.3</a>,
-            created at 2025-08-13 15:41 +0000
+            created at 2025-08-15 17:06 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -87,7 +87,7 @@
     <p class="run"><span class="n"><a id="t3" href="#t3">3</a></span><span class="t"><span class="key">from</span> <span class="nam">pathlib</span> <span class="key">import</span> <span class="nam">Path</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t4" href="#t4">4</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t5" href="#t5">5</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">def</span> <span class="nam">setup_logging</span><span class="op">(</span><span class="nam">log_level</span><span class="op">=</span><span class="nam">logging</span><span class="op">.</span><span class="nam">INFO</span><span class="op">,</span> <span class="nam">log_to_file</span><span class="op">=</span><span class="key">False</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t6" href="#t6">6</a></span><span class="t"><span class="key">def</span> <span class="nam">setup_logging</span><span class="op">(</span><span class="nam">log_level</span><span class="op">=</span><span class="nam">logging</span><span class="op">.</span><span class="nam">INFO</span><span class="op">,</span> <span class="nam">log_file</span><span class="op">:</span> <span class="nam">Path</span> <span class="op">=</span> <span class="key">None</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t7" href="#t7">7</a></span><span class="t">    <span class="com"># Create a custom logger</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t8" href="#t8">8</a></span><span class="t">    <span class="nam">logger</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">getLogger</span><span class="op">(</span><span class="str">"McSAS3"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t9" href="#t9">9</a></span><span class="t">    <span class="nam">logger</span><span class="op">.</span><span class="nam">setLevel</span><span class="op">(</span><span class="nam">log_level</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -100,9 +100,9 @@
     <p class="mis show_mis"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t">    <span class="nam">logger</span><span class="op">.</span><span class="nam">addHandler</span><span class="op">(</span><span class="nam">console_handler</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t">    <span class="com"># File handler (optional)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t">    <span class="key">if</span> <span class="nam">log_to_file</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">        <span class="nam">log_file</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">(</span><span class="str">"logs"</span><span class="op">)</span> <span class="op">/</span> <span class="str">"mcsas3_debug.log"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t">        <span class="nam">log_file</span><span class="op">.</span><span class="nam">parent</span><span class="op">.</span><span class="nam">mkdir</span><span class="op">(</span><span class="nam">exist_ok</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>  <span class="com"># Create 'logs' directory if it doesn't exist</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t">    <span class="key">if</span> <span class="nam">log_file</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t">        <span class="key">if</span> <span class="key">not</span> <span class="nam">log_file</span><span class="op">.</span><span class="nam">parent</span><span class="op">.</span><span class="nam">is_dir</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t">            <span class="key">raise</span> <span class="nam">RuntimeError</span><span class="op">(</span><span class="fst">f"</span><span class="fst">Given log file directory '</span><span class="op">{</span><span class="nam">log_file</span><span class="op">}</span><span class="fst">' does not exist!</span><span class="fst">"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">        <span class="nam">file_handler</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">FileHandler</span><span class="op">(</span><span class="nam">log_file</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t">        <span class="nam">file_handler</span><span class="op">.</span><span class="nam">setLevel</span><span class="op">(</span><span class="nam">log_level</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">        <span class="nam">file_formatter</span> <span class="op">=</span> <span class="nam">logging</span><span class="op">.</span><span class="nam">Formatter</span><span class="op">(</span><span class="str">"%(asctime)s - [%(levelname)s] - %(name)s - %(message)s"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -119,7 +119,7 @@
             <a class="nav" href="z_e6f7f151129b9790_task_runner_mixin_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.10.3">coverage.py v7.10.3</a>,
-            created at 2025-08-13 15:41 +0000
+            created at 2025-08-15 17:06 +0000
         </p>
     </div>
 </footer>

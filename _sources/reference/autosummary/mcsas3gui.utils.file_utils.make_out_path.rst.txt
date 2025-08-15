@@ -1,0 +1,6 @@
+mcsas3gui.utils.file\_utils.make\_out\_path
+===========================================
+
+.. currentmodule:: mcsas3gui.utils.file_utils
+
+.. autofunction:: make_out_path
