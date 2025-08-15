@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v0.1.4 (2025-08-15)
+
+### Bug fixes
+
+* **HistogramSettingsTab**: set expected output file, do not use (not working) paths from *prefab* ([`a0c59ab`](https://github.com/ibresslerBAM/McSAS3GUI/commit/a0c59ab39afe74495defb41923f5469b4fed7d4a))
+
+* **GettingStartedTab**: test aginst the tab which is to be modified ([`0c35ce0`](https://github.com/ibresslerBAM/McSAS3GUI/commit/0c35ce0fc720abf608df3c4d388fe0f3320216d0))
+
+### Code style
+
+* **General**: formatting ([`2d97002`](https://github.com/ibresslerBAM/McSAS3GUI/commit/2d97002adcd9460b75a1941c5beb78936bf4ac52))
+
 ## v0.1.3 (2025-08-14)
 
 ### Bug fixes
