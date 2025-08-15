@@ -75,7 +75,6 @@ class HistRunTab(QWidget, TaskRunnerMixin):
         )
 
         files_in_out = {infn: make_out_path(infn, self._temp_dir) for infn in files}
-        print(f"TEST {files_in_out=}")
         extra_keywords = {"hist_config": hist_config}
         self.run_tasks(files_in_out, command_template, extra_keywords)
 

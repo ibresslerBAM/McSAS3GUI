@@ -32,16 +32,16 @@ class McSAS3MainWindow(QMainWindow):
 
     def setup_tabs(self, temp_dir: Path):
         GSTab = GettingStartedTab(self, temp_dir=temp_dir)
-        self.tabs.addTab(GSTab, "Getting Started")
         DLTab = DataLoadingTab(self)
-        self.tabs.addTab(DLTab, "Data Settings")
         RSTab = RunSettingsTab(self, DLTab, temp_dir=temp_dir)
-        self.tabs.addTab(RSTab, "Run Settings")
-        ORTab = OptimizationRunTab(self, DLTab, RSTab, temp_dir=temp_dir)
-        self.tabs.addTab(ORTab, "McSAS3 Optimization ...")
         HSTab = HistogramSettingsTab(self)
-        self.tabs.addTab(HSTab, "Histogram Settings")
         HRTab = HistRunTab(self, HSTab, temp_dir=temp_dir)
+        ORTab = OptimizationRunTab(self, DLTab, RSTab, HSTab, HRTab, temp_dir=temp_dir)
+        self.tabs.addTab(GSTab, "Getting Started")
+        self.tabs.addTab(DLTab, "Data Settings")
+        self.tabs.addTab(RSTab, "Run Settings")
+        self.tabs.addTab(ORTab, "McSAS3 Optimization ...")
+        self.tabs.addTab(HSTab, "Histogram Settings")
         self.tabs.addTab(HRTab, "(Re-)Histogramming ...")
 
         # connect the tabs to the getting started tab:

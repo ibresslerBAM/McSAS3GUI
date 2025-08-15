@@ -49,17 +49,17 @@ html_description: |
 # data files relevant to this example: test files, and files for the full optimization.
 data_files:
   read_test_file: testdata/round_robin_dataset_3.dat
-  histogramming_test_file: testdata/round_robin_dataset_3_output.hdf5 # does not exist yet, but will be created by the optmization tab
-  optimization_files: 
+  #histogramming_test_file: testdata/round_robin_dataset_3_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  optimization_files:
     - testdata/round_robin_dataset_3.dat
     # - testdata/quickstartdemo2.csv
-  histogramming_files: # again, these will be created upon optimization
-    - testdata/round_robin_dataset_3_output.hdf5
+  #histogramming_files: # again, these will be created upon optimization
+  #  - testdata/round_robin_dataset_3_output.hdf5
     # - testdata/quickstartdemo2_output.hdf5
 
-# read, run, histogram configurations in the directories specified below: 
+# read, run, histogram configurations in the directories specified below:
 # we use custom configurations here, so we don't use the default files. these will be overridden by the inline configurations below.
-configurations: 
+configurations:
   read_configuration_file: configurations/readdata/read_csv_simple.yaml
   run_configuration_file: configurations/run/run_config_spheres_auto.yaml
   hist_configuration_file: configurations/histogram/hist_config_dual.yaml
@@ -119,4 +119,3 @@ hist_configuration: # ibid.
     presetRangeMax: 300
     binWeighting: vol
     autoRange: false
-

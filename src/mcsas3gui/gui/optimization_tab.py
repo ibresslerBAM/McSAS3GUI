@@ -16,12 +16,22 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
     _temp_dir = None  # provided by __main__, for testdata results, out-of-source
 
-    def __init__(self, data_loading_tab, run_settings_tab, parent=None, temp_dir: Path = None):
+    def __init__(
+        self,
+        parent=None,
+        data_loading_tab=None,
+        run_settings_tab=None,
+        hist_settings_tab=None,
+        histogramming_tab=None,
+        temp_dir: Path = None,
+    ):
         super().__init__(parent)
         assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
         self._temp_dir = temp_dir
         self.data_loading_tab = data_loading_tab
         self.run_settings_tab = run_settings_tab
+        self.hist_settings_tab = hist_settings_tab
+        self.histogramming_tab = histogramming_tab
 
         self.file_selection_widget = FileSelectionWidget(
             title="Loaded Files:",
@@ -90,6 +100,12 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
             logger.warning(f"File does not exist: {file_path}")
             QMessageBox.warning(self, "File Error", f"Cannot access file: {file_path}")
 
+    def _set_expected_output(self, outpath):
+        if self.hist_settings_tab:
+            self.hist_settings_tab.test_file_selector.set_file_path(str(outpath))
+        if self.histogramming_tab:
+            self.histogramming_tab.file_selection_widget.add_file_to_table(str(outpath))
+
     def start_optimizations(self):
         files = self.file_selection_widget.get_selected_files()
         data_config = self.data_config_selector.get_file_path()
@@ -103,6 +119,6 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         )
 
         files_in_out = {infn: make_out_path(infn, self._temp_dir) for infn in files}
-        print(f"TEST {files_in_out=}")
+        self._set_expected_output(list(files_in_out.values())[0])  # forward the first output file
         extra_keywords = {"data_config": data_config, "run_config": run_config}
         self.run_tasks(files_in_out, command_template, extra_keywords)

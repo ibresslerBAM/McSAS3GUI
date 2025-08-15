@@ -20,7 +20,7 @@ html_description: |
               li {
                   margin-bottom: 0.5em; /* optional spacing between list items */
               }
-              
+
           </style>
       </head>
       <body>
@@ -30,7 +30,7 @@ html_description: |
           <p>This is a quick start demo for the McSAS3 GUI. It will show you how to set up a simple optimization and histogramming run.</p>
           <p>This uses a test datafile from the original McSAS, which is a simulated dataset with three size-disperse populations of spherical scatterers. We use the simplest, automatically set model of spheres to get a perfect fit. </p>
           <h3> Notes: </h3>
-          # make a list of notes: 
+          # make a list of notes:
           <ul>
               <li>We use the simplest read configuration that reads data from a csv file. The options are fed directly to pandas.read_csv, so use those to adjust for different three-column text files. </li>
               <li>The units are assumed to be (for now) in 1/nm for Q, and 1/m for I. Absolute scaled data will give you absolute volume fractions out.</li>
@@ -45,16 +45,16 @@ html_description: |
 # data files relevant to this example: test files, and files for the full optimization.
 data_files:
   read_test_file: testdata/quickstartdemo1.csv
-  histogramming_test_file: testdata/quickstartdemo1_output.hdf5 # does not exist yet, but will be created by the optmization tab
-  optimization_files: 
+  #histogramming_test_file: testdata/quickstartdemo1_output.hdf5 # does not exist yet, but will be created by the optmization tab
+  optimization_files:
     - testdata/quickstartdemo1.csv
     # - testdata/quickstartdemo2.csv
-  histogramming_files: # again, these will be created upon optimization
-    - testdata/quickstartdemo1_output.hdf5
-    # - testdata/quickstartdemo2_output.hdf5
+  #histogramming_files: # again, these will be created upon optimization
+  #  - testdata/quickstartdemo1_output.hdf5
+  #  - testdata/quickstartdemo2_output.hdf5
 
-# read, run, histogram configurations in the directories specified below: 
-configurations: 
+# read, run, histogram configurations in the directories specified below:
+configurations:
   read_configuration_file: configurations/readdata/read_csv_simple.yaml
   run_configuration_file: configurations/run/run_config_spheres_auto.yaml
   hist_configuration_file: configurations/histogram/hist_config_dual.yaml
