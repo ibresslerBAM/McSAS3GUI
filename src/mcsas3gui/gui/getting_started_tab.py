@@ -232,7 +232,7 @@ class GettingStartedTab(QWidget):
                     )
 
                 if (
-                    self.data_loading_tab and "histogramming_test_file" in yaml_content
+                    self.hist_settings_tab and "histogramming_test_file" in yaml_content
                 ):  # does not show as it doesn't exist.. unfortunately
                     self.hist_settings_tab.test_file_selector.set_file_path(
                         str(self.main_path / yaml_content["histogramming_test_file"])
