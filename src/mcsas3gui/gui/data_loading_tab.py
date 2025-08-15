@@ -11,15 +11,7 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from mcsas3.mc_data_1d import McData1D
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QTextCursor, QTextOption  # Import QTextOption for word wrapping
-from PyQt6.QtWidgets import (
-    QComboBox,
-    QDialog,
-    QLabel,
-    QMessageBox,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QComboBox, QDialog, QLabel, QMessageBox, QTextEdit, QVBoxLayout, QWidget
 
 from ..utils.file_utils import get_default_config_files, get_main_path
 from ..utils.yaml_utils import load_yaml_file
@@ -32,14 +24,13 @@ logger = logging.getLogger("McSAS3")
 
 
 class DataLoadingTab(QWidget):
-
     default_configs = []  # List to hold default configuration files
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.plot_dialog = None  # Track the plot dialog
         self.main_path = get_main_path()  # Get the main path of the application
-        self.config_path = get_main_path()  / "configurations/readdata"
+        self.config_path = get_main_path() / "configurations/readdata"
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_and_plot)  # Trigger plot after delay
@@ -111,7 +102,7 @@ class DataLoadingTab(QWidget):
         self.error_message_display.setText(message)
         if len(self.pdi) > 0:
             self.error_message_display.append(
-                f"Available datasets in file ({len(self.pdi)} found):\n" + "\n".join(self.pdi)
+                f"Available datasets in file ({len(self.pdi)} found): \n" + "\n".join(self.pdi)
             )
         self.error_message_display.moveCursor(QTextCursor.MoveOperation.Start)
         logger.error(message)
@@ -198,7 +189,7 @@ class DataLoadingTab(QWidget):
         # Clear any previous error message
         if len(self.pdi) > 0:
             self.error_message_display.setText(
-                f"Available datasets in file ({len(self.pdi)} found):\n" + "\n".join(self.pdi)
+                f"Available datasets in file ({len(self.pdi)} found): \n" + "\n".join(self.pdi)
             )
         else:
             self.error_message_display.setText("")

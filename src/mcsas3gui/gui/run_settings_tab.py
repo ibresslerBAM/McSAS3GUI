@@ -6,10 +6,8 @@ from typing import Sequence
 import h5py
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
-
 from mcsas3.mc_hat import McHat
 from PyQt6.QtCore import QTimer
-
 from PyQt6.QtWidgets import QComboBox, QDialog, QLabel, QPushButton, QTextEdit, QVBoxLayout, QWidget
 from sasmodels.core import load_model_info
 
@@ -26,12 +24,12 @@ class RunSettingsTab(QWidget):
     default_configs = []  # List to hold default configuration files
     _temp_dir = None  # provided by __main__
 
-    def __init__(self, parent=None, data_loading_tab=None, temp_dir:Path=None):
+    def __init__(self, parent=None, data_loading_tab=None, temp_dir: Path = None):
         super().__init__(parent)
         assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
         self._temp_dir = temp_dir
         self.data_loading_tab = data_loading_tab
-        self.config_path = get_main_path()  / "configurations/run"
+        self.config_path = get_main_path() / "configurations/run"
         self.update_timer = QTimer(self)  # Timer for debouncing updates
         self.update_timer.setSingleShot(True)
         self.update_timer.timeout.connect(self.update_info_field)
@@ -47,9 +45,7 @@ class RunSettingsTab(QWidget):
         self.config_dropdown.currentTextChanged.connect(self.handle_dropdown_change)
 
         # YAML Editor for run settings configuration
-        self.yaml_editor_widget = YAMLEditorWidget(
-            self.config_path, parent=self, multipart=False
-        )
+        self.yaml_editor_widget = YAMLEditorWidget(self.config_path, parent=self, multipart=False)
         layout.addWidget(QLabel("Run Configuration (YAML):"))
         layout.addWidget(self.yaml_editor_widget)
 
@@ -141,7 +137,7 @@ class RunSettingsTab(QWidget):
                 info_text += f"\nDocument {idx + 1}: Not a valid configuration.\n"
                 continue
 
-            info_text += f"\nDocument {idx + 1}:\n"
+            info_text += f"\nDocument {idx + 1}: \n"
 
             model_name = document.get("modelName", "Unknown Model")
             info_text += f"  Model Name: {model_name}\n"
@@ -172,9 +168,9 @@ class RunSettingsTab(QWidget):
                     if not any(re.match(pattern, param) for pattern in exclude_patterns)
                 }
 
-                info_text += "  Sasmodels Parameters:\n"
+                info_text += "  Sasmodels Parameters: \n"
                 for param, default_value in filtered_parameters.items():
-                    info_text += f"    - {param}: {default_value}\n"
+                    info_text += f"    - {param}: {default_value}\n"  # noqa: E221
 
                 info_text += (
                     "  To configure parameters, add each to 'fitParameterLimits'"

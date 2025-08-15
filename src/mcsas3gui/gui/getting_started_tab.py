@@ -13,7 +13,6 @@ CustomDumper.add_representer(dict, CustomDumper.represent_dict)
 CustomDumper.add_representer(list, CustomDumper.represent_list)
 
 
-
 def write_yaml_file(data, filepath):
     with open(filepath, "w", encoding="utf-8") as f:
         yaml.dump(data, f, Dumper=CustomDumper, default_flow_style=None, sort_keys=False)
@@ -59,7 +58,7 @@ class GettingStartedTab(QWidget):
         optimization_tab=None,
         hist_settings_tab=None,
         histogramming_tab=None,
-        temp_dir:Path=None,
+        temp_dir: Path = None,
     ):
         super().__init__(parent)
         assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
@@ -185,7 +184,6 @@ class GettingStartedTab(QWidget):
             template["configurations"]["hist_configuration_file"] = str(hist_config_path)
 
         return template  # can be passed to GUI components
-
 
     def load_selected_default_config(self):
         """Load the selected YAML configuration file."""

@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 
-def setup_logging(log_level=logging.INFO, log_file:Path=None):
+def setup_logging(log_level=logging.INFO, log_file: Path = None):
     # Create a custom logger
     logger = logging.getLogger("McSAS3")
     logger.setLevel(log_level)

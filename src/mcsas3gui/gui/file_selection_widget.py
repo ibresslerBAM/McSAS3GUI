@@ -118,7 +118,9 @@ class FileSelectionWidget(QWidget):
 
     def get_selected_files(self):
         """Retrieve the list of selected files from the table."""
-        return [Path(self.file_table.item(row, 0).text()) for row in range(self.file_table.rowCount())]
+        return [
+            Path(self.file_table.item(row, 0).text()) for row in range(self.file_table.rowCount())
+        ]
 
     def set_status_by_row(self, row: int = None, status: str = "Pending"):
         """Set the status for a specific file."""
@@ -152,7 +154,6 @@ class FileSelectionWidget(QWidget):
 
         mime_data = event.mimeData()
         if mime_data.hasUrls():
-
             if event.type() in (event.Type.DragEnter, event.Type.DragMove):
                 event.acceptProposedAction()
                 return True

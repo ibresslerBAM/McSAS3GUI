@@ -1,5 +1,5 @@
-from pathlib import Path
 from importlib.resources import files
+from pathlib import Path
 
 
 def get_default_config_files(directory: Path) -> list[str]:
@@ -14,7 +14,7 @@ def get_main_path() -> Path:
     """Get the main path of the application. See also:
     https://setuptools.pypa.io/en/latest/userguide/datafiles.html#accessing-data-files-at-runtime
     """
-    return files('mcsas3gui')
+    return files("mcsas3gui")
 
 
 def is_base_path(base_path, full_path):
@@ -26,7 +26,7 @@ def is_base_path(base_path, full_path):
     return base in full.parents or base == full
 
 
-def make_out_path(inpath, temp_dir:Path):
+def make_out_path(inpath, temp_dir: Path):
     outdir = inpath.parent
     if is_base_path(get_main_path(), inpath):
         outdir = temp_dir

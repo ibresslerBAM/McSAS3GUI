@@ -2,16 +2,10 @@ import logging
 import sys
 from pathlib import Path
 
-from PyQt6.QtWidgets import (
-    QMessageBox,
-    QProgressBar,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QMessageBox, QProgressBar, QPushButton, QVBoxLayout, QWidget
 
+from ..utils.file_utils import make_out_path
 from ..utils.task_runner_mixin import TaskRunnerMixin
-from ..utils.file_utils import get_main_path, make_out_path
 from .file_line_selection_widget import FileLineSelectionWidget
 from .file_selection_widget import FileSelectionWidget
 
@@ -22,7 +16,7 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
     last_used_directory = Path("~").expanduser()
     _temp_dir = None  # provided by __main__, for testdata results, out-of-source
 
-    def __init__(self, data_loading_tab, run_settings_tab, parent=None, temp_dir:Path=None):
+    def __init__(self, data_loading_tab, run_settings_tab, parent=None, temp_dir: Path = None):
         super().__init__(parent)
         assert temp_dir.is_dir(), f"Given temp dir '{temp_dir}' does not exist!"
         self._temp_dir = temp_dir
@@ -102,7 +96,8 @@ class OptimizationRunTab(QWidget, TaskRunnerMixin):
         run_config = self.run_config_selector.get_file_path()
 
         command_template = (
-            str(Path(sys.executable).as_posix()) + " "
+            str(Path(sys.executable).as_posix())
+            + " "
             "-m mcsas3.mcsas3_cli_runner -f {input_file} -F {data_config} "
             "-r {result_file} -R {run_config} -i 1 -d"
         )

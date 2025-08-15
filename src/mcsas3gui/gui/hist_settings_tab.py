@@ -30,7 +30,7 @@ class HistogramSettingsTab(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.config_path = get_main_path()  / "configurations/histogram"
+        self.config_path = get_main_path() / "configurations/histogram"
         self.last_used_directory = Path(gettempdir())  # Default to system temp directory
         self.test_data_file = None  # Store the selected test data file
 
@@ -197,7 +197,7 @@ class HistogramSettingsTab(QWidget):
             working_directory = Path(".").resolve()  # Set the directory where the script exists
 
             # log the exectued command
-            logger.info(f"Running command:\n{command}")
+            logger.info(f"Running command: \n{command}")
 
             # log the working directory
             logger.debug(f"Working directory is {working_directory}.")
@@ -212,11 +212,11 @@ class HistogramSettingsTab(QWidget):
 
             # Handle the output
             if result.returncode == 0:
-                self.info_field.append(f"Command executed successfully:\n{result.stdout}")
-                logger.debug(f"Command output:\n{result.stdout}")
+                self.info_field.append(f"Command executed successfully: \n{result.stdout}")
+                logger.debug(f"Command output: \n{result.stdout}")
             else:
-                self.info_field.append(f"Command failed with error:\n{result.stderr}")
-                logger.error(f"Command error:\n{result.stderr}")
+                self.info_field.append(f"Command failed with error: \n{result.stderr}")
+                logger.error(f"Command error: \n{result.stderr}")
 
             # Clean up the temporary file
             yaml_file.unlink()
