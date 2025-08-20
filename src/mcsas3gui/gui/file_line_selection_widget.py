@@ -1,15 +1,17 @@
 # src/gui/file_line_selection_widget.py
 
-from PyQt6.QtWidgets import QLineEdit, QHBoxLayout, QPushButton, QWidget, QFileDialog
-from PyQt6.QtCore import pyqtSignal, Qt  # , QDragEnterEvent, QDropEvent, Qt
-from pathlib import Path
 import logging
+from pathlib import Path
+
+from PyQt6.QtCore import Qt, pyqtSignal  # , QDragEnterEvent, QDropEvent, Qt
+from PyQt6.QtWidgets import QFileDialog, QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 logger = logging.getLogger("McSAS3")
 
 
 class FilePathLineEdit(QLineEdit):
     """A QLineEdit widget with drag-and-drop and manual editing support."""
+
     fileChanged = pyqtSignal(str)  # Signal emitted when the file path is changed
 
     def __init__(self, parent=None):
@@ -51,6 +53,7 @@ class FilePathLineEdit(QLineEdit):
 
 class FileLineSelectionWidget(QWidget):
     """A reusable file selection widget with drag-and-drop and a 'Browse' button."""
+
     fileSelected = pyqtSignal(str)  # Signal emitted when a file is selected
 
     def __init__(self, placeholder_text="Select a file", file_types="All Files (*.*)", parent=None):
@@ -70,7 +73,8 @@ class FileLineSelectionWidget(QWidget):
                     color: palette(text);
                     font-family: "Courier New", monospace;
                 }
-            """)
+            """
+        )
         self.file_path_line.setPlaceholderText(placeholder_text)
         self.file_path_line.fileChanged.connect(self._emit_file_selected)
         layout.addWidget(self.file_path_line)
@@ -84,9 +88,7 @@ class FileLineSelectionWidget(QWidget):
 
     def select_file(self):
         """Open a file dialog to select a file."""
-        file_name, _ = QFileDialog.getOpenFileName(
-            self, "Select File", "", self.file_types
-        )
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select File", "", self.file_types)
         if file_name:
             self.file_path_line.setText(file_name)
             self._emit_file_selected(file_name)

@@ -4,20 +4,20 @@ from .base_worker import BaseWorker
 
 
 class TaskRunnerMixin:
-    def run_tasks(self, files, command_template, extra_keywords=None):
+    def run_tasks(self, files_in_out, command_template, extra_keywords=None):
         """
         Run tasks with the provided command template and files.
 
         Args:
-            files (list): List of file paths to process.
+            files_in_out (dict): Pairs for {input:output} file paths to process.
             command_template (str): Command template with placeholders for replacement.
             extra_keywords (dict): Additional keywords for replacing in the command template.
         """
-        if not files:
+        if not files_in_out:
             QMessageBox.warning(self, "Run Tasks", "No files selected.")
             return
 
-        self.worker = BaseWorker(files, command_template, extra_keywords)
+        self.worker = BaseWorker(files_in_out, command_template, extra_keywords)
         self.worker.progress_signal.connect(self.update_progress)
         self.worker.status_signal.connect(self.update_file_status)
         self.worker.finished_signal.connect(self.tasks_finished)

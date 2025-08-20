@@ -1,5 +1,6 @@
-from PyQt6.QtGui import QSyntaxHighlighter, QTextCharFormat, QColor, QFont
 from PyQt6.QtCore import QRegularExpression
+from PyQt6.QtGui import QColor, QFont, QSyntaxHighlighter, QTextCharFormat
+
 
 class YAMLHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
@@ -21,7 +22,7 @@ class YAMLHighlighter(QSyntaxHighlighter):
         self.rules = [
             (QRegularExpression(r"^\s*[^#]*:"), self.key_format),  # Keys
             (QRegularExpression(r":\s*[^#]*"), self.value_format),  # Values
-            (QRegularExpression(r"#.*$"), self.comment_format)      # Comments
+            (QRegularExpression(r"#.*$"), self.comment_format),  # Comments
         ]
 
     def highlightBlock(self, text):

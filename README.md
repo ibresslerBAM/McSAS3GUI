@@ -1,91 +1,72 @@
-# McSAS3GUI
+# McSAS3GUI (v0.1.4)
 
-McSAS3GUI is a graphical user interface for the McSAS3 software. This guide will walk you through the steps necessary to clone, set up, and run the McSAS3GUI application.
+[![PyPI Package latest release](https://img.shields.io/pypi/v/mcsas3gui.svg)](https://test.pypi.org/project/mcsas3gui)
+[![Commits since latest release](https://img.shields.io/github/commits-since/BAMresearch/mcsas3gui/v0.1.4.svg)](https://github.com/BAMresearch/mcsas3gui/compare/v0.1.4...main)
+[![License](https://img.shields.io/pypi/l/mcsas3gui.svg)](https://en.wikipedia.org/wiki/MIT_license)
+[![Supported versions](https://img.shields.io/pypi/pyversions/mcsas3gui.svg)](https://test.pypi.org/project/mcsas3gui)
+[![PyPI Wheel](https://img.shields.io/pypi/wheel/mcsas3gui.svg)](https://test.pypi.org/project/mcsas3gui#files)
+[![Weekly PyPI downloads](https://img.shields.io/pypi/dw/mcsas3gui.svg)](https://test.pypi.org/project/mcsas3gui/)
+[![Continuous Integration and Deployment Status](https://github.com/BAMresearch/mcsas3gui/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/BAMresearch/mcsas3gui/actions/workflows/ci-cd.yml)
+[![Coverage report](https://img.shields.io/endpoint?url=https://BAMresearch.github.io/mcsas3gui/coverage-report/cov.json)](https://BAMresearch.github.io/mcsas3gui/coverage-report/)
 
-## Prerequisites
+A graphical user interface for the McSAS3 software.
 
-Ensure you have the following software installed on your system:
-- [Git](https://git-scm.com/)
-- [Python 3.12](https://www.python.org/downloads/)
+## Installation
 
-## Installation and Setup
+    pip install mcsas3gui
 
-1. **Clone the Repositories**
+You can also install the in-development version with:
 
-   First, clone the repositories for McSAS3GUI and McSAS3:
-
-   ```bash
-   git clone https://github.com/toqduj/McSAS3GUI.git
-   git clone https://github.com/BAMresearch/McSAS3.git
-   ```
-
-2. **Switch to the `refactoring` Branch in McSAS3**
-
-   Change to the McSAS3 directory and switch to the `refactoring` branch:
-
-   ```bash
-   cd McSAS3
-   git switch refactoring
-   ```
-   Navigate back to the McSAS3GUI directory:
-
-   ```bash
-   cd ../McSAS3GUI
-   ```
-
-3. **(Optional) Deactivate Conda Environment**
-
-   If you're using conda, make sure to deactivate any active environment:
-
-   ```bash
-   conda deactivate
-   ```
-
-4. **Create a Virtual Environment**
-
-   Set up a Python virtual environment:
-
-   ```bash
-   python3.12 -m venv .venv
-   ```
-
-5. **Activate the Virtual Environment**
-
-   Activate the newly created virtual environment:
-
-   ```bash
-   source .venv/bin/activate
-   ```
-
-6. **Install Dependencies**
-
-   Upgrade pip and install required McSAS3GUI dependencies:
-
-   ```bash
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-
-7. **Install McSAS3 in Editable Mode**
-
-   Install the McSAS3 package in editable mode:
-
-   ```bash
-   pip install -e ../McSAS3/
-   ```
+    pip install git+https://github.com/BAMresearch/mcsas3gui.git@main
 
 ## Running the Application
 
-Once all dependencies are installed, you can run the McSAS3GUI application with the following command (from the McSAS3GUI directory):
+    python3 -m mcsas3gui
 
-```bash
-python src/main.py
-```
+## Documentation
 
-## Contributing
+https://BAMresearch.github.io/mcsas3gui
+
+## Development
+
+### Contributing
 
 We welcome contributions! Please ensure your code follows the project's coding style and includes relevant tests and documentation.
 
-## License
+### License
 
 This project is licensed under the MIT license
+
+### Testing
+
+See which tests are available (arguments after `--` get passed to *pytest* which runs the tests):
+
+    tox -e py -- --co
+
+Run a specific test only:
+
+    tox -e py -- -k <test_name from listing before>
+
+Run all tests with:
+
+    tox -e py
+
+### Package Version
+
+Get the next version number and how the GIT history would be interpreted for that:
+
+    pip install python-semantic-release
+    semantic-release -v version --print
+
+This prints its interpretation of the commits in detail. Make sure to supply the `--print`
+argument to not raise the version number which is done automatically by the *release* job
+of the GitHub Action Workflows.
+
+### Project template
+
+Update the project configuration from the *copier* template and make sure the required packages
+are installed:
+
+    pip install copier jinja2-time
+    copier update --trust --skip-answered
+
